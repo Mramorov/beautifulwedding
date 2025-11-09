@@ -16,23 +16,24 @@ class SvadbaDataSingleton {
     public $items_by_key = array();
 
     // keys that should be rendered as selects (in this order)
+    // New table uses pr_key values: trans, auto, photo, video, bqt, cake, post
     public $select_keys = array(
-        'airport-transfer',
-        'wedding-auto',
-        'photo-list',
-        'video-list',
-        'bouquet',
+        'trans',
+        'auto',
+        'photo',
+        'video',
+        'bqt',
         'cake',
         'post'
     );
 
     // labels shown above selects (matches old project / screenshot)
     public $labels = array(
-        'airport-transfer' => 'Автомобиль для трансфера из аэропорта в отель и обратно',
-        'wedding-auto' => 'Автомобиль в день бракосочетания',
-        'photo-list' => 'Фотосъёмка свадебной церемонии, прогулки по Праге (часов)',
-        'video-list' => 'Видеосъёмка свадебной церемонии, прогулки по Праге (часов)',
-        'bouquet' => 'Букет невесты',
+        'trans' => 'Автомобиль для трансфера из аэропорта в отель и обратно',
+        'auto' => 'Автомобиль в день бракосочетания',
+        'photo' => 'Фотосъёмка свадебной церемонии, прогулки по Праге (часов)',
+        'video' => 'Видеосъёмка свадебной церемонии, прогулки по Праге (часов)',
+        'bqt' => 'Букет невесты',
         'cake' => 'Свадебный торт',
         'post' => 'Отправка экспресс почтой EMS/DHL/Fedex свидетельства о браке',
     );
