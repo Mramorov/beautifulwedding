@@ -2,10 +2,10 @@
 
 /** Minimal theme setup */
 
-// Include custom post types and fields
-require get_template_directory() . '/inc/custom-post-types.php';
-require get_template_directory() . '/inc/custom-fields.php';
-require get_template_directory() . '/inc/custom-repeater.php';
+// Include Svadba post type and related functionality
+require get_template_directory() . '/svadba/custom-post-types.php';
+require get_template_directory() . '/svadba/custom-fields.php';
+require get_template_directory() . '/svadba/custom-repeater.php';
 
 function minimal_classic_setup()
 {
