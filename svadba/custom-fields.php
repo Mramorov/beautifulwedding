@@ -2,6 +2,15 @@
 function beautifulwedding_add_meta_boxes()
 {
     add_meta_box(
+        'svadba_price_fields',
+        'Pricing & Details',
+        'svadba_price_fields_callback',
+        'svadba',
+        'normal',
+        'high'
+    );
+    
+    add_meta_box(
         'svadba_gallery',
         'Wedding Gallery',
         'svadba_gallery_callback',
@@ -11,6 +20,63 @@ function beautifulwedding_add_meta_boxes()
     );
 }
 add_action('add_meta_boxes', 'beautifulwedding_add_meta_boxes');
+
+function svadba_price_fields_callback($post)
+{
+    wp_nonce_field('svadba_price_fields_nonce', 'svadba_price_fields_nonce');
+    
+    $fromold = get_post_meta($post->ID, 'fromold', true);
+    $fromnew = get_post_meta($post->ID, 'fromnew', true);
+    $capacity = get_post_meta($post->ID, 'capacity', true);
+    $distance = get_post_meta($post->ID, 'distance', true);
+    $cer_time = get_post_meta($post->ID, 'cer-time', true);
+    ?>
+    <style>
+        .svadba-fields-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .svadba-field {
+            flex: 1;
+        }
+        .svadba-field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .svadba-field input {
+            width: 100%;
+        }
+    </style>
+    
+    <div class="svadba-fields-row">
+        <div class="svadba-field">
+            <label for="fromold">Старая цена (от)</label>
+            <input type="number" id="fromold" name="fromold" value="<?php echo esc_attr($fromold); ?>" step="0.01" />
+        </div>
+        <div class="svadba-field">
+            <label for="fromnew">Новая цена (от)</label>
+            <input type="number" id="fromnew" name="fromnew" value="<?php echo esc_attr($fromnew); ?>" step="0.01" />
+        </div>
+        <div class="svadba-field">
+            <label for="capacity">Вместимость</label>
+            <input type="number" id="capacity" name="capacity" value="<?php echo esc_attr($capacity); ?>" />
+        </div>
+    </div>
+    
+    <div class="svadba-fields-row">
+        <div class="svadba-field">
+            <label for="distance">Базовое время автомобиля</label>
+            <input type="number" id="distance" name="distance" value="<?php echo esc_attr($distance); ?>" />
+        </div>
+        <div class="svadba-field">
+            <label for="cer-time">Время церемонии</label>
+            <input type="text" id="cer-time" name="cer-time" value="<?php echo esc_attr($cer_time); ?>" />
+        </div>
+    </div>
+    <?php
+}
 
 function svadba_enqueue_admin_scripts($hook)
 {
@@ -126,6 +192,24 @@ function svadba_gallery_callback($post)
     </script>
 <?php
 }
+
+function svadba_save_price_fields($post_id)
+{
+    if (!isset($_POST['svadba_price_fields_nonce']) || !wp_verify_nonce($_POST['svadba_price_fields_nonce'], 'svadba_price_fields_nonce')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    $fields = array('fromold', 'fromnew', 'capacity', 'distance', 'cer-time');
+    
+    foreach ($fields as $field) {
+        if (isset($_POST[$field])) {
+            update_post_meta($post_id, $field, sanitize_text_field($_POST[$field]));
+        } else {
+            delete_post_meta($post_id, $field);
+        }
+    }
+}
+add_action('save_post_svadba', 'svadba_save_price_fields');
 
 function svadba_save_gallery_meta($post_id)
 {

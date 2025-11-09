@@ -6,7 +6,7 @@
 function beautifulwedding_add_repeater_meta_box() {
     add_meta_box(
         'svadba_repeater',
-        'Additional Information',
+        'Дополнительные залы и места',
         'svadba_repeater_callback',
         'svadba',
         'normal',
@@ -80,6 +80,20 @@ function svadba_repeater_callback($post) {
             margin-bottom: 5px;
             font-weight: bold;
         }
+        .field-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .field-row .field-group {
+            margin-bottom: 0;
+        }
+        .field-row .field-group.field-75 {
+            flex: 0 0 75%;
+        }
+        .field-row .field-group.field-25 {
+            flex: 0 0 calc(25% - 15px);
+        }
     </style>
 
     <script>
@@ -132,44 +146,46 @@ function svadba_repeater_callback($post) {
 }
 
 function svadba_render_repeater_item($index, $item = array()) {
-    $text = isset($item['text']) ? $item['text'] : '';
-    $image = isset($item['image']) ? $item['image'] : '';
-    $number = isset($item['number']) ? $item['number'] : '';
+    $mesto = isset($item['mesto']) ? $item['mesto'] : '';
+    $place_foto = isset($item['place_foto']) ? $item['place_foto'] : '';
+    $place_price = isset($item['place_price']) ? $item['place_price'] : '';
     ?>
     <div class="repeater-item">
         <div class="handle">Drag to Reorder</div>
         <span class="remove-item">×</span>
 
-        <div class="field-group">
-            <label>Text</label>
-            <input type="text" 
-                   name="svadba_repeater[<?php echo $index; ?>][text]" 
-                   value="<?php echo esc_attr($text); ?>" 
-                   class="widefat" />
+        <div class="field-row">
+            <div class="field-group field-75">
+                <label>Место</label>
+                <input type="text" 
+                       name="svadba_repeater[<?php echo $index; ?>][mesto]" 
+                       value="<?php echo esc_attr($mesto); ?>" 
+                       class="widefat" />
+            </div>
+            <div class="field-group field-25">
+                <label>Добавленная цена</label>
+                <input type="number" 
+                       name="svadba_repeater[<?php echo $index; ?>][place_price]" 
+                       value="<?php echo esc_attr($place_price); ?>" 
+                       class="widefat" 
+                       step="0.01" />
+            </div>
         </div>
 
         <div class="field-group">
-            <label>Image</label>
+            <label>Фото</label>
             <input type="hidden" 
-                   name="svadba_repeater[<?php echo $index; ?>][image]" 
-                   value="<?php echo esc_attr($image); ?>" 
+                   name="svadba_repeater[<?php echo $index; ?>][place_foto]" 
+                   value="<?php echo esc_attr($place_foto); ?>" 
                    class="image-input" />
             <div class="image-preview">
                 <?php 
-                if ($image) {
-                    echo wp_get_attachment_image($image);
+                if ($place_foto) {
+                    echo wp_get_attachment_image($place_foto);
                 }
                 ?>
             </div>
             <button type="button" class="button upload-image">Select Image</button>
-        </div>
-
-        <div class="field-group">
-            <label>Number</label>
-            <input type="number" 
-                   name="svadba_repeater[<?php echo $index; ?>][number]" 
-                   value="<?php echo esc_attr($number); ?>" 
-                   class="widefat" />
         </div>
     </div>
     <?php
@@ -194,9 +210,9 @@ function svadba_save_repeater_data($post_id) {
         
         foreach ($_POST['svadba_repeater'] as $item) {
             $repeater_data[] = array(
-                'text' => sanitize_text_field($item['text']),
-                'image' => absint($item['image']),
-                'number' => absint($item['number'])
+                'mesto' => sanitize_text_field($item['mesto']),
+                'place_foto' => absint($item['place_foto']),
+                'place_price' => sanitize_text_field($item['place_price'])
             );
         }
         

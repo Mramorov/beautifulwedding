@@ -93,17 +93,23 @@ function svadba_generate_form_html() {
         // generate select
         $html .= '<div class="select-row">';
         $html .= '<div class="select-label">' . esc_html($label) . '</div>';
-        $html .= '<div class="select-control"><select class="' . esc_attr($sel_key) . '-select select-element" name="' . esc_attr($sel_key) . '" id="' . esc_attr($sel_key) . '">';
+        $html .= '<div class="select-control">';
+        $html .= '<select class="' . esc_attr($sel_key) . '-select select-element" name="' . esc_attr($sel_key) . '" id="' . esc_attr($sel_key) . '">';
         $html .= '<option value="" data-calculate="0">Выберите...</option>';
         foreach ($options as $opt) {
             $sname = isset($opt['sname']) ? $opt['sname'] : '';
             $sprice = isset($opt['sprice']) ? $opt['sprice'] : 0;
-            $html .= '<option value="' . esc_attr($sname) . '" data-calculate="' . esc_attr($sprice) . '">' . esc_html($sname) . '</option>';
+            // if sdetail available, store it in data-detail attribute
+            $data_detail_attr = !empty($opt['sdetail']) ? ' data-detail="' . esc_attr($opt['sdetail']) . '"' : '';
+            $html .= '<option value="' . esc_attr($sname) . '" data-calculate="' . esc_attr($sprice) . '"' . $data_detail_attr . '>' . esc_html($sname) . '</option>';
         }
-        $html .= '</select></div>';
+        $html .= '</select>';
+        // add detail container inside select-control, right after select
+        $html .= '<div class="select-detail" data-for="' . esc_attr($sel_key) . '"></div>';
+        $html .= '</div>'; // .select-control
 
-        // special case for wedding-auto: keep an extra hours select (hidden by default) similar to old code
-        if ($sel_key === 'wedding-auto') {
+    // special case for wedding-auto: keep an extra hours select (hidden by default) similar to old code
+    if ($sel_key === 'wedding-auto') {
             // determine distance (if available on post meta)
             $distance = (int) get_post_meta(get_the_ID(), 'distance', true);
             if ($distance <= 0) $distance = 1;

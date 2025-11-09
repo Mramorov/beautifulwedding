@@ -1,0 +1,173 @@
+/* svadba/css/form.css
+   Styles for the Svadba form (layout and spacing only).
+   Colors intentionally omitted — add color variables or rules later.
+*/
+
+/* Basic layout for the form wrapper */
+.individFormWrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Calculator header: two columns */
+.calcresult-block {
+  display: flex;
+  gap: 18px;
+  align-items: stretch;
+  margin-bottom: 20px;
+}
+.calcresult-subblock {
+  flex: 1 1 0;
+  padding: 14px;
+  border: 1px solid #ddd; /* neutral border, color can be customized later */
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.calcresult-text {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.price-value {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.calc-sum-sign {
+  margin-left: 6px;
+  font-size: 0.95rem;
+}
+
+/* Selects: vertical stack of rows with label on top on small screens and side-by-side on wider screens */
+.select-block {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px 20px;
+  margin-bottom: 18px;
+}
+
+.select-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  align-items: center;
+}
+.select-label {
+  padding: 6px 4px;
+  font-weight: 600;
+}
+.select-control select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  appearance: none;
+  background-color: transparent; /* color to be added later */
+}
+
+/* Auto hours sub-controls */
+.auto-hours-label {
+  grid-column: 1 / 2; /* align on left column */
+  padding: 6px 4px;
+  font-size: 0.95rem;
+}
+.auto-hours-wrap {
+  grid-column: 2 / 3; /* align on the right column */
+}
+.auto-hours-wrap select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Checkboxes block: list of checkboxes, stacked. Use two-column layout on wider screens */
+.check-block {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px 16px;
+  margin: 18px 0;
+}
+.chk-lbl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.chk-lbl input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+/* send button area */
+.send-button-wrap {
+  margin-top: 14px;
+}
+.send-button-wrap button {
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+/* responsive adjustments */
+@media (min-width: 700px) {
+  .select-block {
+    grid-template-columns: 1fr; /* keep rows but inside rows are two columns */
+  }
+  .check-block {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 699px) {
+  .select-row {
+    grid-template-columns: 1fr;
+  }
+  .auto-hours-label, .auto-hours-wrap {
+    grid-column: 1 / -1;
+  }
+}
+
+/* small utility */
+.individFormWrap .select-label small {
+  display: block;
+  font-weight: 400;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* gallery grid (basic layout) */
+.svadba-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.svadba-gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+}
+
+/* repeater list basic styling */
+.repeater-list .repeater-row {
+  border: 1px solid #e6e6e6;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.repeater-text { flex: 1 1 auto; }
+.repeater-image img { max-width: 120px; height: auto; display:block; }
+
+/* end of svadba form styles */
