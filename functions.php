@@ -6,6 +6,7 @@
 require get_template_directory() . '/svadba/custom-post-types.php';
 require get_template_directory() . '/svadba/custom-fields.php';
 require get_template_directory() . '/svadba/custom-repeater.php';
+require get_template_directory() . '/svadba.php';
 
 function minimal_classic_setup()
 {
