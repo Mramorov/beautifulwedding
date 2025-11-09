@@ -29,7 +29,7 @@ get_header();
         </header>
 
         <div class="entry-content">
-          <?php echo wp_kses_post( apply_filters( 'the_content', get_the_content() ) ); ?>
+          <?php the_content(); ?>
         </div>
 
         <?php
