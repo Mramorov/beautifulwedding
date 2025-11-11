@@ -1,7 +1,6 @@
 (function($){
-  // Simple behavior: when photo-select or video-select changes, ее
-  // find the selected option's data-detail-id and show corresponding HTML
   
+  // Update detail display for photo/video selects
   function updateDetailForSelect($select) {
     var selKey = $select.attr('id') || $select.attr('name') || '';
     var $detailContainer = $('.select-detail[data-for="' + selKey + '"]');
@@ -19,16 +18,108 @@
     }
   }
 
+  // Calculate sum of all selected services
+  function calculateSum() {
+    var sum = 0;
+    
+    // Sum all selected options from selects (except auto-hours-select)
+    $('.select-element option:selected').each(function() {
+      var $select = $(this).closest('select');
+      
+      // Skip auto-hours-select as it's used as multiplier
+      if ($select.hasClass('auto-hours-select')) {
+        return; // continue to next iteration
+      }
+      
+      var value = parseFloat($(this).data('calculate')) || 0;
+      
+      // Special handling for auto-select: multiply by hours
+      if ($select.hasClass('auto-select')) {
+        var hours = parseFloat($('.auto-hours-select option:selected').data('calculate')) || 1;
+        value *= hours;
+      }
+      
+      sum += value;
+    });
+    
+    // Sum all checked checkboxes
+    $('.checkbox-element:checked').each(function() {
+      var value = parseFloat($(this).data('calculate')) || 0;
+      sum += value;
+    });
+    
+    // Update services sum display
+    $('#calcresult').text(Math.round(sum));
+    
+    // Update hidden field for form submission
+    $('#calcField').val(sum);
+    
+    // Calculate total: base packet price + services
+    var basePacketPrice = parseFloat($('#main-packet-sum').text()) || 0;
+    var totalSum = basePacketPrice + sum;
+    $('#total-calcresult').text(Math.round(totalSum));
+  }
+
+  // Handle auto-select change: show/hide hours selector
+  function handleAutoSelect() {
+    $('.auto-select').on('change', function() {
+      if ($(this).prop('selectedIndex') === 0) {
+        // "Выберите..." selected - hide hours
+        $('.auto-hours-label, .auto-hours-wrap').slideUp(400);
+      } else {
+        // Car selected - show hours
+        $('.auto-hours-label, .auto-hours-wrap').slideDown(400);
+      }
+      calculateSum();
+    });
+  }
+
+  // Handle place selection
+  function handlePlaceSelection() {
+    $('.place-item').on('click', function() {
+      var $this = $(this);
+      var addPlacePrice = parseFloat($this.data('place-price')) || 0;
+      var basePrice = parseFloat($('#main-packet-sum').data('mainpacket-sum')) || 0;
+      
+      // Remove active class from all places
+      $('.place-item').removeClass('active-place');
+      
+      // Add active class to clicked place
+      $this.addClass('active-place');
+      
+      // Calculate new main packet price
+      var newMainPrice = basePrice + addPlacePrice;
+      
+      // Update display
+      $('#main-packet-sum').text(newMainPrice);
+      
+      // Recalculate total sum
+      calculateSum();
+    });
+  }
+
   function init() {
-    // on change for photo and video selects (and any matching *-select if needed)
+    // Detail display for photo and video selects
     $(document).on('change', '.photo-select, .video-select', function(){
       updateDetailForSelect($(this));
     });
 
-    // initialize existing selects on page load
+    // Initialize existing selects on page load
     $('.photo-select, .video-select').each(function(){
       updateDetailForSelect($(this));
     });
+    
+    // Attach calculator to all selects and checkboxes
+    $('.select-element, .checkbox-element').on('change', calculateSum);
+    
+    // Handle auto-select special behavior
+    handleAutoSelect();
+    
+    // Handle place selection
+    handlePlaceSelection();
+    
+    // Initial calculation on page load
+    calculateSum();
   }
 
   // Wait for document ready

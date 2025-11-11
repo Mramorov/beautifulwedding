@@ -28,12 +28,117 @@ get_header();
           </div>
         </header>
 
+        <?php
+        // 1. Custom fields display
+        $fromold = get_post_meta( get_the_ID(), 'fromold', true );
+        $fromnew = get_post_meta( get_the_ID(), 'fromnew', true );
+        $capacity = get_post_meta( get_the_ID(), 'capacity', true );
+        $distance = get_post_meta( get_the_ID(), 'distance', true );
+        $cer_time = get_post_meta( get_the_ID(), 'cer-time', true );
+
+        if ( $fromold || $fromnew || $capacity || $distance || $cer_time ) : ?>
+          <section class="svadba-custom-fields">
+            <div class="custom-fields-grid">
+              <?php if ( $fromold ) : ?>
+                <div class="custom-field">
+                  <span class="field-label">Старая цена (от):</span>
+                  <span class="field-value"><?php echo esc_html( $fromold ); ?> €</span>
+                </div>
+              <?php endif; ?>
+
+              <?php if ( $fromnew ) : ?>
+                <div class="custom-field">
+                  <span class="field-label">Новая цена (от):</span>
+                  <span class="field-value"><?php echo esc_html( $fromnew ); ?> €</span>
+                </div>
+              <?php endif; ?>
+
+              <?php if ( $capacity ) : ?>
+                <div class="custom-field">
+                  <span class="field-label">Вместимость:</span>
+                  <span class="field-value"><?php echo esc_html( $capacity ); ?></span>
+                </div>
+              <?php endif; ?>
+
+              <?php if ( $distance ) : ?>
+                <div class="custom-field">
+                  <span class="field-label">Базовое время автомобиля:</span>
+                  <span class="field-value"><?php echo esc_html( $distance ); ?> ч.</span>
+                </div>
+              <?php endif; ?>
+
+              <?php if ( $cer_time ) : ?>
+                <div class="custom-field">
+                  <span class="field-label">Время церемонии:</span>
+                  <span class="field-value"><?php echo esc_html( $cer_time ); ?></span>
+                </div>
+              <?php endif; ?>
+            </div>
+          </section>
+        <?php endif; ?>
+
+        <?php // 2. Post content ?>
         <div class="entry-content">
           <?php the_content(); ?>
         </div>
 
         <?php
-        // Gallery (saved as array of attachment IDs in meta 'svadba_gallery')
+        // 3. Display base package price
+        $base_price = get_post_meta( get_the_ID(), 'fromnew', true );
+        if ( $base_price ) : ?>
+          <h3 class="main-place-price">Основной пакет услуг <span id="main-packet-sum" class="new-price" data-mainpacket-sum="<?php echo esc_attr( $base_price ); ?>"><?php echo esc_html( $base_price ); ?></span> <span class="kc-sign">€</span></h3>
+        <?php endif; ?>
+
+        <?php
+        // 4. Repeater data: Дополнительные залы и места
+        if ( function_exists( 'get_svadba_repeater_data' ) ) {
+            $repeater = get_svadba_repeater_data( get_the_ID() );
+            if ( ! empty( $repeater ) && is_array( $repeater ) ) : ?>
+              <section class="svadba-repeater">
+                <h2>Дополнительные залы и места</h2>
+                <div class="repeater-list">
+                  <?php 
+                  $index = 0;
+                  foreach ( $repeater as $item ) : 
+                    $mesto_name = ! empty( $item['mesto'] ) ? $item['mesto'] : '';
+                    $place_price = ! empty( $item['place_price'] ) ? $item['place_price'] : 0;
+                    $place_foto = ! empty( $item['place_foto'] ) ? $item['place_foto'] : 0;
+                    $active_class = ( $index === 0 ) ? ' active-place' : '';
+                  ?>
+                    <div class="repeater-row place-item<?php echo $active_class; ?>" data-place-price="<?php echo esc_attr( $place_price ); ?>" data-place-name="<?php echo esc_attr( $mesto_name ); ?>">
+                      <?php if ( $mesto_name ) : ?>
+                        <div class="repeater-mesto">
+                          <h3><?php echo esc_html( $mesto_name ); ?></h3>
+                        </div>
+                      <?php endif; ?>
+
+                      <?php if ( $place_foto ) : ?>
+                        <div class="repeater-image"><?php echo wp_get_attachment_image( intval( $place_foto ), 'medium' ); ?></div>
+                      <?php endif; ?>
+
+                      <?php if ( $place_price ) : ?>
+                        <div class="repeater-price">
+                          <span class="price-label">Добавленная цена:</span>
+                          <span class="price-value"><?php echo esc_html( $place_price ); ?> €</span>
+                        </div>
+                      <?php endif; ?>
+                    </div>
+                  <?php 
+                    $index++;
+                  endforeach; ?>
+                </div>
+              </section>
+            <?php endif;
+        }
+        ?>
+
+        <?php // 5. Svadba form via shortcode ?>
+        <section class="svadba-form-section">
+          <?php echo do_shortcode('[svadba_form]'); ?>
+        </section>
+
+        <?php
+        // 6. Gallery (saved as array of attachment IDs in meta 'svadba_gallery')
         $gallery = get_post_meta( get_the_ID(), 'svadba_gallery', true );
         if ( ! empty( $gallery ) && is_array( $gallery ) ) : ?>
           <section class="svadba-gallery">
@@ -45,35 +150,6 @@ get_header();
             </div>
           </section>
         <?php endif; ?>
-
-        <?php
-        // Repeater data (helper get_svadba_repeater_data)
-        if ( function_exists( 'get_svadba_repeater_data' ) ) {
-            $repeater = get_svadba_repeater_data( get_the_ID() );
-            if ( ! empty( $repeater ) && is_array( $repeater ) ) : ?>
-              <section class="svadba-repeater">
-                <h2>Additional Information</h2>
-                <div class="repeater-list">
-                  <?php foreach ( $repeater as $item ) : ?>
-                    <div class="repeater-row">
-                      <?php if ( ! empty( $item['text'] ) ) : ?>
-                        <div class="repeater-text"><?php echo esc_html( $item['text'] ); ?></div>
-                      <?php endif; ?>
-
-                      <?php if ( ! empty( $item['image'] ) ) : ?>
-                        <div class="repeater-image"><?php echo wp_get_attachment_image( intval( $item['image'] ), 'medium' ); ?></div>
-                      <?php endif; ?>
-
-                      <?php if ( isset( $item['number'] ) ) : ?>
-                        <div class="repeater-number"><?php echo intval( $item['number'] ); ?></div>
-                      <?php endif; ?>
-                    </div>
-                  <?php endforeach; ?>
-                </div>
-              </section>
-            <?php endif;
-        }
-        ?>
 
       </article>
 

@@ -158,16 +158,59 @@
 }
 
 /* repeater list basic styling */
+.repeater-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 12px;
+}
+
 .repeater-list .repeater-row {
   border: 1px solid #e6e6e6;
   padding: 10px;
   border-radius: 6px;
-  margin-bottom: 10px;
   display: flex;
-  gap: 12px;
-  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
-.repeater-text { flex: 1 1 auto; }
-.repeater-image img { max-width: 120px; height: auto; display:block; }
+
+.repeater-list .repeater-row:hover {
+  border-color: #999;
+}
+
+/* Active place styling */
+.repeater-list .place-item.active-place {
+  border: 3px solid #4CAF50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+}
+
+.repeater-mesto h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.repeater-image img { 
+  max-width: 100%; 
+  height: auto; 
+  display: block;
+  border-radius: 4px;
+}
+
+.repeater-price {
+  font-size: 0.9rem;
+}
+
+/* Main place price styling */
+.main-place-price {
+  margin: 20px 0;
+  font-size: 1.3rem;
+}
+
+.main-place-price .new-price {
+  font-weight: 700;
+  color: #4CAF50;
+}
 
 /* end of svadba form styles */
