@@ -73,7 +73,8 @@
 .auto-hours-label {
   grid-column: 1 / 2; /* align on left column */
   padding: 6px 4px;
-  font-size: 0.95rem;
+  font-weight: 600;
+  font-size: 1rem;
 }
 .auto-hours-wrap {
   grid-column: 2 / 3; /* align on the right column */
@@ -100,9 +101,13 @@
   border: 1px solid transparent;
   border-radius: 4px;
 }
-.chk-lbl input[type="checkbox"] {
+.chk-lbl input[type="checkbox"],
+.check-block input[type="checkbox"] {
   width: 18px;
   height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  flex-shrink: 0;
 }
 
 /* send button area */
