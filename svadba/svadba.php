@@ -108,8 +108,8 @@ function svadba_generate_form_html() {
         $html .= '<div class="select-detail" data-for="' . esc_attr($sel_key) . '"></div>';
         $html .= '</div>'; // .select-control
 
-    // special case for wedding-auto: keep an extra hours select (hidden by default) similar to old code
-    if ($sel_key === 'wedding-auto') {
+    // special case for auto: keep an extra hours select (hidden by default) similar to old code
+    if ($sel_key === 'auto') {
             // determine distance (if available on post meta)
             $distance = (int) get_post_meta(get_the_ID(), 'distance', true);
             if ($distance <= 0) $distance = 1;
