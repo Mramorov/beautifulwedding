@@ -98,6 +98,54 @@
     });
   }
 
+  // Handle slideshow checkbox dependency on photo selection
+  function handleSlideshowDependency() {
+    // Update checkbox state when photo select changes
+    function updateSlideshowCheckbox() {
+      var selectedValue = $('.photo-select').val();
+      var checkbox = $('input[type="checkbox"][value="Слайд-шоу (только в дополнение к фотосъёмке свадебной церемонии)."]');
+      
+      if (checkbox.length === 0) return; // Exit if checkbox doesn't exist
+      
+      var parentLabel = checkbox.parent();
+      var errorMessageDiv = parentLabel.next('.error-message');
+
+      if (!selectedValue || selectedValue === '' || selectedValue === 'Выберите...') {
+        // No photo hours selected
+        checkbox.prop('checked', false);
+        checkbox.prop('disabled', true);
+        
+        if (errorMessageDiv.length === 0) {
+          parentLabel.after('<div class="error-message" style="color: #d32f2f; font-size: 0.85rem; margin-top: 4px;">Выберите какое-то количество часов фотосъёмки</div>');
+        }
+      } else {
+        // Photo hours selected
+        checkbox.prop('disabled', false);
+        errorMessageDiv.remove();
+      }
+    }
+
+    // Attach event listener to photo select
+    $('.photo-select').on('change', updateSlideshowCheckbox);
+
+    // Prevent clicking on disabled slideshow checkbox
+    $(document).on('click', 'input[type="checkbox"][value="Слайд-шоу (только в дополнение к фотосъёмке свадебной церемонии)."]', function(e) {
+      var selectedValue = $('.photo-select').val();
+      if (!selectedValue || selectedValue === '' || selectedValue === 'Выберите...') {
+        e.preventDefault();
+        var parentLabel = $(this).parent();
+        var errorMessageDiv = parentLabel.next('.error-message');
+        
+        if (errorMessageDiv.length === 0) {
+          parentLabel.after('<div class="error-message" style="color: #d32f2f; font-size: 0.85rem; margin-top: 4px;">Выберите какое-то количество часов фотосъёмки</div>');
+        }
+      }
+    });
+
+    // Initialize state on page load
+    updateSlideshowCheckbox();
+  }
+
   function init() {
     // Detail display for photo and video selects
     $(document).on('change', '.photo-select, .video-select', function(){
@@ -117,6 +165,9 @@
     
     // Handle place selection
     handlePlaceSelection();
+    
+    // Handle slideshow checkbox dependency
+    handleSlideshowDependency();
     
     // Initial calculation on page load
     calculateSum();
