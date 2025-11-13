@@ -50,37 +50,7 @@ Tags: wedding, minimal, blog, classic
     flex-wrap: wrap;
 }
 
-/* Layout - Social Icons */
-.social-icons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-}
-
-.social-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Layout - Containers */
-.container-narrow {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.container-text {
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-/* Text Alignment Utility */
-.text-center {
-    text-align: center;
-}
+/* removed unused: social icons, container helpers, text-center */
 
 /* Responsive */
 @media (max-width: 768px) {
