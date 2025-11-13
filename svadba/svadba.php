@@ -56,12 +56,12 @@ function svadba_generate_form_html() {
     // Calculator header (visual, values will be filled later by JS)
     $html .= '<div class="calcresult-block">';
     $html .= '<div class="calcresult-subblock">';
-    $html .= '<span class="calcresult-text text-accent">Сумма набранных услуг</span>';
-    $html .= '<div><span class="price-value heading-lg" id="calcresult">0</span><span class="calc-sum-sign"> € </span></div>';
+    $html .= '<span class="calcresult-text">Сумма набранных услуг</span>';
+    $html .= '<div><span class="price-value" id="calcresult">0</span><span class="calc-sum-sign"> € </span></div>';
     $html .= '</div>';
     $html .= '<div class="calcresult-subblock">';
-    $html .= '<span class="calcresult-text text-accent">Общая сумма индивидуального пакета</span>';
-    $html .= '<div><span class="price-value heading-lg" id="total-calcresult">0</span><span class="calc-sum-sign"> € </span></div>';
+    $html .= '<span class="calcresult-text">Общая сумма индивидуального пакета</span>';
+    $html .= '<div><span class="price-value" id="total-calcresult">0</span><span class="calc-sum-sign"> € </span></div>';
     $html .= '</div>';
     $html .= '</div>';
 
@@ -150,7 +150,7 @@ function svadba_generate_form_html() {
     $html .= '</div>'; // .check-block
 
     // Submit / order button (no modal/contact form included per instructions)
-    $html .= '<div class="send-button-wrap"><button type="button" id="orderButton" class="btn btn-large" data-formid="individ">Заказать</button></div>';
+    $html .= '<div class="send-button-wrap"><button type="button" id="orderButton" data-formid="individ">Заказать</button></div>';
 
     $html .= '</div></form>';
 

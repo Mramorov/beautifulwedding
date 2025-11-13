@@ -1,54 +1,31 @@
-/* svadba/css/form.css
-   Styles for the Svadba form in "Нежная роза" theme
-*/
+/* svadba/css/form.css - Layout & Functionality Only */
 
-/* Basic layout for the form wrapper */
+/* Layout - Form Container */
 .individFormWrap {
   max-width: 980px;
   margin: 0 auto;
   padding: 30px;
   box-sizing: border-box;
-  font-family: var(--font-body);
-  background: var(--color-white);
-  border: 2px solid var(--color-primary);
-  border-radius: 0;
-  box-shadow: 0 5px 20px rgba(139, 111, 111, 0.1);
 }
 
-/* Calculator header: two columns */
+/* Layout - Calculator Block (Flex) */
 .calcresult-block {
   display: flex;
   gap: 20px;
   align-items: stretch;
-  margin-bottom: 30px;
-}
-.calcresult-subblock {
-  flex: 1 1 0;
-  padding: 25px;
-  border: 2px solid var(--color-primary);
-  border-radius: 0;
-  box-sizing: border-box;
-  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-alt) 100%);
-  text-align: center;
-}
-.calcresult-text {
-  display: block;
-  margin-bottom: 12px;
-  /* Используется класс text-accent из style.css */
-}
-/* .price-value - используется класс heading-lg из style.css */
-.calc-sum-sign {
-  margin-left: 6px;
-  font-size: 0.95rem;
-  color: var(--color-secondary);
 }
 
-/* Selects: vertical stack of rows with label on top on small screens and side-by-side on wider screens */
+.calcresult-subblock {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Layout - Select Block (Grid) */
 .select-block {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
-  margin-bottom: 30px;
 }
 
 .select-row {
@@ -57,100 +34,39 @@
   gap: 12px 20px;
   align-items: center;
 }
-.select-label {
-  padding: 6px 4px;
-  font-family: var(--font-accent);
-  font-size: 0.85em;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--color-secondary);
-  font-weight: 500;
-}
+
 .select-control select,
 .select-element {
   width: 100%;
-  padding: 14px 18px;
-  border: 2px solid var(--color-primary);
-  border-radius: 0;
   box-sizing: border-box;
-  font-family: var(--font-body);
-  font-size: 1em;
-  color: var(--color-text);
-  background-color: var(--color-white);
-  transition: all 0.3s ease;
 }
 
-.select-control select:focus,
-.select-element:focus {
-  outline: none;
-  border-color: var(--color-secondary);
-  box-shadow: 0 0 0 3px rgba(139, 111, 111, 0.1);
-}
-
-/* Detail text display */
-.select-detail {
-  margin-top: 8px;
-  font-size: 0.9em;
-  color: var(--color-text);
-  font-style: italic;
-  opacity: 0.8;
-}
-
-/* Auto hours sub-controls */
+/* Layout - Auto Hours Controls */
 .auto-hours-label {
   grid-column: 1 / 2;
-  padding: 6px 4px;
-  font-family: var(--font-accent);
-  font-size: 0.85em;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--color-secondary);
-  font-weight: 500;
 }
+
 .auto-hours-wrap {
   grid-column: 2 / 3;
 }
+
 .auto-hours-wrap select {
   width: 100%;
-  padding: 14px 18px;
-  border: 2px solid var(--color-primary);
-  border-radius: 0;
   box-sizing: border-box;
-  font-family: var(--font-body);
-  font-size: 1em;
-  color: var(--color-text);
-  background-color: var(--color-white);
-  transition: all 0.3s ease;
 }
 
-.auto-hours-wrap select:focus {
-  outline: none;
-  border-color: var(--color-secondary);
-  box-shadow: 0 0 0 3px rgba(139, 111, 111, 0.1);
-}
-
-/* Checkboxes block: list of checkboxes, stacked. Use two-column layout on wider screens */
+/* Layout - Checkboxes Block (Grid) */
 .check-block {
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px 20px;
-  margin: 30px 0;
 }
+
 .chk-lbl {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 16px;
-  border: 2px solid var(--color-primary);
-  border-radius: 0;
-  background: var(--color-white);
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.chk-lbl:hover {
-  background: var(--color-bg);
-  box-shadow: 0 3px 10px rgba(139, 111, 111, 0.1);
 }
 
 .chk-lbl input[type="checkbox"],
@@ -160,70 +76,21 @@
   min-width: 20px;
   min-height: 20px;
   flex-shrink: 0;
-  accent-color: var(--color-primary);
   cursor: pointer;
 }
+
 .chk-text-wrapper {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-family: var(--font-body);
-  color: var(--color-text);
 }
 
-/* Global form error message style */
-.form-error-message {
-  color: #d32f2f;
-  font-size: 0.85rem;
-  margin-top: 8px;
-  line-height: 1.4;
-  font-family: var(--font-body);
-}
-
-/* send button area */
+/* Layout - Button Area */
 .send-button-wrap {
-  margin-top: 30px;
   text-align: center;
 }
-/* Кнопки используют классы .btn из style.css */
 
-/* responsive adjustments */
-@media (min-width: 700px) {
-  .select-block {
-    grid-template-columns: 1fr; /* keep rows but inside rows are two columns */
-  }
-  .check-block {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 699px) {
-  .select-row {
-    grid-template-columns: 1fr;
-  }
-  .auto-hours-label, .auto-hours-wrap {
-    grid-column: 1 / -1;
-  }
-}
-
-/* small utility */
-.individFormWrap .select-label small {
-  display: block;
-  font-weight: 400;
-  font-size: 0.85rem;
-  margin-top: 6px;
-  color: var(--color-text);
-  opacity: 0.8;
-}
-
-/* Custom fields grid */
-.svadba-custom-fields {
-  margin: 30px 0;
-  padding: 25px;
-  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-alt) 100%);
-  border: 2px solid var(--color-primary);
-}
-
+/* Layout - Custom Fields Grid */
 .custom-fields-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -236,297 +103,161 @@
   gap: 8px;
 }
 
-/* gallery grid (basic layout) */
+/* Layout - Gallery Grid */
 .svadba-gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 15px;
-  margin-top: 30px;
 }
+
 .svadba-gallery-item {
   overflow: hidden;
-  border: 2px solid var(--color-primary);
-  transition: all 0.3s ease;
 }
-.svadba-gallery-item:hover {
-  transform: scale(1.03);
-  box-shadow: 0 5px 20px rgba(139, 111, 111, 0.2);
-}
+
 .svadba-gallery-item img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 0;
 }
 
-/* repeater list basic styling */
+/* Layout - Repeater List Grid */
 .repeater-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
-  margin-top: 30px;
 }
 
 .repeater-list .repeater-row {
-  border: 2px solid var(--color-primary);
-  padding: 20px;
-  border-radius: 0;
   display: flex;
   flex-direction: column;
   gap: 15px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background: var(--color-white);
 }
-
-.repeater-list .repeater-row:hover {
-  border-color: var(--color-secondary);
-  box-shadow: 0 5px 20px rgba(139, 111, 111, 0.15);
-  transform: translateY(-3px);
-}
-
-/* Active place styling */
-.repeater-list .place-item.active-place {
-  border: 3px solid var(--color-secondary);
-  box-shadow: 0 0 15px rgba(139, 111, 111, 0.3);
-  background: var(--color-bg);
-}
-
-/* .repeater-mesto h3 - используется класс heading-md из style.css */
 
 .repeater-image img { 
   max-width: 100%; 
   height: auto; 
   display: block;
-  border-radius: 0;
-  border: 1px solid rgba(212, 165, 160, 0.3);
 }
 
-.repeater-price {
-  font-family: var(--font-accent);
-  font-size: 0.85em;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.repeater-price .price-label {
-  color: var(--color-secondary);
-  font-weight: 500;
-}
-
-.repeater-price .price-value {
-  color: var(--color-primary);
-  font-weight: 600;
-  font-size: 1.1em;
-}
-
-/* Main place price styling */
-.main-place-price {
-  margin: 30px 0;
-  /* Используется класс heading-lg text-center из style.css */
-}
-
-.main-place-price .new-price {
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-.main-place-price .kc-sign {
-  color: var(--color-secondary);
-}
-
-/* end of svadba form styles */
-
-/* Fixed packets grid */
+/* Layout - Packets Grid */
 .packets-grid {
   display: grid;
   grid-template-columns: auto 160px 160px;
-  border: 2px solid var(--color-primary);
-  margin-top: 30px;
   overflow: hidden;
 }
+
 .packets-cell {
-  border-right: 1px solid rgba(212, 165, 160, 0.3);
-  border-bottom: 1px solid rgba(212, 165, 160, 0.3);
-  padding: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-family: var(--font-body);
-  color: var(--color-text);
 }
+
 .packets-cell.first-col {
   justify-content: flex-start;
   text-align: left;
-  font-weight: 400;
-  padding-left: 20px;
-}
-.packets-cell.header,
-.packets-cell.footer {
-  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-alt) 100%);
-  font-weight: 600;
-  border-bottom: 2px solid var(--color-primary);
-}
-.packet-name { 
-  margin-bottom: 10px;
-  font-family: var(--font-heading);
-  font-size: 1.3em;
-  font-weight: 600;
-  font-style: italic;
-  color: var(--color-secondary);
-}
-.packet-price {
-  font-family: var(--font-accent);
-  font-size: 0.9em;
-}
-.packet-price .price-value { 
-  font-weight: 700;
-  color: var(--color-primary);
-  font-size: 1.3em;
-}
-/* .packet-order - используется класс .btn из style.css */
-
-@media (max-width: 699px) {
-  .packets-grid { grid-template-columns: 1fr 1fr; }
-  .packets-cell.first-col { grid-column: 1 / -1; background: #fafafa; }
 }
 
-/* Modal and sending states */
+/* JS-dependent - Modal Overlay */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(139, 111, 111, 0.5);
   opacity: 0;
   visibility: hidden;
   transition: .3s;
   z-index: 9998;
-  backdrop-filter: blur(3px);
 }
-.modal-overlay.active { opacity: 1; visibility: visible; }
 
+.modal-overlay.active { 
+  opacity: 1; 
+  visibility: visible; 
+}
+
+/* JS-dependent - Modal */
 .modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.95);
-  background: var(--color-white);
-  padding: 30px;
   width: min(560px, 92vw);
-  border: 3px solid var(--color-primary);
-  border-radius: 0;
-  box-shadow: 0 15px 50px rgba(139, 111, 111, 0.3);
   opacity: 0;
   visibility: hidden;
   transition: .3s;
   z-index: 9999;
 }
-.modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+
+.modal.active { 
+  opacity: 1; 
+  visibility: visible; 
+  transform: translate(-50%, -50%) scale(1); 
+}
+
 .modal-header { 
   display: flex; 
   justify-content: flex-end;
-  margin-bottom: 15px;
 }
+
 .close-button { 
-  background: none; 
-  border: none; 
-  font-size: 28px; 
   cursor: pointer;
-  color: var(--color-secondary);
-  transition: color 0.3s ease;
   line-height: 1;
   padding: 0;
   width: 32px;
   height: 32px;
 }
-.close-button:hover {
-  color: var(--color-primary);
-}
-/* .modal-info-header - используется класс heading-md text-center из style.css */
-/* .modal label - используется класс form-label из style.css */
-/* .modal input - используется класс form-input из style.css */
+
 .modal-footer { 
   display: flex; 
   gap: 15px; 
   align-items: center; 
   justify-content: center;
-  margin-top: 25px; 
 }
+
+/* JS-dependent - Process Send */
 .process-send { 
   display: inline-flex; 
   align-items: center; 
   gap: 10px; 
 }
+
 .process-send img { 
   width: 28px; 
   height: 28px; 
   display: inline-block; 
 }
+
 .process-send .spinner {
   width: 24px; 
   height: 24px;
-  border: 3px solid rgba(212, 165, 160, 0.3);
-  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: svadba-spin 0.8s linear infinite;
 }
+
 @keyframes svadba-spin {
   to { transform: rotate(360deg); }
 }
-.send-error { 
-  color: #d32f2f; 
-  margin-top: 12px;
-  font-family: var(--font-body);
-  text-align: center;
-}
-.send-success { 
-  color: #2e7d32; 
-  margin-top: 12px;
-  font-family: var(--font-body);
-  text-align: center;
-}
 
-/* a11y helper */
+/* Accessibility Helper */
 .visually-hidden {
   position: absolute !important;
-  height: 1px; width: 1px;
+  height: 1px; 
+  width: 1px;
   overflow: hidden;
   clip: rect(1px, 1px, 1px, 1px);
   white-space: nowrap;
 }
 
-/* Tabs navigation and content */
-.svadba-tabs-section {
-  margin: 50px 0;
-}
-
+/* JS-dependent - Tabs */
 .svadba-tabs-nav {
   display: flex;
   gap: 12px;
-  border-bottom: 2px solid var(--color-primary);
-  margin-bottom: 30px;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .svadba-tab-button {
-  /* Используется класс btn btn-outline из style.css */
-  border-bottom: 3px solid transparent;
   position: relative;
   bottom: -2px;
-  border-radius: 0;
-}
-
-.svadba-tab-button:hover {
-  border-bottom-color: var(--color-primary);
-}
-
-.svadba-tab-button.active {
-  background-color: var(--color-secondary);
-  color: var(--color-white);
-  border-color: var(--color-secondary);
-  border-bottom-color: var(--color-secondary);
-  transform: translateY(0);
 }
 
 .svadba-tabs-content {
@@ -546,4 +277,29 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-15px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Layout Adjustments */
+@media (min-width: 700px) {
+  .select-block {
+    grid-template-columns: 1fr;
+  }
+  .check-block {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 699px) {
+  .select-row {
+    grid-template-columns: 1fr;
+  }
+  .auto-hours-label, .auto-hours-wrap {
+    grid-column: 1 / -1;
+  }
+  .packets-grid { 
+    grid-template-columns: 1fr 1fr; 
+  }
+  .packets-cell.first-col { 
+    grid-column: 1 / -1; 
+  }
 }
