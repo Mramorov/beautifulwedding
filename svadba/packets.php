@@ -206,7 +206,7 @@ function svadba_packets_shortcode_handler($atts = array()) {
     // Footer row with order buttons (non-functional placeholder)
     echo '<div class="packets-cell footer">Место принятия решения</div>';
     foreach ($packets as $idx => $_) {
-        echo '<div class="packets-cell footer"><button type="button" class="packet-order" data-formid="packet-' . esc_attr($idx) . '">Заказать</button></div>';
+        echo '<div class="packets-cell footer"><button type="button" class="packet-order button-main" data-formid="packet-' . esc_attr($idx) . '">Заказать</button></div>';
     }
 
     echo '</div>'; // .packets-grid

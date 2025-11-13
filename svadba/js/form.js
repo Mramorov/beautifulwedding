@@ -37,58 +37,54 @@
 
   // Calculate sum of all selected services
   function calculateSum() {
-    var sum = 0;
-    
-    // Get base auto calculation data
+    // Sum of selectable services (excluding base place addition)
+    var servicesSum = 0;
+
+    // Base auto calculation data
     var $autoSelect = $('.auto-select');
     var distance = parseInt($autoSelect.data('distance')) || 1;
     var baseAutoPrice = parseFloat($autoSelect.data('base-auto-price')) || 0;
     var selectedAutoPrice = parseFloat($autoSelect.find('option:selected').data('calculate')) || 0;
-    var selectedHours = distance;
+    var selectedHours = distance; // simplified logic: hours = distance
     var isBaseAuto = $autoSelect.prop('selectedIndex') === 0;
-    
-    // Calculate base auto deduction (70% of base auto price × distance, rounded to tens)
+
+    // Deduction: 70% of base auto price × distance, rounded to tens
     var baseAutoDeduction = Math.round((baseAutoPrice * distance * 0.7) / 10) * 10;
-    
-    // Sum all selected options from selects (except auto and auto-hours)
+
+    // Add selected service options (skip auto)
     $('.select-element option:selected').each(function() {
       var $select = $(this).closest('select');
-      
-      // Skip auto-select (handled separately)
-      if ($select.hasClass('auto-select')) {
-        return;
-      }
-      
+      if ($select.hasClass('auto-select')) return;
       var value = parseFloat($(this).data('calculate')) || 0;
-      sum += value;
+      servicesSum += value;
     });
-    
-    // Calculate auto cost with new logic
+
+    // Auto cost logic
     var autoCost = 0;
-    if (isBaseAuto && selectedHours === distance) {
-      // Base auto + minimum hours = already included in base package
-      autoCost = 0;
-    } else {
-      // Any other combination: subtract base, add new
+    if (!(isBaseAuto && selectedHours === distance)) {
       autoCost = -baseAutoDeduction + (selectedAutoPrice * selectedHours);
     }
-    sum += autoCost;
-    
-    // Sum all checked checkboxes
+    servicesSum += autoCost;
+
+    // Add checked checkboxes
     $('.checkbox-element:checked').each(function() {
       var value = parseFloat($(this).data('calculate')) || 0;
-      sum += value;
+      servicesSum += value;
     });
-    
-    // Update services sum display
-    $('#calcresult').text(Math.round(sum));
-    
-    // Update hidden field for form submission
-    $('#calcField').val(sum);
-    
-    // Calculate total: base packet price + services
-    var basePacketPrice = parseFloat($('#main-packet-sum').text()) || 0;
-    var totalSum = basePacketPrice + sum;
+
+    // Determine place addition (active place price)
+    var placeAddition = parseFloat($('.place-item.active-place').data('place-price')) || 0;
+
+    // Original base (without place) stored in data attribute
+    var originalBase = parseFloat($('#main-packet-sum').data('mainpacket-sum')) || 0;
+
+    // Display services sum INCLUDING place addition
+    var displayedServicesSum = servicesSum + placeAddition;
+    $('#calcresult').text(Math.round(displayedServicesSum));
+    $('#calcField').val(displayedServicesSum);
+
+    // Total = original base + place addition + other services
+    var totalSum = originalBase + placeAddition + servicesSum;
     $('#total-calcresult').text(Math.round(totalSum));
   }
 

@@ -68,6 +68,7 @@
 /* Layout - Button Area */
 .send-button-wrap {
   text-align: center;
+  margin: 2rem 0 1rem;
 }
 
 /* Layout - Gallery Grid */
@@ -90,8 +91,136 @@
 /* Layout - Repeater List Grid */
 .repeater-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
+}
+
+/* Visual - Place tiles (Дополнительные залы и места) */
+.svadba-repeater {
+  margin: 24px 0 10px;
+}
+
+.place-item {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  background: var(--color-bg-alt);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, filter .2s ease;
+}
+
+.place-item .repeater-image {
+  height: 180px;
+}
+
+@media (min-width: 900px) {
+  .place-item .repeater-image {
+    height: 200px;
+  }
+}
+
+.place-item .repeater-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(92%) contrast(0.95) brightness(0.9);
+}
+
+/* Dark overlay for text readability */
+.place-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(212, 165, 160, .75), rgba(212, 165, 160, .15) 100%);
+  pointer-events: none;
+  transition: opacity .2s ease;
+  z-index: 1;
+  /* keep overlay below captions */
+}
+
+.place-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .15);
+  border-color: rgba(212, 165, 160, .55);
+  /* hint of primary on hover */
+}
+
+.place-item:hover::after {
+  opacity: .35;
+}
+
+/* Title centered over image */
+.repeater-mesto {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  pointer-events: none;
+  z-index: 2;
+  /* over overlay */
+}
+
+.repeater-mesto h3 {
+  margin: 0;
+  color: var(--color-white);
+  line-height: 1.25;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, .45);
+}
+
+/* Small price badge in the corner */
+.repeater-price {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  background: rgba(139, 111, 111, .9);
+  color: var(--color-white);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: .92rem;
+  line-height: 1;
+  border: 1px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .25);
+  z-index: 3;
+  /* above everything */
+}
+
+.repeater-price .price-label {
+  opacity: .9;
+  margin-right: .4em;
+}
+
+.repeater-price .price-value {
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+
+/* Active state highlight */
+.place-item.active-place {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 18px rgba(212, 165, 160, .45);
+  transform: translateY(-2px) scale(1.003);
+}
+
+.place-item.active-place .repeater-price {
+  background: rgb(0 0 0 / 70%);
+}
+
+.place-item.active-place::after {
+  opacity: 0;
+}
+
+.place-item.active-place .repeater-image img {
+  filter: none;
+}
+
+.place-item:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(212, 165, 160, .6);
 }
 
 /* Layout - Packets Grid */
@@ -112,9 +241,9 @@
   z-index: 9998;
 }
 
-.modal-overlay.active { 
-  opacity: 1; 
-  visibility: visible; 
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* JS-dependent - Modal */
@@ -130,18 +259,18 @@
   z-index: 9999;
 }
 
-.modal.active { 
-  opacity: 1; 
-  visibility: visible; 
-  transform: translate(-50%, -50%) scale(1); 
+.modal.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
 }
 
-.modal-header { 
-  display: flex; 
+.modal-header {
+  display: flex;
   justify-content: flex-end;
 }
 
-.close-button { 
+.close-button {
   cursor: pointer;
   line-height: 1;
   padding: 0;
@@ -149,24 +278,24 @@
   height: 32px;
 }
 
-.modal-footer { 
-  display: flex; 
-  gap: 15px; 
-  align-items: center; 
+.modal-footer {
+  display: flex;
+  gap: 15px;
+  align-items: center;
   justify-content: center;
 }
 
 /* JS-dependent - Process Send */
-.process-send { 
-  display: inline-flex; 
-  align-items: center; 
-  gap: 10px; 
+.process-send {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.process-send img { 
-  width: 28px; 
-  height: 28px; 
-  display: inline-block; 
+.process-send img {
+  width: 28px;
+  height: 28px;
+  display: inline-block;
 }
 
 /* removed unused spinner styles */
@@ -174,7 +303,7 @@
 /* Accessibility Helper */
 .visually-hidden {
   position: absolute !important;
-  height: 1px; 
+  height: 1px;
   width: 1px;
   overflow: hidden;
   clip: rect(1px, 1px, 1px, 1px);
@@ -209,8 +338,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-15px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive Layout Adjustments */
@@ -218,6 +354,7 @@
   .select-block {
     grid-template-columns: 1fr;
   }
+
   .check-block {
     grid-template-columns: 1fr 1fr;
   }
@@ -227,10 +364,12 @@
   .select-row {
     grid-template-columns: 1fr;
   }
-  .packets-grid { 
-    grid-template-columns: 1fr 1fr; 
+
+  .packets-grid {
+    grid-template-columns: 1fr 1fr;
   }
-  .packets-cell.first-col { 
-    grid-column: 1 / -1; 
+
+  .packets-cell.first-col {
+    grid-column: 1 / -1;
   }
 }

@@ -137,7 +137,7 @@ function svadba_generate_form_html() {
     $html .= '</div>'; // .check-block
 
     // Submit / order button (no modal/contact form included per instructions)
-    $html .= '<div class="send-button-wrap"><button type="button" id="orderButton" data-formid="individ">Заказать</button></div>';
+    $html .= '<div class="send-button-wrap"><button type="button" id="orderButton" class="button-main" data-formid="individ">Заказать</button></div>';
 
     $html .= '</div></form>';
 

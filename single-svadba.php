@@ -151,7 +151,7 @@ get_header();
                 }
                 ?>
                 
-                <div class="send-button-wrap"><button type="button" id="main_order_button" data-formid="main">Заказать базовый пакет</button></div>
+                <div class="send-button-wrap"><button type="button" id="main_order_button" class="button-main" data-formid="main">Заказать базовый пакет</button></div>
                 <div id="main-message-form"></div>
               <?php endif; ?>
             </div>
@@ -181,8 +181,8 @@ get_header();
             <label for="phone">Телефон:</label>
             <input type="tel" id="phone" name="Телефон">
             <div class="modal-footer">
-              <button type="button" id="cancelButton">Отмена</button>
-              <button type="button" id="sendButton">Отправить</button>
+              <button type="button" id="cancelButton" class="button-alt">Отмена</button>
+              <button type="button" id="sendButton" class="button-main">Отправить</button>
               <div id="sending-process" class="process-send" style="display:none;">
                 <img src="<?php echo esc_url( get_template_directory_uri() . '/svadba/img/sending.gif' ); ?>" alt="Отправка..." width="28" height="28">
               </div>

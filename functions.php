@@ -9,7 +9,7 @@ require get_template_directory() . '/svadba/custom-repeater.php';
 require get_template_directory() . '/svadba/svadba.php';
 require get_template_directory() . '/svadba/packets.php';
 
-function minimal_classic_setup()
+function beautifulwedding_setup()
 {
   add_theme_support('title-tag');
   add_theme_support('post-thumbnails');
@@ -18,14 +18,16 @@ function minimal_classic_setup()
     'primary' => 'Primary Menu',
   ));
 }
-add_action('after_setup_theme', 'minimal_classic_setup');
+add_action('after_setup_theme', 'beautifulwedding_setup');
 
 
-function minimal_classic_scripts()
+function beautifulwedding_scripts()
 {
-  wp_enqueue_style('minimal-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
+  $style_path = get_stylesheet_directory() . '/style.css';
+  $style_ver  = file_exists($style_path) ? filemtime($style_path) : wp_get_theme()->get('Version');
+  wp_enqueue_style('minimal-style', get_stylesheet_uri(), array(), $style_ver);
 }
-add_action('wp_enqueue_scripts', 'minimal_classic_scripts');
+add_action('wp_enqueue_scripts', 'beautifulwedding_scripts');
 
 /**
  * Enqueue Svadba form styles when needed (single svadba or when shortcode present)
@@ -68,13 +70,6 @@ function beautifulwedding_enqueue_svadba_assets() {
 }
 add_action('wp_enqueue_scripts', 'beautifulwedding_enqueue_svadba_assets');
 
-
-// Small helpers
-function minimal_classic_excerpt_more($more)
-{
-  return '...';
-}
-add_filter('excerpt_more', 'minimal_classic_excerpt_more');
 
 /** REST endpoint for order submissions */
 function beautifulwedding_handle_form_submission_api( WP_REST_Request $request ) {
