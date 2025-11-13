@@ -44,7 +44,7 @@
     var distance = parseInt($autoSelect.data('distance')) || 1;
     var baseAutoPrice = parseFloat($autoSelect.data('base-auto-price')) || 0;
     var selectedAutoPrice = parseFloat($autoSelect.find('option:selected').data('calculate')) || 0;
-    var selectedHours = parseInt($('.auto-hours-select option:selected').data('calculate')) || distance;
+    var selectedHours = distance;
     var isBaseAuto = $autoSelect.prop('selectedIndex') === 0;
     
     // Calculate base auto deduction (70% of base auto price × distance, rounded to tens)
@@ -54,8 +54,8 @@
     $('.select-element option:selected').each(function() {
       var $select = $(this).closest('select');
       
-      // Skip auto-select and auto-hours-select (handled separately)
-      if ($select.hasClass('auto-select') || $select.hasClass('auto-hours-select')) {
+      // Skip auto-select (handled separately)
+      if ($select.hasClass('auto-select')) {
         return;
       }
       

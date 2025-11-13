@@ -79,7 +79,7 @@ function svadba_generate_form_html() {
         $html .= '<div class="select-label">' . esc_html($label) . '</div>';
         $html .= '<div class="select-control">';
         
-        // For auto select, add data attributes for base price and distance
+        // For auto select, add data attributes for base price and distance (kept)
         $auto_data_attrs = '';
         if ($sel_key === 'auto') {
             $distance = (int) get_post_meta(get_the_ID(), 'distance', true);
@@ -110,20 +110,7 @@ function svadba_generate_form_html() {
         $html .= '<div class="select-detail" data-for="' . esc_attr($sel_key) . '"></div>';
         $html .= '</div>'; // .select-control
 
-    // special case for auto: keep an extra hours select (always visible now)
-    if ($sel_key === 'auto') {
-            // determine distance (if available on post meta)
-            $distance = (int) get_post_meta(get_the_ID(), 'distance', true);
-            if ($distance <= 0) $distance = 1;
-            $html .= '<div class="auto-hours-label">Время автомобиля (час)</div>';
-            $html .= '<div class="auto-hours-wrap">';
-            $html .= '<select class="auto-hours-select select-element" name="car_hours">';
-            for ($h = $distance; $h <= 7; $h++) {
-                $selected = ($h === $distance) ? ' selected' : '';
-                $html .= '<option value="' . $h . '" data-calculate="' . $h . '"' . $selected . '>' . $h . ' часа.</option>';
-            }
-            $html .= '</select></div>';
-        }
+    // removed: extra auto hours selector (no longer used)
 
         $html .= '</div>'; // .select-row
     }

@@ -41,19 +41,7 @@
   box-sizing: border-box;
 }
 
-/* Layout - Auto Hours Controls */
-.auto-hours-label {
-  grid-column: 1 / 2;
-}
-
-.auto-hours-wrap {
-  grid-column: 2 / 3;
-}
-
-.auto-hours-wrap select {
-  width: 100%;
-  box-sizing: border-box;
-}
+/* Layout - Auto Hours Controls (removed as unused) */
 
 /* Layout - Checkboxes Block (Grid) */
 .check-block {
@@ -292,9 +280,6 @@
 @media (max-width: 699px) {
   .select-row {
     grid-template-columns: 1fr;
-  }
-  .auto-hours-label, .auto-hours-wrap {
-    grid-column: 1 / -1;
   }
   .packets-grid { 
     grid-template-columns: 1fr 1fr; 
