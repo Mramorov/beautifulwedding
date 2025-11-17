@@ -5,36 +5,13 @@
  * File: single-svadba.php
  */
 
-get_header();
+get_header('svadba');
 ?>
 
 <main class="site-main" id="main">
   <div class="content-area">
     <?php while (have_posts()) : the_post(); ?>
       <article id="post-<?php the_ID(); ?>" <?php post_class('svadba-single'); ?>>
-        <?php
-        // Full-screen hero header with featured image
-        $featured_image_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
-        ?>
-        <header class="entry-header svadba-hero" <?php if ($featured_image_url) : ?>style="background-image: url('<?php echo esc_url($featured_image_url); ?>');"<?php endif; ?>>
-          <div class="svadba-hero-overlay"></div>
-          <div class="svadba-hero-content">
-            <h1 class="entry-title"><?php the_title(); ?></h1>
-            <div class="entry-meta">
-              <?php
-              // Show terms from 'location' taxonomy
-              $terms = get_the_terms(get_the_ID(), 'location');
-              if (! empty($terms) && ! is_wp_error($terms)) {
-                $term_links = array();
-                foreach ($terms as $term) {
-                  $term_links[] = '<a href="' . esc_url(get_term_link($term)) . '">' . esc_html($term->name) . '</a>';
-                }
-                echo '<div class="svadba-locations">Локация: ' . implode(', ', $term_links) . '</div>';
-              }
-              ?>
-            </div>
-          </div>
-        </header>
 
         <?php
         // 1. Custom fields display
