@@ -18,13 +18,12 @@
   function updateDetailForSelect($select) {
     var $detailContainer;
     
-    // Determine detail container by select class
     if ($select.hasClass('photo-select')) {
       $detailContainer = $('.select-detail[data-for="photo"]');
     } else if ($select.hasClass('video-select')) {
       $detailContainer = $('.select-detail[data-for="video"]');
     } else {
-      return; // No detail container for other selects
+      return;
     }
 
     var detail = $select.find('option:selected').data('detail');
@@ -35,23 +34,19 @@
     }
   }
 
-  // Calculate sum of all selected services
   function calculateSum() {
-    // Sum of selectable services (excluding base place addition)
     var servicesSum = 0;
 
-    // Base auto calculation data
     var $autoSelect = $('.auto-select');
     var distance = parseInt($autoSelect.data('distance')) || 1;
     var baseAutoPrice = parseFloat($autoSelect.data('base-auto-price')) || 0;
     var selectedAutoPrice = parseFloat($autoSelect.find('option:selected').data('calculate')) || 0;
-    var selectedHours = distance; // simplified logic: hours = distance
+    var $hoursSelect = $('.auto-hours-select');
+    var selectedHours = $hoursSelect.length ? (parseInt($hoursSelect.val()) || distance) : distance;
     var isBaseAuto = $autoSelect.prop('selectedIndex') === 0;
 
-    // Deduction: 70% of base auto price × distance, rounded to tens
     var baseAutoDeduction = Math.round((baseAutoPrice * distance * 0.7) / 10) * 10;
 
-    // Add selected service options (skip auto)
     $('.select-element option:selected').each(function() {
       var $select = $(this).closest('select');
       if ($select.hasClass('auto-select')) return;
@@ -59,55 +54,38 @@
       servicesSum += value;
     });
 
-    // Auto cost logic
     var autoCost = 0;
     if (!(isBaseAuto && selectedHours === distance)) {
       autoCost = -baseAutoDeduction + (selectedAutoPrice * selectedHours);
     }
     servicesSum += autoCost;
 
-    // Add checked checkboxes
     $('.checkbox-element:checked').each(function() {
       var value = parseFloat($(this).data('calculate')) || 0;
       servicesSum += value;
     });
 
-    // Determine place addition (active place price)
     var placeAddition = parseFloat($('.place-item.active-place').data('place-price')) || 0;
-
-    // Original base (without place) stored in data attribute
     var originalBase = parseFloat($('#main-packet-sum').data('mainpacket-sum')) || 0;
 
-    // Display services sum INCLUDING place addition
-    var displayedServicesSum = servicesSum + placeAddition;
-    $('#calcresult').text(Math.round(displayedServicesSum));
-    $('#calcField').val(displayedServicesSum);
+    $('#calcresult').text(Math.round(servicesSum));
+    $('#calcField').val(servicesSum);
 
-    // Total = original base + place addition + other services
     var totalSum = originalBase + placeAddition + servicesSum;
     $('#total-calcresult').text(Math.round(totalSum));
   }
 
-  // Handle place selection
   function handlePlaceSelection() {
     $('.place-item').on('click', function() {
       var $this = $(this);
       var addPlacePrice = parseFloat($this.data('place-price')) || 0;
       var basePrice = parseFloat($('#main-packet-sum').data('mainpacket-sum')) || 0;
       
-      // Remove active class from all places
       $('.place-item').removeClass('active-place');
-      
-      // Add active class to clicked place
       $this.addClass('active-place');
-      
-      // Calculate new main packet price
       var newMainPrice = basePrice + addPlacePrice;
-      
-      // Update display
       $('#main-packet-sum').text(newMainPrice);
       
-      // Update fixed packets prices (from packets grid)
       $('.packets-grid .packet-price .price-value').each(function() {
         var $priceSpan = $(this);
         var basePacketPrice = parseFloat($priceSpan.data('init-price')) || 0;
@@ -115,16 +93,12 @@
         $priceSpan.text(newPacketPrice);
       });
       
-      // Recalculate total sum
       calculateSum();
     });
   }
 
-  // Modal helpers
   function openOrderModal(formId, captionText, priceText) {
-    // store form id on form
     $('#contactForm').data('formid', formId);
-    // remove old caption
     $('.send-caption-price-wrap').remove();
     if (captionText && priceText) {
       var wrap = $('<div>', { 'class': 'send-caption-price-wrap' });
@@ -143,9 +117,7 @@
     $('#modalOverlay, #modal').removeClass('active');
   }
 
-  // Click handlers to open modal
   $(document).on('click', '#orderButton', function(){
-    // Individual
     openOrderModal('individ', 'индивидуальный', $('#total-calcresult').text());
   });
   $(document).on('click', '#main_order_button', function(){
@@ -160,7 +132,6 @@
 
   $(document).on('click', '#closeButton, #cancelButton', function(){ closeOrderModal(); });
 
-  // Email validator
   function validateEmail(email) {
     var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     return regex.test(email);
@@ -172,23 +143,17 @@
     
     var individForm = new FormData($('#individForm')[0]);
     individForm.forEach(function(value, key){
-      // Skip empty values and "Выберите..." placeholder
       if (!value || value === '' || value === 'Выберите...') return;
-      
-      // Direct mapping: if key exists in fieldLabels, use it; otherwise keep original
       var russianLabel = fieldLabels[key] || key;
-      
       fd.append(russianLabel, value);
     });
   }
 
-  // Send
   $(document).on('click', '#sendButton', function(){
     var formName = $('#contactForm').data('formid');
     var messageDiv = $('#individ-message-form');
     var fd = new FormData($('#contactForm')[0]);
 
-    // Required fields
     var name = ($('#name').val()||'').trim();
     var email = ($('#email').val()||'').trim();
     var errors = [];
@@ -197,11 +162,9 @@
     else if (!validateEmail(email)) errors.push('Некорректный формат email.');
     if (errors.length) { $('#fill-error-mess').html(errors.join('<br/>')).addClass('send-error'); return; }
 
-    // Common info
     var placeName = $('.place-item.active-place').data('place-name') || '';
     fd.append('Локация', placeName);
 
-    // Form-specific
     if (formName === 'individ') {
       messageDiv = $('#individ-message-form');
       prepareIndividData(fd);
@@ -215,7 +178,6 @@
       fd.append('Цена', $('#price-' + formName).text());
     }
 
-    // UI state
     $('#sendButton').hide();
     $('#sending-process').show();
 
@@ -238,7 +200,6 @@
     });
   });
 
-  // Handle slideshow checkbox dependency on photo selection
   function handleSlideshowDependency() {
     var SLIDESHOW_SELECTOR = 'input[type="checkbox"][value="Слайд-шоу (только в дополнение к фотосъёмке свадебной церемонии)."]';
     var ERROR_MESSAGE = 'Для этой опции надо выбрать часы фотосъёмки';
@@ -273,65 +234,62 @@
       }
     }
 
-    // Attach event listener to photo select
     $('.photo-select').on('change', updateSlideshowCheckbox);
-
-    // Prevent clicking on disabled slideshow checkbox
     $(document).on('click', SLIDESHOW_SELECTOR, function(e) {
       if (!isPhotoSelected()) {
         e.preventDefault();
         showError($(this).parent().find('.chk-text-wrapper'));
       }
     });
-
-    // Initialize state on page load
     updateSlideshowCheckbox();
   }
 
-  // Handle tabs switching
   function handleTabs() {
-    $('.svadba-tab-button').on('click', function(){
-      var $button = $(this);
-      var targetTab = $button.data('tab');
-      
-      // Remove active from all buttons and panes
+    function activateTab(targetTab) {
+      if (!targetTab) return;
       $('.svadba-tab-button').removeClass('active');
       $('.svadba-tab-pane').removeClass('active');
-      
-      // Add active to clicked button and corresponding pane
-      $button.addClass('active');
+      $('.svadba-tab-button[data-tab="' + targetTab + '"]').addClass('active');
       $('#' + targetTab).addClass('active');
+    }
+
+    function scrollToTabSection() {
+      var $section = $('.svadba-tabs-section');
+      if ($section.length) {
+        var offset = $section.offset().top;
+        $('html, body').animate({ scrollTop: offset }, 500);
+      }
+    }
+
+    $(document).on('click', '.svadba-tab-button', function(){
+      activateTab($(this).data('tab'));
+    });
+
+    $(document).on('click', '.svadba-tab-link', function(e){
+      e.preventDefault();
+      var $link = $(this);
+      var targetTab = $link.data('tab-target') || ($link.attr('href') ? $link.attr('href').replace('#', '') : '');
+      activateTab(targetTab);
+      scrollToTabSection();
     });
   }
 
   function init() {
-    // Detail display for photo and video selects
     $(document).on('change', '.photo-select, .video-select', function(){
       updateDetailForSelect($(this));
     });
-
-    // Initialize existing selects on page load
     $('.photo-select, .video-select').each(function(){
       updateDetailForSelect($(this));
     });
     
-    // Attach calculator to all selects and checkboxes
     $('.select-element, .checkbox-element').on('change', calculateSum);
-    
-    // Handle place selection
     handlePlaceSelection();
-    
-    // Handle slideshow checkbox dependency
     handleSlideshowDependency();
-    
-    // Handle tabs
     handleTabs();
-    
-    // Initial calculation on page load
+    $(document).on('change', '.auto-hours-select', calculateSum);
     calculateSum();
   }
 
-  // Wait for document ready
   if (typeof jQuery !== 'undefined') {
     jQuery(document).ready(function($){ init(); });
   }

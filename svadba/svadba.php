@@ -56,7 +56,7 @@ function svadba_generate_form_html() {
     // Calculator header (visual, values will be filled later by JS)
     $html .= '<div class="calcresult-block">';
     $html .= '<div class="calcresult-subblock">';
-    $html .= '<span class="calcresult-text">Сумма набранных услуг</span>';
+    $html .= '<span class="calcresult-text">Сумма дополнительных услуг</span>';
     $html .= '<div><span class="price-value" id="calcresult">0</span><span class="calc-sum-sign"> € </span></div>';
     $html .= '</div>';
     $html .= '<div class="calcresult-subblock">';
@@ -110,9 +110,25 @@ function svadba_generate_form_html() {
         $html .= '<div class="select-detail" data-for="' . esc_attr($sel_key) . '"></div>';
         $html .= '</div>'; // .select-control
 
-    // removed: extra auto hours selector (no longer used)
-
         $html .= '</div>'; // .select-row
+
+        // Auto hours: render as a separate uniform row like others
+        if ($sel_key === 'auto') {
+            $distance = (int) get_post_meta(get_the_ID(), 'distance', true);
+            if ($distance <= 0) { $distance = 1; }
+            $max_hours = $distance + 6;
+            $html .= '<div class="select-row">';
+            $html .= '<div class="select-label">Часы автомобиля:</div>';
+            $html .= '<div class="select-control">';
+            $html .= '<select id="auto-hours-select" class="auto-hours-select select-element" name="car_hours" data-base-distance="' . esc_attr($distance) . '">';
+            for ($h = $distance; $h <= $max_hours; $h++) {
+                $sel = ($h === $distance) ? ' selected' : '';
+                $html .= '<option value="' . esc_attr($h) . '"' . $sel . '>' . esc_html($h) . '</option>';
+            }
+            $html .= '</select>';
+            $html .= '</div>'; // .select-control
+            $html .= '</div>'; // .select-row (hours)
+        }
     }
 
     $html .= '</div>'; // .select-block

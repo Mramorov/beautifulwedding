@@ -26,6 +26,13 @@ function beautifulwedding_scripts()
   $style_path = get_stylesheet_directory() . '/style.css';
   $style_ver  = file_exists($style_path) ? filemtime($style_path) : wp_get_theme()->get('Version');
   wp_enqueue_style('minimal-style', get_stylesheet_uri(), array(), $style_ver);
+  
+  // Theme switcher (только для разработки - удалить в продакшене!)
+  if ( ! is_admin() ) {
+    $switcher_path = get_stylesheet_directory() . '/theme-switcher.js';
+    $switcher_ver  = file_exists($switcher_path) ? filemtime($switcher_path) : '1.0';
+    wp_enqueue_script('theme-switcher', get_stylesheet_directory_uri() . '/theme-switcher.js', array(), $switcher_ver, true);
+  }
 }
 add_action('wp_enqueue_scripts', 'beautifulwedding_scripts');
 
@@ -52,15 +59,15 @@ function beautifulwedding_enqueue_svadba_assets() {
 
   if ( $load ) {
     // Get file modification times for versioning
-    $css_file = get_stylesheet_directory() . '/svadba/css/form.css';
-    $js_file = get_stylesheet_directory() . '/svadba/js/form.js';
+    $css_file = get_stylesheet_directory() . '/svadba/svadba.css';
+    $js_file = get_stylesheet_directory() . '/svadba/svadba.js';
     
     $css_version = file_exists($css_file) ? filemtime($css_file) : wp_get_theme()->get('Version');
     $js_version = file_exists($js_file) ? filemtime($js_file) : wp_get_theme()->get('Version');
 
-    wp_enqueue_style( 'svadba-form-style', get_stylesheet_directory_uri() . '/svadba/css/form.css', array( 'minimal-style' ), $css_version );
+    wp_enqueue_style( 'svadba-form-style', get_stylesheet_directory_uri() . '/svadba/svadba.css', array( 'minimal-style' ), $css_version );
     // enqueue form behavior script
-    wp_enqueue_script( 'svadba-form-script', get_stylesheet_directory_uri() . '/svadba/js/form.js', array( 'jquery' ), $js_version, true );
+    wp_enqueue_script( 'svadba-form-script', get_stylesheet_directory_uri() . '/svadba/svadba.js', array( 'jquery' ), $js_version, true );
     // Localize for REST submission
     wp_localize_script( 'svadba-form-script', 'customFormParams', array(
       'restUrl' => esc_url_raw( rest_url( 'custom-form/v1/submit' ) ),
@@ -151,3 +158,42 @@ add_action( 'rest_api_init', function() {
     }
   ) );
 } );
+
+/** Enqueue PhotoSwipe assets for svadba single pages */
+function beautifulwedding_enqueue_photoswipe_assets() {
+    if ( ! is_singular( 'svadba' ) ) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'photoswipe',
+        'https://unpkg.com/photoswipe@5/dist/photoswipe.css',
+        array(),
+        '5.4.4'
+    );
+
+    wp_enqueue_script(
+        'photoswipe',
+        'https://unpkg.com/photoswipe@5/dist/umd/photoswipe.umd.min.js',
+        array(),
+        '5.4.4',
+        true
+    );
+
+    wp_enqueue_script(
+        'photoswipe-lightbox',
+        'https://unpkg.com/photoswipe@5/dist/umd/photoswipe-lightbox.umd.min.js',
+        array( 'photoswipe' ),
+        '5.4.4',
+        true
+    );
+
+    wp_enqueue_script(
+      'beautifulwedding-photoswipe-init',
+      get_template_directory_uri() . '/svadba/photoswipe-init.js',
+      array( 'photoswipe-lightbox' ),
+      filemtime( get_template_directory() . '/svadba/photoswipe-init.js' ),
+      true
+    );
+}
+add_action( 'wp_enqueue_scripts', 'beautifulwedding_enqueue_photoswipe_assets' );

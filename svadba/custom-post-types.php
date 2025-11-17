@@ -58,29 +58,83 @@ endif;
 
 add_action('init', 'beautifulwedding_register_post_types');
 
-// Register custom taxonomy 'places' for 'svadba'
+// Register custom taxonomy 'location' for 'svadba' (hierarchical, like categories)
 add_action('init', function() {
     $labels = array(
-        'name'              => 'Places',
-        'singular_name'     => 'Place',
-        'search_items'      => 'Search Places',
-        'all_items'         => 'All Places',
-        'parent_item'       => 'Parent Place',
-        'parent_item_colon' => 'Parent Place:',
-        'edit_item'         => 'Edit Place',
-        'update_item'       => 'Update Place',
-        'add_new_item'      => 'Add New Place',
-        'new_item_name'     => 'New Place Name',
-        'menu_name'         => 'Places',
+        'name'              => 'Locations',
+        'singular_name'     => 'Location',
+        'search_items'      => 'Search Locations',
+        'all_items'         => 'All Locations',
+        'parent_item'       => 'Parent Location',
+        'parent_item_colon' => 'Parent Location:',
+        'edit_item'         => 'Edit Location',
+        'update_item'       => 'Update Location',
+        'add_new_item'      => 'Add New Location',
+        'new_item_name'     => 'New Location Name',
+        'menu_name'         => 'Locations',
     );
     $args = array(
-        'hierarchical'      => true, // like categories
+        'hierarchical'      => true, // hierarchical, like categories
         'labels'            => $labels,
         'show_ui'           => true,
         'show_admin_column' => true,
         'query_var'         => true,
-        'rewrite'           => array('slug' => 'place'),
+        'rewrite'           => array('slug' => 'location'),
         'show_in_rest'      => true,
     );
-    register_taxonomy('places', array('svadba'), $args);
+    register_taxonomy('location', array('svadba'), $args);
+});
+
+// Register custom taxonomy 'wedding_days' for 'svadba' (hierarchical, like categories)
+add_action('init', function() {
+    $labels = array(
+        'name'              => 'Wedding Days',
+        'singular_name'     => 'Wedding Day',
+        'search_items'      => 'Search Wedding Days',
+        'all_items'         => 'All Wedding Days',
+        'parent_item'       => 'Parent Wedding Day',
+        'parent_item_colon' => 'Parent Wedding Day:',
+        'edit_item'         => 'Edit Wedding Day',
+        'update_item'       => 'Update Wedding Day',
+        'add_new_item'      => 'Add New Wedding Day',
+        'new_item_name'     => 'New Wedding Day Name',
+        'menu_name'         => 'Wedding Days',
+    );
+    $args = array(
+        'hierarchical'      => true, // hierarchical, like categories
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'query_var'         => true,
+        'rewrite'           => array('slug' => 'wedding-day'),
+        'show_in_rest'      => true,
+    );
+    register_taxonomy('wedding_days', array('svadba'), $args);
+});
+
+// Register custom taxonomy 'ceremonies' for 'svadba' (hierarchical, like categories)
+add_action('init', function() {
+    $labels = array(
+        'name'              => 'Ceremonies',
+        'singular_name'     => 'Ceremony',
+        'search_items'      => 'Search Ceremonies',
+        'all_items'         => 'All Ceremonies',
+        'parent_item'       => 'Parent Ceremony',
+        'parent_item_colon' => 'Parent Ceremony:',
+        'edit_item'         => 'Edit Ceremony',
+        'update_item'       => 'Update Ceremony',
+        'add_new_item'      => 'Add New Ceremony',
+        'new_item_name'     => 'New Ceremony Name',
+        'menu_name'         => 'Ceremonies',
+    );
+    $args = array(
+        'hierarchical'      => true, // hierarchical, like categories
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'query_var'         => true,
+        'rewrite'           => array('slug' => 'ceremony'),
+        'show_in_rest'      => true,
+    );
+    register_taxonomy('ceremonies', array('svadba'), $args);
 });

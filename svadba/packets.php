@@ -117,7 +117,14 @@ function svadba_packets_shortcode_handler($atts = array()) {
                 case 'auto':
                     // Hours logic: if distance == 2, add per packet index + 1, else keep distance
                     $hours = ($distance == 2) ? ($distance + $idx + 1) : $distance;
-                    $sum += max(0, ($it['sprice'] * $hours) - $base_auto_deduction);
+                    $isBaseAuto = (abs($it['sprice'] - $base_auto_price) < 0.01);
+                    if ($isBaseAuto && $hours === $distance) {
+                        // Base auto with base hours: no extra cost
+                        $sum += 0;
+                    } else {
+                        // Different auto or hours: deduct base allocation, add actual
+                        $sum += max(0, ($it['sprice'] * $hours) - $base_auto_deduction);
+                    }
                     break;
                 case 'photo':
                 case 'video':
@@ -170,7 +177,12 @@ function svadba_packets_shortcode_handler($atts = array()) {
                 if ($key === 'auto' && $prodName === ($labels['auto'] . ': ' . $it['sname'])) {
                     $hours = ($distance == 2) ? ($distance + $idx + 1) : $distance;
                     $display = $hours . ' ч.';
-                    $cellPrice = max(0, ($it['sprice'] * $hours) - $base_auto_deduction);
+                    $isBaseAuto = (abs($it['sprice'] - $base_auto_price) < 0.01);
+                    if ($isBaseAuto && $hours === $distance) {
+                        $cellPrice = 0;
+                    } else {
+                        $cellPrice = max(0, ($it['sprice'] * $hours) - $base_auto_deduction);
+                    }
                     break;
                 }
                 if ($key === 'photo' && $prodName === $labels['photo']) {

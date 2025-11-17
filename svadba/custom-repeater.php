@@ -6,7 +6,7 @@
 function beautifulwedding_add_repeater_meta_box() {
     add_meta_box(
         'svadba_repeater',
-        'Дополнительные залы и места',
+        'Halls and Places',
         'svadba_repeater_callback',
         'svadba',
         'normal',
@@ -156,14 +156,14 @@ function svadba_render_repeater_item($index, $item = array()) {
 
         <div class="field-row">
             <div class="field-group field-75">
-                <label>Место</label>
+                <label>Place</label>
                 <input type="text" 
                        name="svadba_repeater[<?php echo $index; ?>][mesto]" 
                        value="<?php echo esc_attr($mesto); ?>" 
                        class="widefat" />
             </div>
             <div class="field-group field-25">
-                <label>Добавленная цена</label>
+                <label>Added price</label>
                 <input type="number" 
                        name="svadba_repeater[<?php echo $index; ?>][place_price]" 
                        value="<?php echo esc_attr($place_price); ?>" 
@@ -173,7 +173,7 @@ function svadba_render_repeater_item($index, $item = array()) {
         </div>
 
         <div class="field-group">
-            <label>Фото</label>
+            <label>Photo</label>
             <input type="hidden" 
                    name="svadba_repeater[<?php echo $index; ?>][place_foto]" 
                    value="<?php echo esc_attr($place_foto); ?>" 

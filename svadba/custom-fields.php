@@ -11,6 +11,15 @@ function beautifulwedding_add_meta_boxes()
     );
     
     add_meta_box(
+        'svadba_contextpic',
+        'Изображение рядом с текстом',
+        'svadba_contextpic_callback',
+        'svadba',
+        'normal',
+        'high'
+    );
+    
+    add_meta_box(
         'svadba_gallery',
         'Wedding Gallery',
         'svadba_gallery_callback',
@@ -52,29 +61,89 @@ function svadba_price_fields_callback($post)
     
     <div class="svadba-fields-row">
         <div class="svadba-field">
-            <label for="fromold">Старая цена (от)</label>
+            <label for="fromold">Old price</label>
             <input type="number" id="fromold" name="fromold" value="<?php echo esc_attr($fromold); ?>" step="0.01" />
         </div>
         <div class="svadba-field">
-            <label for="fromnew">Новая цена (от)</label>
+            <label for="fromnew">New price (from)</label>
             <input type="number" id="fromnew" name="fromnew" value="<?php echo esc_attr($fromnew); ?>" step="0.01" />
         </div>
         <div class="svadba-field">
-            <label for="capacity">Вместимость</label>
+            <label for="capacity">Capacity</label>
             <input type="number" id="capacity" name="capacity" value="<?php echo esc_attr($capacity); ?>" />
         </div>
     </div>
     
     <div class="svadba-fields-row">
         <div class="svadba-field">
-            <label for="distance">Базовое время автомобиля</label>
+            <label for="distance">Base car time</label>
             <input type="number" id="distance" name="distance" value="<?php echo esc_attr($distance); ?>" />
         </div>
         <div class="svadba-field">
-            <label for="cer-time">Время церемонии</label>
+            <label for="cer-time">Ceremony time</label>
             <input type="text" id="cer-time" name="cer-time" value="<?php echo esc_attr($cer_time); ?>" />
         </div>
     </div>
+    <?php
+}
+
+function svadba_contextpic_callback($post)
+{
+    wp_nonce_field('svadba_contextpic_nonce', 'svadba_contextpic_nonce');
+    $contextpic_id = get_post_meta($post->ID, 'contextpic', true);
+    $contextpic_url = $contextpic_id ? wp_get_attachment_image_url($contextpic_id, 'medium') : '';
+    ?>
+    <div id="svadba_contextpic_container">
+        <input type="hidden" id="contextpic" name="contextpic" value="<?php echo esc_attr($contextpic_id); ?>" />
+        <div id="contextpic_preview">
+            <?php if ($contextpic_url): ?>
+                <img src="<?php echo esc_url($contextpic_url); ?>" style="max-width: 300px; display: block; margin-bottom: 10px;" />
+            <?php endif; ?>
+        </div>
+        <button type="button" class="button" id="contextpic_upload_button">
+            <?php echo $contextpic_id ? 'Изменить изображение' : 'Выбрать изображение'; ?>
+        </button>
+        <?php if ($contextpic_id): ?>
+            <button type="button" class="button" id="contextpic_remove_button">Удалить изображение</button>
+        <?php endif; ?>
+    </div>
+
+    <script>
+        jQuery(document).ready(function($) {
+            let contextpicFrame;
+
+            $('#contextpic_upload_button').on('click', function(e) {
+                e.preventDefault();
+                if (contextpicFrame) {
+                    contextpicFrame.open();
+                    return;
+                }
+                contextpicFrame = wp.media({
+                    title: 'Выберите изображение',
+                    button: { text: 'Использовать это изображение' },
+                    multiple: false
+                });
+                contextpicFrame.on('select', function() {
+                    const attachment = contextpicFrame.state().get('selection').first().toJSON();
+                    $('#contextpic').val(attachment.id);
+                    $('#contextpic_preview').html('<img src="' + attachment.url + '" style="max-width: 300px; display: block; margin-bottom: 10px;" />');
+                    $('#contextpic_upload_button').text('Изменить изображение');
+                    if (!$('#contextpic_remove_button').length) {
+                        $('#contextpic_upload_button').after('<button type="button" class="button" id="contextpic_remove_button">Удалить изображение</button>');
+                    }
+                });
+                contextpicFrame.open();
+            });
+
+            $(document).on('click', '#contextpic_remove_button', function(e) {
+                e.preventDefault();
+                $('#contextpic').val('');
+                $('#contextpic_preview').empty();
+                $('#contextpic_upload_button').text('Выбрать изображение');
+                $(this).remove();
+            });
+        });
+    </script>
     <?php
 }
 
@@ -210,6 +279,25 @@ function svadba_save_price_fields($post_id)
     }
 }
 add_action('save_post_svadba', 'svadba_save_price_fields');
+
+function svadba_save_contextpic($post_id)
+{
+    if (!isset($_POST['svadba_contextpic_nonce']) || !wp_verify_nonce($_POST['svadba_contextpic_nonce'], 'svadba_contextpic_nonce')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    if (isset($_POST['contextpic'])) {
+        $contextpic_id = intval($_POST['contextpic']);
+        if ($contextpic_id) {
+            update_post_meta($post_id, 'contextpic', $contextpic_id);
+        } else {
+            delete_post_meta($post_id, 'contextpic');
+        }
+    } else {
+        delete_post_meta($post_id, 'contextpic');
+    }
+}
+add_action('save_post_svadba', 'svadba_save_contextpic');
 
 function svadba_save_gallery_meta($post_id)
 {

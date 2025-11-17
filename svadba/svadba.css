@@ -1,9 +1,9 @@
+/* Moved from svadba/css/form.css to svadba/svadba.css */
+/* Source: svadba/css/form.css */
 /* svadba/css/form.css - Layout & Functionality Only */
 
 /* Layout - Form Container */
 .individFormWrap {
-  max-width: 980px;
-  margin: 0 auto;
   padding: 30px;
   box-sizing: border-box;
 }
@@ -13,19 +13,84 @@
   display: flex;
   gap: 20px;
   align-items: stretch;
+  margin: 10px 0 24px;
+}
+
+.calcresult-subblock,
+.select-block,
+.check-block {
+  border-radius: 8px;
+  padding: 16px 18px 18px;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
 }
 
 .calcresult-subblock {
   flex: 1 1 0;
   box-sizing: border-box;
   text-align: center;
+  /* Visual card styling in theme look */
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-bg-alt);
+}
+
+/* Accent bar on top of each card */
+.calcresult-subblock::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 4px;
+  background: var(--color-primary);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+/* Text and values */
+.calcresult-text {
+  display: block;
+  font-family: var(--font-accent);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+  margin: 4px 0 8px;
+}
+
+.price-value {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.2vw, 2.1rem);
+  color: var(--color-primary);
+  line-height: 1.1;
+}
+
+.calc-sum-sign {
+  font-family: var(--font-accent);
+  font-weight: 600;
+  color: var(--color-secondary);
+  margin-left: 4px;
+}
+
+/* Hover and focus polish */
+.calcresult-subblock:focus-within,
+.calcresult-subblock:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
+}
+
+@media (max-width: 699px) {
+  .calcresult-block {
+    flex-direction: column;
+  }
 }
 
 /* Layout - Select Block (Grid) */
 .select-block {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 5px;
+  margin-bottom: 2em;
 }
 
 .select-row {
@@ -39,9 +104,15 @@
 .select-element {
   width: 100%;
   box-sizing: border-box;
+  padding: 7px 10px;
 }
 
-/* Layout - Auto Hours Controls (removed as unused) */
+/* Layout - Auto Hours Controls */
+
+.select-control .auto-hours-select {
+  width: 110px;
+  min-width: 90px;
+}
 
 /* Layout - Checkboxes Block (Grid) */
 .check-block {
@@ -71,27 +142,9 @@
   margin: 2rem 0 1rem;
 }
 
-/* Layout - Gallery Grid */
-.svadba-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
-}
-
-.svadba-gallery-item {
-  overflow: hidden;
-}
-
-.svadba-gallery-item img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
 /* Layout - Repeater List Grid */
 .repeater-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  display: flex;
   gap: 20px;
 }
 
@@ -132,9 +185,13 @@
 .place-item::after {
   content: '';
   position: absolute;
+  margin: 7px;
   inset: 0;
-  background: linear-gradient(to top, rgba(212, 165, 160, .75), rgba(212, 165, 160, .15) 100%);
-  pointer-events: none;
+  background: color-mix(in srgb, var(--color-primary) 60%, transparent);
+  /*   background: linear-gradient(to top,
+      color-mix(in srgb, var(--color-primary) 90%, transparent) 50%,
+      color-mix(in srgb, var(--color-primary) 0%, transparent) 100%);
+  pointer-events: none; */
   transition: opacity .2s ease;
   z-index: 1;
   /* keep overlay below captions */
@@ -293,21 +350,9 @@
 }
 
 .process-send img {
-  width: 28px;
-  height: 28px;
+  width: 64px;
+  height: 64px;
   display: inline-block;
-}
-
-/* removed unused spinner styles */
-
-/* Accessibility Helper */
-.visually-hidden {
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
-  white-space: nowrap;
 }
 
 /* JS-dependent - Tabs */
@@ -371,5 +416,33 @@
 
   .packets-cell.first-col {
     grid-column: 1 / -1;
+  }
+}
+
+/* Two-column layout for post content with contextpic */
+.entry-content {
+    text-align: justify;
+}
+
+.entry-content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: stretch;
+  margin: 30px 0;
+}
+
+.entry-contextpic img {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
+
+@media (max-width: 899px) {
+  .entry-content-wrapper {
+    grid-template-columns: 1fr;
+    gap: 30px;
   }
 }

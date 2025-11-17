@@ -11,19 +11,78 @@ Tags: wedding, minimal, blog, classic
 */
 
 /* CSS Variables - Colors & Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Open+Sans:wght@300;400;600;700&display=swap&subset=cyrillic,cyrillic-ext,latin,latin-ext');
 
-:root {
+/* Тема по умолчанию (розовая) */
+:root,
+body.theme-default {
     --content-width: 1200px;
-    --color-primary: #D4A5A0;
+    --color-primary: #d4a5a0;
     --color-secondary: #8B6F6F;
     --color-text: #5A5A5A;
     --color-bg: #FFF9F5;
     --color-bg-alt: #FFF5F0;
     --color-white: #FFFFFF;
-    --font-heading: 'Cormorant Garamond', serif;
-    --font-body: 'Lato', sans-serif;
+    --font-heading: 'Cormorant', serif;
+    --font-body: 'Open Sans', sans-serif;
     --font-accent: 'Montserrat', sans-serif;
+}
+
+/* Тема 2: Голубая */
+body.theme-blue {
+    --color-primary: #a5c4d4;
+    --color-secondary: #6f8b9b;
+    --color-text: #4a5a5a;
+    --color-bg: #f5f9ff;
+    --color-bg-alt: #e8f2ff;
+}
+
+/* Тема 3: Лавандовая */
+body.theme-lavender {
+    --color-primary: #c4a5d4;
+    --color-secondary: #8b6f9b;
+    --color-text: #5a4a5a;
+    --color-bg: #f9f5ff;
+    --color-bg-alt: #f0e8ff;
+}
+
+/* Тема 4: Зелёная */
+body.theme-green {
+    --color-primary: #a5d4b0;
+    --color-secondary: #6f9b7a;
+    --color-text: #4a5a50;
+    --color-bg: #f5fff8;
+    --color-bg-alt: #e8ffe8;
+}
+
+/* Переключатель тем (только для разработки) */
+.theme-switcher {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    background: var(--color-white);
+    padding: 10px;
+    border: 2px solid var(--color-primary);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-switcher button {
+    display: block;
+    width: 100%;
+    margin: 4px 0;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border: 1px solid var(--color-secondary);
+    background: var(--color-bg-alt);
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.theme-switcher button:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
 }
 
 /* Basic Reset */
@@ -33,8 +92,29 @@ Tags: wedding, minimal, blog, classic
     box-sizing: border-box;
 }
 
+body {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-text);
+    background: var(--color-bg);
+}
+
+a {
+    color: var(--color-secondary);
+}
+
+p {
+    color:var(--color-text);
+}
+
 /* Typography - Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: var(--font-heading);
     color: var(--color-secondary);
     line-height: 1.25;
@@ -101,7 +181,7 @@ h6 {
     .site {
         padding: 20px 15px;
     }
-    
+
     .site-nav ul {
         flex-direction: column;
         gap: 15px;
@@ -121,7 +201,7 @@ h6 {
     padding: 0.75rem 1.25rem;
     cursor: pointer;
     font-family: var(--font-accent);
-    font-size: 0.75rem;
+    font-size: 1rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--color-secondary);
@@ -264,7 +344,7 @@ textarea {
 }
 
 .send-success {
-    color: #4a8;
+    color: var(--color-secondary);
     font-size: 0.9rem;
     margin-top: 12px;
     text-align: center;
@@ -384,26 +464,19 @@ button {
     border-right: none;
 }
 
-.packets-cell.header {
+.packets-cell.header,
+.packets-cell.footer {
     background: var(--color-bg-alt);
+    color: var(--color-secondary);
     font-weight: 600;
     text-align: center;
     padding: 16px 18px;
-}
-
-.packets-cell.header:first-child {
-    text-align: left;
-    font-family: var(--font-heading);
-    font-size: 1.3rem;
-    color: var(--color-secondary);
-}
-
-.packets-cell.header .packet-name {
+    align-content: center;
     font-family: var(--font-heading);
     font-size: 1.25rem;
-    color: var(--color-secondary);
-    margin-bottom: 8px;
+    text-transform: uppercase;
 }
+
 
 .packets-cell.header .packet-price {
     font-family: var(--font-accent);
@@ -416,24 +489,9 @@ button {
     background: var(--color-white);
     font-weight: 500;
     color: var(--color-text);
-}
-
-.packets-cell.footer {
-    background: var(--color-bg);
-    padding: 20px 18px;
-    text-align: center;
-    border-bottom: none;
-}
-
-.packets-cell.footer:first-child {
     text-align: left;
-    font-family: var(--font-heading);
-    font-size: 1.15rem;
-    color: var(--color-secondary);
-    font-weight: 600;
 }
-
-.packets-cell:not(.header):not(.first-col):not(.footer) {
+.packets-cell {
     text-align: center;
     color: var(--color-text);
     font-size: 0.95rem;
@@ -443,12 +501,128 @@ button {
     .packets-cell {
         padding: 12px 14px;
     }
-    
+
     .packets-cell.header .packet-name {
         font-size: 1.1rem;
     }
-    
+
     .packets-cell.header .packet-price {
         font-size: 1rem;
+    }
+}
+
+/* Svadba Gallery (masonry via CSS grid + JS) */
+.svadba-gallery {
+    margin: 3rem 0;
+}
+.svadba-gallery-grid {
+    column-count: 5;
+    column-gap: 6px;
+}
+
+.svadba-gallery-item {
+    display: inline-block;
+    margin-bottom: 3px;
+    width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+
+.svadba-gallery-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
+}
+
+.svadba-gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 5px;
+}
+
+@media (min-width: 1600px) {
+    .svadba-gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .svadba-gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 10px;
+        grid-auto-rows: 8px;
+    }
+}
+
+@media (max-width: 600px) {
+    .svadba-gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 8px;
+        grid-auto-rows: 6px;
+    }
+}
+
+/* Svadba Hero Header - Full Screen */
+.svadba-hero {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.svadba-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.svadba-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 20px;
+    max-width: 900px;
+}
+
+.svadba-hero .entry-title {
+    color: var(--color-bg);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    margin: 0 0 0.5em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.svadba-hero .entry-meta {
+    color: var(--color-bg);
+    font-family: var(--font-accent);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.svadba-hero .svadba-locations a {
+    color: var(--color-bg);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 249, 245, 0.5);
+    transition: border-color 0.2s ease;
+}
+
+.svadba-hero .svadba-locations a:hover {
+    border-bottom-color: var(--color-bg);
+}
+
+@media (max-width: 768px) {
+    .svadba-hero {
+        height: 70vh;
+        min-height: 500px;
     }
 }

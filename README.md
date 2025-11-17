@@ -5,7 +5,7 @@ A custom WordPress theme for wedding websites.
 ## Features
 
 - Custom post type "Svadba" for wedding content
-- Custom taxonomy "Places" for organizing wedding venues
+- Custom taxonomy "Location" for organizing wedding venues
 - Image gallery support for wedding photos
 - Repeater field for additional wedding information
 - Responsive design
@@ -29,7 +29,7 @@ A custom WordPress theme for wedding websites.
 - Custom post type for wedding content
 - Includes custom image gallery
 - Includes repeater field with text, image, and number fields
-- Organized with "Places" taxonomy
+- Organized with "Location" taxonomy
 
 ## Development
 
