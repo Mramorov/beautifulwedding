@@ -12,8 +12,17 @@ function beautifulwedding_add_meta_boxes()
     
     add_meta_box(
         'svadba_contextpic',
-        'Изображение рядом с текстом',
+        'Image next to text',
         'svadba_contextpic_callback',
+        'svadba',
+        'normal',
+        'high'
+    );
+    
+    add_meta_box(
+        'svadba_characteristics',
+        'Additional characteristics',
+        'svadba_characteristics_callback',
         'svadba',
         'normal',
         'high'
@@ -72,12 +81,19 @@ function svadba_price_fields_callback($post)
             <label for="capacity">Capacity</label>
             <input type="number" id="capacity" name="capacity" value="<?php echo esc_attr($capacity); ?>" />
         </div>
-    </div>
-    
-    <div class="svadba-fields-row">
         <div class="svadba-field">
             <label for="distance">Base car time</label>
-            <input type="number" id="distance" name="distance" value="<?php echo esc_attr($distance); ?>" />
+            <select id="distance" name="distance">
+                <?php
+                // Distance selectable values from 2 to 8 to prevent invalid input
+                $distance_options = range(2, 8);
+                $current_distance = (int) $distance;
+                if ($current_distance < 2) { $current_distance = 2; }
+                foreach ($distance_options as $opt) {
+                    printf('<option value="%d" %s>%d</option>', $opt, selected($current_distance, $opt, false), $opt);
+                }
+                ?>
+            </select>
         </div>
         <div class="svadba-field">
             <label for="cer-time">Ceremony time</label>
@@ -144,6 +160,24 @@ function svadba_contextpic_callback($post)
             });
         });
     </script>
+    <?php
+}
+
+function svadba_characteristics_callback($post)
+{
+    wp_nonce_field('svadba_characteristics_nonce', 'svadba_characteristics_nonce');
+    $characteristics = get_post_meta($post->ID, 'characteristics', true);
+    ?>
+    <style>
+        #characteristics {
+            width: 100%;
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+    </style>
+    <textarea id="characteristics" name="characteristics" rows="15"><?php echo esc_textarea($characteristics); ?></textarea>
+    <p class="description">Вставьте готовый HTML-код в это поле.</p>
     <?php
 }
 
@@ -298,6 +332,25 @@ function svadba_save_contextpic($post_id)
     }
 }
 add_action('save_post_svadba', 'svadba_save_contextpic');
+
+function svadba_save_characteristics($post_id)
+{
+    if (!isset($_POST['svadba_characteristics_nonce']) || !wp_verify_nonce($_POST['svadba_characteristics_nonce'], 'svadba_characteristics_nonce')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    if (isset($_POST['characteristics'])) {
+        $characteristics = wp_kses_post($_POST['characteristics']);
+        if ($characteristics) {
+            update_post_meta($post_id, 'characteristics', $characteristics);
+        } else {
+            delete_post_meta($post_id, 'characteristics');
+        }
+    } else {
+        delete_post_meta($post_id, 'characteristics');
+    }
+}
+add_action('save_post_svadba', 'svadba_save_characteristics');
 
 function svadba_save_gallery_meta($post_id)
 {

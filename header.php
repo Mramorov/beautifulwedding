@@ -8,8 +8,7 @@
 </head>
 
 <body <?php body_class(); ?>>
-  <div class="site">
-    <header class="site-header">
+    <header class="site-header boxed">
       <h1 class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a></h1>
       <nav class="site-nav" role="navigation">
         <?php

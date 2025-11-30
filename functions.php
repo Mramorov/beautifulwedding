@@ -8,6 +8,14 @@ require get_template_directory() . '/svadba/custom-fields.php';
 require get_template_directory() . '/svadba/custom-repeater.php';
 require get_template_directory() . '/svadba/svadba.php';
 require get_template_directory() . '/svadba/packets.php';
+// Unified services config + shortcodes
+require_once get_template_directory() . '/inc/services-config.php';
+require_once get_template_directory() . '/inc/shortcodes-services.php';
+// Service CPT
+require_once get_template_directory() . '/inc/service-post-type.php';
+// Anketa feature files
+require_once get_template_directory() . '/anketa/common.php';
+require_once get_template_directory() . '/anketa/anketa-handler.php';
 
 function beautifulwedding_setup()
 {
@@ -26,13 +34,14 @@ function beautifulwedding_scripts()
   $style_path = get_stylesheet_directory() . '/style.css';
   $style_ver  = file_exists($style_path) ? filemtime($style_path) : wp_get_theme()->get('Version');
   wp_enqueue_style('minimal-style', get_stylesheet_uri(), array(), $style_ver);
-  
-  // Theme switcher (только для разработки - удалить в продакшене!)
-  if ( ! is_admin() ) {
-    $switcher_path = get_stylesheet_directory() . '/theme-switcher.js';
-    $switcher_ver  = file_exists($switcher_path) ? filemtime($switcher_path) : '1.0';
-    wp_enqueue_script('theme-switcher', get_stylesheet_directory_uri() . '/theme-switcher.js', array(), $switcher_ver, true);
-  }
+
+  // Подключение стилей и скриптов мега-меню
+  $menu_css = get_stylesheet_directory() . '/navigation/mega-menu.css';
+  $menu_js  = get_stylesheet_directory() . '/navigation/mega-menu.js';
+  $menu_css_ver = file_exists($menu_css) ? filemtime($menu_css) : $style_ver;
+  $menu_js_ver  = file_exists($menu_js) ? filemtime($menu_js) : $style_ver;
+  wp_enqueue_style('bw-mega-menu', get_stylesheet_directory_uri() . '/navigation/mega-menu.css', array('minimal-style'), $menu_css_ver);
+  wp_enqueue_script('bw-mega-menu', get_stylesheet_directory_uri() . '/navigation/mega-menu.js', array('jquery'), $menu_js_ver, true);
 }
 add_action('wp_enqueue_scripts', 'beautifulwedding_scripts');
 
@@ -73,6 +82,10 @@ function beautifulwedding_enqueue_svadba_assets() {
       'restUrl' => esc_url_raw( rest_url( 'custom-form/v1/submit' ) ),
       'nonce'   => wp_create_nonce( 'wp_rest' ),
     ) );
+    // Localize pricing coefficients for JS parity
+    if ( isset( $bw_pricing ) ) {
+      wp_localize_script( 'svadba-form-script', 'bwPricing', $bw_pricing );
+    }
   }
 }
 add_action('wp_enqueue_scripts', 'beautifulwedding_enqueue_svadba_assets');
@@ -81,56 +94,40 @@ add_action('wp_enqueue_scripts', 'beautifulwedding_enqueue_svadba_assets');
 /** REST endpoint for order submissions */
 function beautifulwedding_handle_form_submission_api( WP_REST_Request $request ) {
   $form_data = $request->get_body_params();
+  $labels = function_exists('svadba_get_labels') ? svadba_get_labels() : array();
 
   $subject   = 'Заказ с сайта';
   $subject_2 = 'Спасибо за Ваш заказ!';
   $message   = '<h2>Детали заказа:</h2>';
 
+  // Ключи полей, значения которых форматируем как валюту
+  $currency_keys = array( 'price', 'services_sum' );
   foreach ( $form_data as $key => $value ) {
-    // Remove [] suffix from label for display
-    $label = str_replace( array('_', '[]'), array(' ', ''), $key );
-    
-    // Skip empty values
-    if ( is_array( $value ) ) {
-      // Filter out empty array items
-      $value = array_filter( $value, function($v) { 
-        return !empty($v) && $v !== 'Выберите...'; 
-      });
-      if ( empty( $value ) ) continue; // Skip if array is now empty
-      
-      $message .= "<br/>$label:<br/><br/><i> - " . implode('<br/> - ', array_map('esc_html', $value)) . '</i>';
-    } else {
-      $val = is_scalar($value) ? (string) $value : '';
-      
-      // Skip empty or placeholder values
-      if ( empty($val) || $val === 'Выберите...' ) continue;
-      
-      // Formatting rules:
-      // - Currency only for known price keys
-      // - Hours for car_hours or labels containing "час"
-      // - Never format phone/email as currency
-      $currency_keys = array( 'Цена', 'services_sum', 'В том числе дополнительных услуг на сумму' );
-      $hours_keys    = array( 'car_hours', 'Время автомобиля (час)' );
-      $lower_label   = function_exists('mb_strtolower') ? mb_strtolower( $label, 'UTF-8' ) : strtolower( $label );
+    $label = isset($labels[$key]) ? $labels[$key] : $key;
 
-      if ( is_numeric( $val ) ) {
-        if ( in_array( $key, $currency_keys, true ) || in_array( $label, $currency_keys, true ) ) {
-          $val = number_format( (float) $val, 0, ',', ' ' ) . ' €';
-        } elseif ( in_array( $key, $hours_keys, true ) || strpos( $lower_label, 'час' ) !== false ) {
-          $val = number_format( (float) $val, 0, ',', ' ' ) . ' ч.';
-        } elseif ( $key === 'Телефон' || $label === 'Телефон' || $key === 'email' || $label === 'email' ) {
-          $val = esc_html( $val );
-        } else {
-          // Default: plain number without currency
-          $val = esc_html( $val );
-        }
+    if ( is_array( $value ) ) {
+      $filtered = array_filter( $value );
+      if ( empty( $filtered ) ) { continue; }
+      $message .= "<br/>$label:<br/><br/><i> - " . implode('<br/> - ', array_map('esc_html', $filtered)) . '</i>';
+      continue;
+    }
+
+    $val = is_scalar($value) ? trim( (string) $value ) : '';
+    if ( $val === '' ) { continue; }
+
+    if ( is_numeric( $val ) ) {
+      if ( in_array( $key, $currency_keys, true ) ) {
+        $formatted = number_format( (float) $val, 0, ',', ' ' ) . ' €';
       } else {
-        $val = esc_html( $val );
+        $formatted = esc_html( $val );
       }
-      $message .= "<br/>$label: <i>$val</i><br/>";
-      if ( $key === 'Телефон' ) {
-        $message .= '<br/><hr/><br/>';
-      }
+    } else {
+      $formatted = esc_html( $val );
+    }
+
+    $message .= "<br/>$label: <i>$formatted</i><br/>";
+    if ( $key === 'Телефон' ) {
+      $message .= '<br/><hr/><br/>';
     }
   }
 
@@ -197,3 +194,33 @@ function beautifulwedding_enqueue_photoswipe_assets() {
     );
 }
 add_action( 'wp_enqueue_scripts', 'beautifulwedding_enqueue_photoswipe_assets' );
+
+add_action('template_redirect', function () {
+
+    // Админы всегда видят сайт
+    if ( current_user_can('manage_options') ) {
+        return;
+    }
+
+    // Список разрешённых URL (slug, путь или ID)
+    $allowed = [
+        '/anketa-vstupjushhih-v-brak'        // страница анкеты
+    ];
+
+    $current_path = strtok($_SERVER['REQUEST_URI'], '?'); // без GET-параметров
+
+    // Разрешаем доступ, если путь совпадает
+    foreach ($allowed as $path) {
+        if (rtrim($current_path, '/') === rtrim($path, '/')) {
+            return;
+        }
+    }
+
+    // Всё остальное: режим обслуживания
+    wp_die(
+        '<h1>Сайт в стадии разработки</h1><p>Ориентировочная дата запуска: 10.01.2026</p>',
+        'Обслуживание',
+        ['response' => 503]
+    );
+});
+

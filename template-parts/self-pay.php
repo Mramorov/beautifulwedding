@@ -6,9 +6,9 @@
  * Временная тестовая разметка для вывода в single-svadba.php.
  */
 ?>
-<section class="svadba-selfpay-block">
+<section class="svadba-selfpay-block boxed">
     <h3>Самостоятельно оплачивается</h3>
-    <ul>
+    <ul class="with-checkmarks">
         <li>авиаперелет или ж/д переезд, виза, проживание</li>
         <li>справки о гражданском состоянии</li>
         <li>перевод свидетельств о разводе, об изменении имени или фамилии</li>

@@ -1,0 +1,223 @@
+/* Прайс-лист - специфичные стили */
+
+.price-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Табы - скрытие неактивных панелей */
+.svadba-tab-pane {
+    display: none;
+}
+
+.svadba-tab-pane.active {
+    display: block;
+}
+
+.price-header h1 {
+    margin-bottom: 1rem;
+}
+
+.price-placeholder {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--color-text);
+    background: var(--color-bg-alt);
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.price-placeholder p {
+    font-size: 1.1rem;
+    opacity: 0.7;
+}
+
+/* Секции с таблицами */
+.price-section {
+    margin-bottom: 3rem;
+}
+
+.price-section h3 {
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+/* Таблица цен */
+.price-table {
+    border: 1px solid var(--color-bg-alt);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--color-white);
+}
+
+.price-table-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    background: var(--color-bg-alt);
+    font-weight: 600;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+}
+
+.price-table-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    border-top: 1px solid var(--color-bg-alt);
+    transition: background-color 0.2s ease;
+}
+
+.price-table-row:hover {
+    background: var(--color-bg);
+}
+
+.price-cell {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+}
+
+.price-cell-name {
+    text-align: left;
+}
+
+.price-cell-price {
+    text-align: right;
+    font-weight: 600;
+    color: var(--color-primary);
+    min-width: 120px;
+    justify-content: flex-end;
+}
+
+.price-table-header .price-cell-price {
+    color: var(--color-secondary);
+}
+
+/* Таблица мест свадеб с пакетами - плоская grid-сетка */
+.wedding-places-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    border: 1px solid var(--color-bg-alt);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--color-white);
+    margin: 2rem 0;
+}
+
+.place-cell {
+    padding: 14px 18px;
+    border-right: 1px solid var(--color-bg-alt);
+    border-bottom: 1px solid var(--color-bg-alt);
+    display: flex;
+    align-items: center;
+}
+
+.place-cell:last-child {
+    border-right: none;
+}
+
+/* Ячейки заголовка */
+.place-cell.header {
+    background: var(--color-bg-alt);
+    font-weight: 600;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    text-align: center;
+    justify-content: center;
+}
+
+/* Ячейки с названиями мест */
+.place-cell.place-name {
+    text-align: left;
+}
+
+.place-cell.place-name a {
+    color: var(--color-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.place-cell.place-name a:hover {
+    color: var(--color-primary);
+}
+
+/* Ячейки с ценами */
+.place-cell.place-price,
+.place-cell.packet-price {
+    text-align: right;
+    font-weight: 600;
+    color: var(--color-primary);
+    justify-content: flex-end;
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .price-cell {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+    
+    .wedding-places-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .place-cell {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        border-right: none;
+    }
+    
+    .place-cell.place-price,
+    .place-cell.packet-price {
+        text-align: left;
+        justify-content: space-between;
+    }
+    
+    .place-cell.place-price::before {
+        content: 'Базовая цена: ';
+        font-weight: normal;
+        color: var(--color-text);
+    }
+    
+    .place-cell.packet-price::before {
+        content: attr(data-packet-name) ': ';
+        font-weight: normal;
+        color: var(--color-text);
+    }
+    
+    .price-section h3 {
+        font-size: 1rem;
+    }
+    
+    .price-table-header {
+        font-size: 0.85rem;
+    }
+    
+    .price-cell-price {
+        min-width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .price-table-header,
+    .price-table-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .price-cell-price {
+        border-top: 1px solid var(--color-bg-alt);
+        padding-top: 8px;
+        margin-top: 8px;
+    }
+    
+    .price-table-row .price-cell-name {
+        padding-bottom: 0;
+    }
+}

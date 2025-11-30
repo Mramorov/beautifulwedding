@@ -1,0 +1,289 @@
+/**
+ * Стили мега-меню
+ * 
+ * Использует CSS-переменные темы для цветов и адаптируется
+ * к существующему дизайну beautifulwedding
+ * 
+ * @package BeautifulWedding
+ */
+
+/* ============================================
+   Основной контейнер навигации
+   ============================================ */
+
+.main-navigation {
+    display: flex;
+    align-items: center;
+}
+
+.custom-mega-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* ============================================
+   Пункты меню первого уровня
+   ============================================ */
+
+.custom-mega-menu > li {
+    position: relative;
+}
+
+.custom-mega-menu > li > a {
+    display: block;
+    padding: 10px 16px;
+    text-decoration: none;
+    color: var(--color-white, #fff);
+    font-weight: 500;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+.custom-mega-menu > li > a:hover {
+    color: var(--color-primary, #D232E0);
+}
+
+/* ============================================
+   Выпадающий блок мега-меню
+   ============================================ */
+
+.custom-mega-menu .mega-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: none;
+    background: #33223b;
+    border: 1px solid #4c3557;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    min-width: 300px;
+}
+
+.custom-mega-menu > li.has-mega-menu:hover .mega-menu,
+.custom-mega-menu > li.has-mega-menu:focus-within .mega-menu,
+.custom-mega-menu > li.has-mega-menu .mega-menu:hover {
+    display: block;
+} 
+
+/* Внутренний flex-контейнер: список + баннер */
+.custom-mega-menu .mega-menu-inner {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+}
+
+/* ============================================
+   Список мест в выпадающем блоке
+   ============================================ */
+
+.custom-mega-menu .mega-menu-list {
+    display: grid;
+    grid-template-columns: repeat(var(--mm-cols, 2), 1fr);
+    gap: 0.5rem 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 24px 20px;
+    min-width: 500px;
+}
+
+.custom-mega-menu .mega-menu-list li {
+    display: flex;
+    align-items: center;
+    min-width: 240px;
+    transition: padding-left 0.3s ease;
+}
+
+/* Иконка перед пунктом */
+.custom-mega-menu .mega-menu-list li:before {
+    content: "➳";
+    font-family: "Font Awesome 5 Free", "Font Awesome 6 Free";
+    padding-right: 10px;
+    font-size: 22px;
+    color: var(--color-primary, #D232E0);
+    transition: padding 0.3s ease;
+}
+
+/* Эффект при наведении */
+.custom-mega-menu .mega-menu-list li:hover:before {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.custom-mega-menu .mega-menu-list li a {
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.custom-mega-menu .mega-menu-list li:hover a {
+    color: #fff;
+}
+
+/* Пустой список */
+.custom-mega-menu .mega-menu-list li.empty-list {
+    grid-column: 1 / -1;
+    justify-content: center;
+    color: #999;
+    font-style: italic;
+}
+
+.custom-mega-menu .mega-menu-list li.empty-list:before {
+    content: none;
+}
+
+/* ============================================
+   Баннер с превью и информацией
+   ============================================ */
+
+.right-mega-banner {
+    width: 450px;
+    min-height: 300px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border-radius: 0 6px 6px 0;
+}
+
+/* Затемняющий оверлей */
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(7, 2, 31, 0.55);
+    border-radius: 0 6px 6px 0;
+}
+
+/* Текстовый блок с информацией */
+.banner-textblock {
+    position: relative;
+    z-index: 1;
+    padding: 1.5rem;
+    text-align: center;
+    width: 100%;
+    text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.8);
+}
+
+.banner-textblock p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Блоки информации о месте */
+.banner-textblock > div {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    text-align: left;
+}
+
+.banner-textblock > div:last-child {
+    margin-bottom: 0;
+}
+
+.banner-textblock-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+.banner-textblock-values {
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* Разделители между значениями */
+.banner-textblock-values span:not(:last-child)::after {
+    content: ", ";
+}
+
+/* ============================================
+   Адаптивность
+   ============================================ */
+
+@media (max-width: 1200px) {
+    .right-mega-banner {
+        width: 350px;
+    }
+
+    .custom-mega-menu .mega-menu-list {
+        min-width: 400px;
+        padding: 20px 16px;
+    }
+}
+
+@media (max-width: 992px) {
+    .custom-mega-menu {
+        gap: 15px;
+    }
+
+    .custom-mega-menu > li > a {
+        padding: 8px 12px;
+        font-size: 0.95rem;
+    }
+
+    .custom-mega-menu .mega-menu-inner {
+        flex-direction: column;
+    }
+
+    .right-mega-banner {
+        width: 100%;
+        min-height: 200px;
+        border-radius: 0 0 6px 6px;
+    }
+
+    .banner-overlay {
+        border-radius: 0 0 6px 6px;
+    }
+
+    .custom-mega-menu .mega-menu-list {
+        min-width: auto;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .custom-mega-menu {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .custom-mega-menu > li {
+        width: 100%;
+    }
+
+    .custom-mega-menu .mega-menu {
+        position: static;
+        display: none;
+    }
+
+    .custom-mega-menu > li.has-mega-menu.active .mega-menu {
+        display: block;
+    }
+
+    .custom-mega-menu .mega-menu-list {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+
+    .banner-textblock-title {
+        min-width: 100px;
+        font-size: 0.9rem;
+    }
+
+    .banner-textblock-values {
+        font-size: 0.85rem;
+    }
+}

@@ -11,7 +11,8 @@ Tags: wedding, minimal, blog, classic
 */
 
 /* CSS Variables - Colors & Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Open+Sans:wght@300;400;600;700&display=swap&subset=cyrillic,cyrillic-ext,latin,latin-ext');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Open+Sans:wght@300;400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap&subset=cyrillic,cyrillic-ext,latin,latin-ext');
+
 
 /* Тема по умолчанию (розовая) */
 :root,
@@ -23,67 +24,13 @@ body.theme-default {
     --color-bg: #FFF9F5;
     --color-bg-alt: #FFF5F0;
     --color-white: #FFFFFF;
-    --font-heading: 'Cormorant', serif;
+    --font-heading: 'EB Cormorant', serif;
+    --font-hero: 'EB Garamond', serif;
     --font-body: 'Open Sans', sans-serif;
     --font-accent: 'Montserrat', sans-serif;
 }
 
-/* Тема 2: Голубая */
-body.theme-blue {
-    --color-primary: #a5c4d4;
-    --color-secondary: #6f8b9b;
-    --color-text: #4a5a5a;
-    --color-bg: #f5f9ff;
-    --color-bg-alt: #e8f2ff;
-}
-
-/* Тема 3: Лавандовая */
-body.theme-lavender {
-    --color-primary: #c4a5d4;
-    --color-secondary: #8b6f9b;
-    --color-text: #5a4a5a;
-    --color-bg: #f9f5ff;
-    --color-bg-alt: #f0e8ff;
-}
-
-/* Тема 4: Зелёная */
-body.theme-green {
-    --color-primary: #a5d4b0;
-    --color-secondary: #6f9b7a;
-    --color-text: #4a5a50;
-    --color-bg: #f5fff8;
-    --color-bg-alt: #e8ffe8;
-}
-
-/* Переключатель тем (только для разработки) */
-.theme-switcher {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 9999;
-    background: var(--color-white);
-    padding: 10px;
-    border: 2px solid var(--color-primary);
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.theme-switcher button {
-    display: block;
-    width: 100%;
-    margin: 4px 0;
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    border: 1px solid var(--color-secondary);
-    background: var(--color-bg-alt);
-    cursor: pointer;
-    border-radius: 3px;
-}
-
-.theme-switcher button:hover {
-    background: var(--color-primary);
-    color: var(--color-white);
-}
+/* Доп. темы и dev-переключатель удалены */
 
 /* Basic Reset */
 * {
@@ -104,8 +51,17 @@ a {
     color: var(--color-secondary);
 }
 
+.entry-header a {
+    color: var(--color-bg);
+}
+
 p {
-    color:var(--color-text);
+    color: var(--color-text);
+    margin-bottom: 0.85rem;
+}
+
+p.small-prim {
+    font-size: small;
 }
 
 /* Typography - Headings */
@@ -119,33 +75,30 @@ h6 {
     color: var(--color-secondary);
     line-height: 1.25;
     font-weight: 600;
+    text-align: center;
+    margin: 1.3em 0 1em;
 }
 
 h1 {
     font-size: clamp(2.125rem, 3.5vw, 3rem);
-    margin: 0 0 0.6em;
 }
 
 h2 {
     font-size: clamp(1.75rem, 3vw, 2.25rem);
-    margin: 1.2em 0 0.5em;
 }
 
 h3 {
     font-size: clamp(1.5rem, 2.2vw, 1.75rem);
-    margin: 1.1em 0 0.5em;
 }
 
 h4 {
     font-size: 1.25rem;
-    margin: 1.1em 0 0.5em;
 }
 
 h5 {
     font-size: 1.1rem;
     letter-spacing: 0.01em;
     color: var(--color-secondary);
-    margin: 1em 0 0.5em;
 }
 
 h6 {
@@ -154,15 +107,23 @@ h6 {
     letter-spacing: 0.04em;
     color: var(--color-text);
     text-transform: uppercase;
-    margin: 1em 0 0.5em;
 }
 
-/* Layout - Site Container */
-.site {
-    max-width: var(--content-width);
-    margin: 0 auto;
-    padding: 40px 24px;
+/* Layout - Grid System */
+.layout {
+    display: grid;
+    grid-template-columns: 1fr minmax(auto, 1200px) 1fr;
     min-height: 100vh;
+}
+
+.full {
+    grid-column: 1 / 4;
+}
+
+.boxed {
+    grid-column: 2;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 /* Layout - Navigation */
@@ -176,21 +137,9 @@ h6 {
 
 /* removed unused: social icons, container helpers, text-center */
 
-/* Responsive */
-@media (max-width: 768px) {
-    .site {
-        padding: 20px 15px;
-    }
-
-    .site-nav ul {
-        flex-direction: column;
-        gap: 15px;
-    }
-}
-
 /* Tabs (global visual styling) */
 .svadba-tabs-nav {
-    margin: 2.5rem 0 1.5rem;
+    margin: 2.5rem 0 0rem;
     border-bottom: 1px solid var(--color-primary);
     position: relative;
 }
@@ -271,12 +220,8 @@ h6 {
 }
 
 .modal-info-header {
-    font-family: var(--font-heading);
-    font-size: 1.35rem;
-    color: var(--color-secondary);
     margin: 0 0 1.5rem;
     text-align: center;
-    font-weight: 600;
 }
 
 .modal form {
@@ -415,35 +360,29 @@ button {
 }
 
 /* Lists */
-.entry-content ul,
-.base-packet-content ul,
-.svadba-tab-pane ul {
+ul.with-checkmarks {
     list-style: none;
     padding: 0;
     margin: 1.5em 0;
 }
 
-.entry-content ul li,
-.base-packet-content ul li,
-.svadba-tab-pane ul li {
+ul.with-checkmarks li {
     position: relative;
     padding-left: 1.75em;
-    margin-bottom: 0.85em;
-    line-height: 1.6;
-    color: var(--color-text);
-    font-size: 1rem;
+    margin-bottom: 0.65em;
 }
 
-.entry-content ul li::before,
-.base-packet-content ul li::before,
-.svadba-tab-pane ul li::before {
+ul.with-checkmarks li::before {
     content: '✓';
     position: absolute;
     left: 0;
     top: 0.05em;
-    color: var(--color-primary);
     font-weight: 700;
     font-size: 1.1em;
+}
+
+.entry-content ul.with-checkmarks li::before {
+    color: var(--color-primary);
 }
 
 /* Packets Grid */
@@ -491,30 +430,15 @@ button {
     color: var(--color-text);
     text-align: left;
 }
+
 .packets-cell {
     text-align: center;
     color: var(--color-text);
     font-size: 0.95rem;
 }
 
-@media (max-width: 699px) {
-    .packets-cell {
-        padding: 12px 14px;
-    }
-
-    .packets-cell.header .packet-name {
-        font-size: 1.1rem;
-    }
-
-    .packets-cell.header .packet-price {
-        font-size: 1rem;
-    }
-}
-
 /* Svadba Gallery (masonry via CSS grid + JS) */
-.svadba-gallery {
-    margin: 3rem 0;
-}
+
 .svadba-gallery-grid {
     column-count: 5;
     column-gap: 6px;
@@ -542,6 +466,84 @@ button {
     border-radius: 5px;
 }
 
+/* Svadba Hero Header - Full Screen */
+.svadba-hero {
+    position: relative;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    clip-path: url(#wave-clip);
+}
+
+.svadba-hero-overlay {
+    position: absolute;
+    inset: 0.5rem;
+    border-radius: 5px;
+    background: rgb(0 0 0);
+    background-image: url(/wp-content/themes/beautifulwedding/img/graph-1.png), url(/wp-content/themes/beautifulwedding/img/graph-2.png), url(/wp-content/themes/beautifulwedding/img/graph-3.png);
+    background-repeat: no-repeat;
+    background-position-x: 32vw, 53vw, 100%;
+    background-position-y: 78vh, 66vh, 97%;
+    z-index: 1;
+    opacity: 0.7;
+    background-size: 20vw, 35vw, 10vw;
+    clip-path: url(#wave-clip);
+}
+
+.svadba-hero-content {
+    z-index: 2;
+    text-align: center;
+    color: var(--color-bg);
+    /* background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 67%, rgba(0, 0, 0, 0) 100%); */
+    border-radius: 3px;
+    font-family: var(--font-hero);
+    font-size: 1.15em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    /* align-content: space-between; */
+    height: 100%;
+    position: relative;
+    align-items: center;
+}
+
+.head-price-field {
+    font-size: 2em;
+    margin-bottom: 2em;
+}
+
+span.old-price-value {
+    text-decoration: line-through;
+}
+
+span.new-price-value {
+    font-size: 2.5em;
+}
+
+
+.svadba-hero .entry-title {
+    color: var(--color-bg);
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    margin: 0;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    text-transform: capitalize;
+}
+
+.svadba-hero .entry-meta {
+    position: relative;
+    color: var(--color-bg);
+    /* font-family: var(--font-accent);
+    font-size: clamp(1rem, 2vw, 1.25rem); */
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+
+
+/* ============================================
+   Responsive Media Queries
+   ============================================ */
+
 @media (min-width: 1600px) {
     .svadba-gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -556,73 +558,41 @@ button {
     }
 }
 
+@media (max-width: 768px) {
+    .boxed {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .site-nav ul {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .svadba-hero {
+        height: 70vh;
+        min-height: 500px;
+    }
+}
+
+@media (max-width: 699px) {
+    .packets-cell {
+        padding: 12px 14px;
+    }
+
+    .packets-cell.header .packet-name {
+        font-size: 1.1rem;
+    }
+
+    .packets-cell.header .packet-price {
+        font-size: 1rem;
+    }
+}
+
 @media (max-width: 600px) {
     .svadba-gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 8px;
         grid-auto-rows: 6px;
-    }
-}
-
-/* Svadba Hero Header - Full Screen */
-.svadba-hero {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.svadba-hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 1;
-}
-
-.svadba-hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 0 20px;
-    max-width: 900px;
-}
-
-.svadba-hero .entry-title {
-    color: var(--color-bg);
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
-    margin: 0 0 0.5em;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-}
-
-.svadba-hero .entry-meta {
-    color: var(--color-bg);
-    font-family: var(--font-accent);
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-}
-
-.svadba-hero .svadba-locations a {
-    color: var(--color-bg);
-    text-decoration: none;
-    border-bottom: 1px solid rgba(255, 249, 245, 0.5);
-    transition: border-color 0.2s ease;
-}
-
-.svadba-hero .svadba-locations a:hover {
-    border-bottom-color: var(--color-bg);
-}
-
-@media (max-width: 768px) {
-    .svadba-hero {
-        height: 70vh;
-        min-height: 500px;
     }
 }

@@ -45,8 +45,8 @@ function svadba_packets_shortcode_handler($atts = array()) {
     $service_order = svadba_get_service_order();
 
     // Determine base values from post meta
-    $distance = (int) get_post_meta($post_id, 'distance', true);
-    if ($distance <= 0) $distance = 1;
+    // Distance (base car time) - minimum enforced at 2 to align with pricing logic
+    $distance = max(BW_MIN_DISTANCE, (int) get_post_meta($post_id, 'distance', true));
     $base_place_price = (float) get_post_meta($post_id, 'fromnew', true);
 
     foreach ($rows as $r) {
@@ -108,10 +108,14 @@ function svadba_packets_shortcode_handler($atts = array()) {
     $pack_prices_total = array(); // base + discounted
 
     // Base auto deduction (align with new 0.7 coefficient)
-    $base_auto_deduction = round(($base_auto_price * $distance * 0.7) / 10) * 10;
+    $base_auto_deduction = round(($base_auto_price * $distance * BW_AUTO_DEDUCTION_COEF) / BW_ROUND_STEP) * BW_ROUND_STEP;
+
+    // Photographer travel rate (per extra distance unit above 2)
+    $PHOTOGRAPHER_TRAVEL_RATE = BW_TRAVEL_RATE_PHOTO_VIDEO; // centralized config
 
     foreach ($packets as $idx => $items) {
         $sum = 0.0;
+        $has_photo = false;
         foreach ($items as $it) {
             switch ($it['key']) {
                 case 'auto':
@@ -127,6 +131,13 @@ function svadba_packets_shortcode_handler($atts = array()) {
                     }
                     break;
                 case 'photo':
+                    $has_photo = true;
+                    // Try to extract hours from beginning of sname
+                    $sentence = $it['sname'];
+                    $spacePos = strpos($sentence, ' ');
+                    $hours = $spacePos !== false ? (int) substr($sentence, 0, $spacePos) : 0;
+                    $sum += $it['sprice'];
+                    break;
                 case 'video':
                     // Try to extract hours from beginning of sname
                     $sentence = $it['sname'];
@@ -138,8 +149,12 @@ function svadba_packets_shortcode_handler($atts = array()) {
                     $sum += $it['sprice'];
             }
         }
+        // Add photographer travel cost ONCE per packet if photo present and distance > 2
+        if ($has_photo && $distance > BW_MIN_DISTANCE) {
+            $sum += ($distance - BW_MIN_DISTANCE) * $PHOTOGRAPHER_TRAVEL_RATE;
+        }
         $pack_prices[$idx] = $sum;
-        $pack_prices_total[$idx] = (int)$base_place_price + (int)(round(($sum * 0.8) / 10) * 10); // 20% discount
+        $pack_prices_total[$idx] = (int)$base_place_price + (int)(round(($sum * BW_PACKET_DISCOUNT_COEF) / BW_ROUND_STEP) * BW_ROUND_STEP); // discount & rounding
     }
 
     // Build grid HTML
@@ -172,7 +187,7 @@ function svadba_packets_shortcode_handler($atts = array()) {
             $cellPrice = 0;
             foreach ($items as $it) {
                 $key = $it['key'];
-                $label = isset($labels[$key]) ? $labels[$key] : '';
+                //$label = isset($labels[$key]) ? $labels[$key] : '';
                 // Match auto rows by full name including model
                 if ($key === 'auto' && $prodName === ($labels['auto'] . ': ' . $it['sname'])) {
                     $hours = ($distance == 2) ? ($distance + $idx + 1) : $distance;
@@ -190,7 +205,11 @@ function svadba_packets_shortcode_handler($atts = array()) {
                     $spacePos = strpos($sentence, ' ');
                     $hours = $spacePos !== false ? (int) substr($sentence, 0, $spacePos) : 0;
                     $display = ($hours > 0 ? $hours . ' ч.' : '✓');
+                    // Include travel cost in displayed price if distance > 2
                     $cellPrice = (float)$it['sprice'];
+                    if ($distance > BW_MIN_DISTANCE) {
+                        $cellPrice += ($distance - BW_MIN_DISTANCE) * $PHOTOGRAPHER_TRAVEL_RATE;
+                    }
                     break;
                 }
                 if ($key === 'video' && $prodName === $labels['video']) {

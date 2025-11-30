@@ -67,19 +67,21 @@ function svadba_generate_form_html() {
 
     $html .= '<div> <input type="hidden" id="calcField" name="services_sum" value="-1"></div>';
 
-    // Selects block
+    // Selects block (whitelist via service order)
     $html .= '<div class="select-block">';
+    $service_order = function_exists('svadba_get_service_order') ? svadba_get_service_order() : array();
+    // сортируем по значению (приоритету)
+    asort($service_order, SORT_NUMERIC);
+    $select_keys = array_keys($service_order);
 
-    foreach (array_keys($data->labels) as $sel_key) {
+    foreach ($select_keys as $sel_key) {
         $options = isset($data->items_by_key[$sel_key]) ? $data->items_by_key[$sel_key] : array();
         $label = isset($data->labels[$sel_key]) ? $data->labels[$sel_key] : ucfirst($sel_key);
 
-        // generate select
         $html .= '<div class="select-row">';
         $html .= '<div class="select-label">' . esc_html($label) . '</div>';
         $html .= '<div class="select-control">';
-        
-        // For auto select, add data attributes for base price and distance (kept)
+
         $auto_data_attrs = '';
         if ($sel_key === 'auto') {
             $distance = (int) get_post_meta(get_the_ID(), 'distance', true);
@@ -87,32 +89,26 @@ function svadba_generate_form_html() {
             $base_auto_price = isset($options[0]['sprice']) ? $options[0]['sprice'] : 0;
             $auto_data_attrs = ' data-distance="' . esc_attr($distance) . '" data-base-auto-price="' . esc_attr($base_auto_price) . '"';
         }
-        
+
         $html .= '<select class="' . esc_attr($sel_key) . '-select select-element" name="' . esc_attr($sel_key) . '"' . $auto_data_attrs . '>';
-        
-        // Special case for 'auto': no "Выберите..." option, first item selected by default
         if ($sel_key !== 'auto') {
             $html .= '<option value="" data-calculate="0">Выберите...</option>';
         }
-        
+
         $first = true;
         foreach ($options as $opt) {
             $sname = isset($opt['sname']) ? $opt['sname'] : '';
             $sprice = isset($opt['sprice']) ? $opt['sprice'] : 0;
-            // if sdetail available, store it in data-detail attribute
             $data_detail_attr = !empty($opt['sdetail']) ? ' data-detail="' . esc_attr($opt['sdetail']) . '"' : '';
             $selected = ($sel_key === 'auto' && $first) ? ' selected' : '';
             $html .= '<option value="' . esc_attr($sname) . '" data-calculate="' . esc_attr($sprice) . '"' . $data_detail_attr . $selected . '>' . esc_html($sname) . '</option>';
             $first = false;
         }
         $html .= '</select>';
-        // add detail container inside select-control, right after select
         $html .= '<div class="select-detail" data-for="' . esc_attr($sel_key) . '"></div>';
-        $html .= '</div>'; // .select-control
+        $html .= '</div>';
+        $html .= '</div>';
 
-        $html .= '</div>'; // .select-row
-
-        // Auto hours: render as a separate uniform row like others
         if ($sel_key === 'auto') {
             $distance = (int) get_post_meta(get_the_ID(), 'distance', true);
             if ($distance <= 0) { $distance = 1; }
@@ -120,23 +116,22 @@ function svadba_generate_form_html() {
             $html .= '<div class="select-row">';
             $html .= '<div class="select-label">Часы автомобиля:</div>';
             $html .= '<div class="select-control">';
-            $html .= '<select id="auto-hours-select" class="auto-hours-select select-element" name="car_hours" data-base-distance="' . esc_attr($distance) . '">';
+            $html .= '<select id="auto-hours-select" class="auto-hours-select select-element" name="car_hours">';
             for ($h = $distance; $h <= $max_hours; $h++) {
                 $sel = ($h === $distance) ? ' selected' : '';
                 $html .= '<option value="' . esc_attr($h) . '"' . $sel . '>' . esc_html($h) . '</option>';
             }
             $html .= '</select>';
-            $html .= '</div>'; // .select-control
-            $html .= '</div>'; // .select-row (hours)
+            $html .= '</div>';
+            $html .= '</div>';
         }
     }
-
-    $html .= '</div>'; // .select-block
+    $html .= '</div>';
 
     // Checkboxes block: gather all keys that are not select_keys
     $html .= '<div class="check-block">';
     $all_keys = array_keys($data->items_by_key);
-    $checkbox_keys = array_diff($all_keys, array_keys($data->labels));
+    $checkbox_keys = array_diff($all_keys, $select_keys); // всё что не рендерим как селекты
 
     foreach ($checkbox_keys as $chk_key) {
         foreach ($data->items_by_key[$chk_key] as $chk_item) {

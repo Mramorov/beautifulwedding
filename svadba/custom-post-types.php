@@ -138,3 +138,36 @@ add_action('init', function() {
     );
     register_taxonomy('ceremonies', array('svadba'), $args);
 });
+
+// Sort wedding_days taxonomy terms in weekday order
+add_filter('get_terms', function($terms, $taxonomies, $args) {
+    // Apply only to wedding_days taxonomy
+    if (!in_array('wedding_days', (array)$taxonomies)) {
+        return $terms;
+    }
+    
+    // Weekday order
+    $order = array(
+        'Понедельник',
+        'Вторник',
+        'Среда',
+        'Четверг',
+        'Пятница',
+        'Суббота',
+        'Воскресенье',
+        'По договорённости'
+    );
+    
+    usort($terms, function($a, $b) use ($order) {
+        $pos_a = array_search($a->name, $order);
+        $pos_b = array_search($b->name, $order);
+        
+        // If term not found in list, put at end
+        if ($pos_a === false) $pos_a = 999;
+        if ($pos_b === false) $pos_b = 999;
+        
+        return $pos_a - $pos_b;
+    });
+    
+    return $terms;
+}, 10, 3);
