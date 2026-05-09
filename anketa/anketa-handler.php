@@ -64,7 +64,6 @@ if (!function_exists('anketa_build_email_body_html')) {
  */
 if (!function_exists('anketa_get_edit_url')) {
     function anketa_get_edit_url($hash) {
-        $edit_base = '';
         // Поиск страницы с шаблоном
         $pages = get_pages(array(
             'meta_key' => '_wp_page_template',
@@ -73,17 +72,11 @@ if (!function_exists('anketa_get_edit_url')) {
         ));
         if (!empty($pages)) {
             $edit_base = get_permalink($pages[0]->ID);
+            return add_query_arg('hash', $hash, $edit_base);
         } else {
-            // fallback: попробуем найти по слагу (если автор решит назвать страницу 'anketa')
-            $maybe = get_page_by_path('anketa');
-            if ($maybe) {
-                $edit_base = get_permalink($maybe->ID);
-            }
+            // Если страница не найдена, выбрасываем ошибку
+            return new WP_Error('anketa_page_not_found', 'Страница анкеты с нужным шаблоном не найдена', array('status' => 404));
         }
-        if (empty($edit_base)) {
-            $edit_base = home_url('/');
-        }
-        return add_query_arg('hash', $hash, $edit_base);
     }
 }
 

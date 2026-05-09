@@ -18,17 +18,7 @@
       <div class="svadba-hero-menu-center">
         <?php get_template_part('templates/main-menu'); ?>
       </div>
-      <div class="head-title-wrap">
-        <?php get_template_part('templates/animated-title'); ?>
-        <?php
-        $fromold = get_post_meta($post_id, 'fromold', true);
-        $fromnew = get_post_meta($post_id, 'fromnew', true);
-        ?>
-        <div class="head-price-field">
-          от:</span>
-          <span class="old-price-value"><?php echo esc_html($fromold); ?> </span><span class="new-price-value"><?php echo esc_html($fromnew); ?> €</span>
-        </div>
-      </div>
+      <?php get_template_part('templates/animated-title'); ?>
       <div class="empty-div"></div>
     </div>
     <svg width="0" height="0" style="position: absolute;">

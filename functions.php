@@ -2,20 +2,26 @@
 
 /** Minimal theme setup */
 
-// Include Svadba post type and related functionality
-require get_template_directory() . '/svadba/custom-post-types.php';
-require get_template_directory() . '/svadba/custom-fields.php';
-require get_template_directory() . '/svadba/custom-repeater.php';
-require get_template_directory() . '/svadba/svadba.php';
-require get_template_directory() . '/svadba/packets.php';
+/** Reverting svadba CPT and related functionality to always load */
+require_once get_template_directory() . '/inc/cpt/svadba-post-type.php';
+//Для работы метабоксов свадбы в админке
+require_once get_template_directory() . '/inc/meta-fields/svadba-fields.php';
+require_once get_template_directory() . '/inc/meta-fields/svadba-repeater.php';
+require_once get_template_directory() . '/inc/meta-fields/svadba-gallery.php';
+//для словаря меток. надо пересмотреть
+require_once get_template_directory() . '/inc/utils/svadba-common.php'; 
+/* require_once get_template_directory() . '/inc/utils/svadba-packets.php';
+require_once get_template_directory() . '/inc/utils/svadba-main.php';*/
+
 // Unified services config + shortcodes
-require_once get_template_directory() . '/inc/services-config.php';
-require_once get_template_directory() . '/inc/shortcodes-services.php';
 // Service CPT
-require_once get_template_directory() . '/inc/service-post-type.php';
+require_once get_template_directory() . '/inc/config/services-config.php';
+require_once get_template_directory() . '/inc/shortcodes/shortcodes-services.php';
+require_once get_template_directory() . '/inc/cpt/service-post-type.php';
 // Anketa feature files
-require_once get_template_directory() . '/anketa/common.php';
-require_once get_template_directory() . '/anketa/anketa-handler.php';
+//require_once get_template_directory() . '/anketa/common.php';
+require_once get_template_directory() . '/anketa/anketa-handler.php'; //для инициализации REST API анкеты
+
 
 function beautifulwedding_setup()
 {
@@ -36,12 +42,19 @@ function beautifulwedding_scripts()
   wp_enqueue_style('minimal-style', get_stylesheet_uri(), array(), $style_ver);
 
   // Подключение стилей и скриптов мега-меню
-  $menu_css = get_stylesheet_directory() . '/navigation/mega-menu.css';
-  $menu_js  = get_stylesheet_directory() . '/navigation/mega-menu.js';
+  $menu_css = get_stylesheet_directory() . '/assets/css/mega-menu.css';
+  $menu_js  = get_stylesheet_directory() . '/assets/js/mega-menu.js';
   $menu_css_ver = file_exists($menu_css) ? filemtime($menu_css) : $style_ver;
   $menu_js_ver  = file_exists($menu_js) ? filemtime($menu_js) : $style_ver;
-  wp_enqueue_style('bw-mega-menu', get_stylesheet_directory_uri() . '/navigation/mega-menu.css', array('minimal-style'), $menu_css_ver);
-  wp_enqueue_script('bw-mega-menu', get_stylesheet_directory_uri() . '/navigation/mega-menu.js', array('jquery'), $menu_js_ver, true);
+  wp_enqueue_style('bw-mega-menu', get_stylesheet_directory_uri() . '/assets/css/mega-menu.css', array('minimal-style'), $menu_css_ver);
+  wp_enqueue_script('bw-mega-menu', get_stylesheet_directory_uri() . '/assets/js/mega-menu.js', array('jquery'), $menu_js_ver, true);
+
+  // Подключение стилей главной страницы
+  if (is_front_page()) {
+    $front_css = get_stylesheet_directory() . '/assets/css/front-page.css';
+    $front_css_ver = file_exists($front_css) ? filemtime($front_css) : $style_ver;
+    wp_enqueue_style('bw-front-page', get_stylesheet_directory_uri() . '/assets/css/front-page.css', array('minimal-style'), $front_css_ver);
+  }
 }
 add_action('wp_enqueue_scripts', 'beautifulwedding_scripts');
 
@@ -68,15 +81,15 @@ function beautifulwedding_enqueue_svadba_assets() {
 
   if ( $load ) {
     // Get file modification times for versioning
-    $css_file = get_stylesheet_directory() . '/svadba/svadba.css';
-    $js_file = get_stylesheet_directory() . '/svadba/svadba.js';
+    $css_file = get_stylesheet_directory() . '/assets/css/svadba.css';
+    $js_file = get_stylesheet_directory() . '/assets/js/svadba.js';
     
     $css_version = file_exists($css_file) ? filemtime($css_file) : wp_get_theme()->get('Version');
     $js_version = file_exists($js_file) ? filemtime($js_file) : wp_get_theme()->get('Version');
 
-    wp_enqueue_style( 'svadba-form-style', get_stylesheet_directory_uri() . '/svadba/svadba.css', array( 'minimal-style' ), $css_version );
+    wp_enqueue_style( 'svadba-form-style', get_stylesheet_directory_uri() . '/assets/css/svadba.css', array( 'minimal-style' ), $css_version );
     // enqueue form behavior script
-    wp_enqueue_script( 'svadba-form-script', get_stylesheet_directory_uri() . '/svadba/svadba.js', array( 'jquery' ), $js_version, true );
+    wp_enqueue_script( 'svadba-form-script', get_stylesheet_directory_uri() . '/assets/js/svadba.js', array( 'jquery' ), $js_version, true );
     // Localize for REST submission
     wp_localize_script( 'svadba-form-script', 'customFormParams', array(
       'restUrl' => esc_url_raw( rest_url( 'custom-form/v1/submit' ) ),
@@ -156,46 +169,39 @@ add_action( 'rest_api_init', function() {
   ) );
 } );
 
-/** Enqueue PhotoSwipe assets for svadba single pages */
-function beautifulwedding_enqueue_photoswipe_assets() {
-    if ( ! is_singular( 'svadba' ) ) {
-        return;
-    }
+/** Enqueue GLightbox assets */
+function beautifulwedding_enqueue_lightbox_assets() {
+  if ( ! ( is_singular( 'svadba' ) || is_singular( 'service' ) ) ) {
+    return;
+  }
 
-    wp_enqueue_style(
-        'photoswipe',
-        'https://unpkg.com/photoswipe@5/dist/photoswipe.css',
-        array(),
-        '5.4.4'
-    );
+  // GLightbox from CDN
+  wp_enqueue_style(
+    'glightbox',
+    'https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css',
+    array(),
+    '3.3.0'
+  );
 
-    wp_enqueue_script(
-        'photoswipe',
-        'https://unpkg.com/photoswipe@5/dist/umd/photoswipe.umd.min.js',
-        array(),
-        '5.4.4',
-        true
-    );
+  wp_enqueue_script(
+    'glightbox',
+    'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js',
+    array(),
+    '3.3.0',
+    true
+  );
 
-    wp_enqueue_script(
-        'photoswipe-lightbox',
-        'https://unpkg.com/photoswipe@5/dist/umd/photoswipe-lightbox.umd.min.js',
-        array( 'photoswipe' ),
-        '5.4.4',
-        true
-    );
-
-    wp_enqueue_script(
-      'beautifulwedding-photoswipe-init',
-      get_template_directory_uri() . '/svadba/photoswipe-init.js',
-      array( 'photoswipe-lightbox' ),
-      filemtime( get_template_directory() . '/svadba/photoswipe-init.js' ),
-      true
-    );
+  wp_enqueue_script(
+    'beautifulwedding-glightbox-init',
+    get_template_directory_uri() . '/assets/js/glightbox-init.js',
+    array( 'glightbox' ),
+    filemtime( get_template_directory() . '/assets/js/glightbox-init.js' ),
+    true
+  );
 }
-add_action( 'wp_enqueue_scripts', 'beautifulwedding_enqueue_photoswipe_assets' );
+add_action( 'wp_enqueue_scripts', 'beautifulwedding_enqueue_lightbox_assets' );
 
-add_action('template_redirect', function () {
+/* add_action('template_redirect', function () {
 
     // Админы всегда видят сайт
     if ( current_user_can('manage_options') ) {
@@ -222,5 +228,5 @@ add_action('template_redirect', function () {
         'Обслуживание',
         ['response' => 503]
     );
-});
+}); */
 

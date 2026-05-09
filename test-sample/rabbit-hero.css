@@ -1,0 +1,786 @@
+/* ============================================
+   ОБЩИЕ СТИЛИ
+   ============================================ */
+
+.rabbit-page {
+  background: #0a0a0a;
+  color: #fff;
+  min-height: 100vh;
+  padding: 60px 20px;
+}
+
+.rabbit-page-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.rabbit-page-header h1 {
+  font-size: 3.5rem;
+  color: #fff;
+  margin-bottom: 15px;
+  font-weight: 700;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.rabbit-page-header p {
+  font-size: 1.25rem;
+  color: #999;
+}
+
+.hero-variant {
+  margin-bottom: 120px;
+}
+
+.hero-variant > h2 {
+  font-size: 1.75rem;
+  color: #fff;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+.hero {
+  position: relative;
+  min-height: 600px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #1a1a1a;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  padding: 80px 60px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-centered {
+  align-items: center;
+  text-align: center;
+}
+
+/* ============================================
+   ВАРИАНТ 1: SVG КРОЛИК С ЧАСАМИ
+   ============================================ */
+
+.hero-1 {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+}
+
+.clock-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  animation: rotate-slow 60s linear infinite;
+}
+
+@keyframes rotate-slow {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.clock {
+  width: 100%;
+  height: 100%;
+  filter: blur(2px);
+}
+
+.hour-hand {
+  transform-origin: 100px 100px;
+  animation: rotate-hour 43200s linear infinite;
+}
+
+.minute-hand {
+  transform-origin: 100px 100px;
+  animation: rotate-minute 3600s linear infinite;
+}
+
+.second-hand {
+  transform-origin: 100px 100px;
+  animation: rotate-second 60s linear infinite;
+}
+
+@keyframes rotate-hour {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-minute {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-second {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.hero-text h1 {
+  font-size: 4rem;
+  color: #fff;
+  margin-bottom: 20px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.glitch {
+  position: relative;
+  animation: glitch-skew 2s infinite;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff00de;
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim-1 3s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 #00fff9;
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip: rect(132px, 9999px, 101px, 0); }
+  10% { clip: rect(17px, 9999px, 94px, 0); }
+  20% { clip: rect(76px, 9999px, 77px, 0); }
+  30% { clip: rect(105px, 9999px, 123px, 0); }
+  40% { clip: rect(54px, 9999px, 140px, 0); }
+  50% { clip: rect(31px, 9999px, 25px, 0); }
+  60% { clip: rect(68px, 9999px, 36px, 0); }
+  70% { clip: rect(97px, 9999px, 86px, 0); }
+  80% { clip: rect(114px, 9999px, 56px, 0); }
+  90% { clip: rect(44px, 9999px, 121px, 0); }
+  100% { clip: rect(72px, 9999px, 133px, 0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip: rect(129px, 9999px, 36px, 0); }
+  10% { clip: rect(36px, 9999px, 4px, 0); }
+  20% { clip: rect(85px, 9999px, 66px, 0); }
+  30% { clip: rect(91px, 9999px, 91px, 0); }
+  40% { clip: rect(148px, 9999px, 138px, 0); }
+  50% { clip: rect(38px, 9999px, 137px, 0); }
+  60% { clip: rect(121px, 9999px, 104px, 0); }
+  70% { clip: rect(54px, 9999px, 86px, 0); }
+  80% { clip: rect(62px, 9999px, 15px, 0); }
+  90% { clip: rect(147px, 9999px, 116px, 0); }
+  100% { clip: rect(98px, 9999px, 71px, 0); }
+}
+
+@keyframes glitch-skew {
+  0% { transform: skew(0deg); }
+  10% { transform: skew(2deg); }
+  20% { transform: skew(-2deg); }
+  30% { transform: skew(1deg); }
+  40% { transform: skew(-1deg); }
+  50% { transform: skew(0deg); }
+}
+
+.typewriter {
+  font-size: 1.5rem;
+  color: #ccc;
+  margin-bottom: 40px;
+  font-style: italic;
+  overflow: hidden;
+  border-right: 3px solid #fff;
+  white-space: nowrap;
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+  max-width: fit-content;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: white; }
+}
+
+.rabbit-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 18px 40px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.rabbit-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+}
+
+.btn-arrow {
+  transition: transform 0.3s;
+}
+
+.rabbit-btn:hover .btn-arrow {
+  transform: translateX(5px);
+}
+
+/* Кролик бегущий */
+.rabbit-container {
+  position: absolute;
+  bottom: 100px;
+  right: -100px;
+  width: 150px;
+  height: 150px;
+  animation: run-across 8s linear infinite;
+}
+
+@keyframes run-across {
+  0% { right: -150px; }
+  100% { right: 100%; }
+}
+
+.rabbit-running {
+  animation: run-across 10s linear infinite, hop 0.5s ease-in-out infinite;
+}
+
+@keyframes hop {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(-5deg); }
+}
+
+.rabbit-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+}
+
+.rabbit-body,
+.rabbit-head,
+.rabbit-tail {
+  animation: body-bounce 0.5s ease-in-out infinite;
+}
+
+@keyframes body-bounce {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.05, 0.95); }
+}
+
+.rabbit-ear-left,
+.rabbit-ear-right {
+  animation: ear-flap 0.6s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes ear-flap {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+.pocket-watch {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 50px;
+  animation: watch-swing 1s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+@keyframes watch-swing {
+  0%, 100% { transform: translateX(-50%) rotate(-10deg); }
+  50% { transform: translateX(-50%) rotate(10deg); }
+}
+
+/* ============================================
+   ВАРИАНТ 2: MATRIX + NEON
+   ============================================ */
+
+.hero-2 {
+  background: #000;
+  position: relative;
+}
+
+.matrix-rain {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  opacity: 0.3;
+}
+
+.matrix-column {
+  position: absolute;
+  top: -100%;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(transparent, #0f0 40%, transparent);
+  animation: matrix-fall 15s linear infinite;
+}
+
+@keyframes matrix-fall {
+  0% { top: -100%; }
+  100% { top: 100%; }
+}
+
+.neon-text h1 {
+  font-size: 5rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 
+    0 0 10px #fff,
+    0 0 20px #fff,
+    0 0 30px #0ff,
+    0 0 40px #0ff,
+    0 0 50px #0ff,
+    0 0 60px #0ff,
+    0 0 70px #0ff;
+  animation: neon-flicker 3s infinite alternate;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow: 
+      0 0 10px #fff,
+      0 0 20px #fff,
+      0 0 30px #0ff,
+      0 0 40px #0ff,
+      0 0 50px #0ff,
+      0 0 60px #0ff,
+      0 0 70px #0ff;
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+  }
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  color: #ccc;
+  margin-bottom: 50px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.running-rabbit-track {
+  width: 100%;
+  height: 100px;
+  margin: 40px 0;
+  position: relative;
+  overflow: hidden;
+  border-top: 2px solid rgba(0, 255, 255, 0.3);
+  border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+}
+
+.running-rabbit {
+  position: absolute;
+  left: -100px;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: rabbit-run 5s linear infinite;
+}
+
+@keyframes rabbit-run {
+  0% { left: -100px; }
+  100% { left: 100%; }
+}
+
+.rabbit-sprite {
+  animation: rabbit-hop 0.3s ease-in-out infinite;
+}
+
+@keyframes rabbit-hop {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-15px) scaleY(1.1); }
+}
+
+.rabbit-emoji {
+  font-size: 4rem;
+  display: block;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+.matrix-btn {
+  position: relative;
+  background: transparent;
+  border: 2px solid #0ff;
+  color: #0ff;
+  padding: 18px 50px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  letter-spacing: 2px;
+  box-shadow: 
+    0 0 10px #0ff,
+    inset 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+.matrix-btn:hover {
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 
+    0 0 20px #0ff,
+    inset 0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+.btn-glitch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.matrix-btn:hover .btn-glitch {
+  animation: btn-glitch-effect 0.3s infinite;
+}
+
+@keyframes btn-glitch-effect {
+  0% { transform: translate(0); opacity: 0; }
+  33% { transform: translate(-2px, -2px); opacity: 0.7; }
+  66% { transform: translate(2px, 2px); opacity: 0.7; }
+  100% { transform: translate(0); opacity: 0; }
+}
+
+/* ============================================
+   ВАРИАНТ 3: ИНТЕРАКТИВНЫЙ
+   ============================================ */
+
+.hero-3 {
+  background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0f 100%);
+  position: relative;
+  cursor: none;
+}
+
+.particle-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-title-3 {
+  font-size: 5rem;
+  font-weight: 900;
+  margin-bottom: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.hero-title-3 .word {
+  display: inline-block;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(50px);
+  animation: word-appear 0.8s forwards;
+}
+
+.hero-title-3 .word:nth-child(1) { animation-delay: 0.2s; }
+.hero-title-3 .word:nth-child(2) { animation-delay: 0.4s; }
+.hero-title-3 .word:nth-child(3) { animation-delay: 0.6s; }
+.hero-title-3 .word:nth-child(4) { animation-delay: 0.8s; }
+
+@keyframes word-appear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rabbit-cursor-follower {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.1s ease;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+}
+
+.tagline {
+  font-size: 1.25rem;
+  color: #999;
+  margin: 30px 0;
+  font-style: italic;
+}
+
+.explore-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 18px 50px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.explore-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+}
+
+/* ============================================
+   ВАРИАНТ 4: ПРЫГАЮЩИЙ КРОЛИК
+   ============================================ */
+
+.hero-4 {
+  background: linear-gradient(135deg, #8e44ad 0%, #3498db 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.wonderland-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.floating-card {
+  position: absolute;
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.3);
+  animation: float-random 15s infinite ease-in-out;
+}
+
+.card-1 { top: 10%; left: 10%; animation-delay: 0s; }
+.card-2 { top: 20%; left: 80%; animation-delay: 2s; }
+.card-3 { top: 60%; left: 15%; animation-delay: 4s; }
+.card-4 { top: 70%; left: 75%; animation-delay: 6s; }
+.card-5 { top: 40%; left: 50%; animation-delay: 8s; }
+.card-6 { top: 85%; left: 40%; animation-delay: 10s; }
+
+@keyframes float-random {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(20px, -30px) rotate(10deg); }
+  50% { transform: translate(-15px, 20px) rotate(-10deg); }
+  75% { transform: translate(10px, -15px) rotate(5deg); }
+}
+
+.text-with-rabbit {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.jumping-text {
+  font-size: 6rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.letter {
+  display: inline-block;
+  animation: letter-bounce 2s ease-in-out infinite;
+}
+
+.letter:nth-child(1) { animation-delay: 0s; }
+.letter:nth-child(2) { animation-delay: 0.1s; }
+.letter:nth-child(3) { animation-delay: 0.2s; }
+.letter:nth-child(4) { animation-delay: 0.3s; }
+.letter:nth-child(5) { animation-delay: 0.4s; }
+.letter:nth-child(6) { animation-delay: 0.5s; }
+.letter:nth-child(7) { animation-delay: 0.6s; }
+.letter:nth-child(8) { animation-delay: 0.7s; }
+.letter:nth-child(9) { animation-delay: 0.8s; }
+.letter:nth-child(10) { animation-delay: 0.9s; }
+
+@keyframes letter-bounce {
+  0%, 100% { transform: translateY(0); }
+  10% { transform: translateY(-20px); }
+  20% { transform: translateY(0); }
+}
+
+.jumping-rabbit {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  animation: jump-across 4s ease-in-out infinite;
+}
+
+@keyframes jump-across {
+  0% { left: 0%; top: -80px; }
+  25% { left: 25%; top: -120px; }
+  50% { left: 50%; top: -80px; }
+  75% { left: 75%; top: -120px; }
+  100% { left: 100%; top: -80px; }
+}
+
+.jumping-rabbit svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+  animation: rabbit-rotate 2s ease-in-out infinite;
+}
+
+@keyframes rabbit-rotate {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(360deg); }
+}
+
+.hero-description {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 40px;
+  font-style: italic;
+}
+
+.cta-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.wonder-btn {
+  background: white;
+  color: #8e44ad;
+  border: none;
+  padding: 18px 50px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.wonder-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+}
+
+.wonder-btn-outline {
+  background: transparent;
+  color: white;
+  border: 3px solid white;
+  padding: 15px 50px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.wonder-btn-outline:hover {
+  background: white;
+  color: #8e44ad;
+  transform: translateY(-3px);
+}
+
+/* ============================================
+   АДАПТИВНОСТЬ
+   ============================================ */
+
+@media (max-width: 768px) {
+  .rabbit-page-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-content {
+    padding: 40px 30px;
+  }
+
+  .hero-text h1,
+  .neon-text h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-title-3 {
+    font-size: 3rem;
+  }
+
+  .jumping-text {
+    font-size: 3rem;
+  }
+
+  .typewriter {
+    font-size: 1.125rem;
+  }
+
+  .rabbit-container {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    min-height: 500px;
+  }
+
+  .hero-text h1,
+  .neon-text h1 {
+    font-size: 2rem;
+  }
+
+  .hero-title-3 {
+    font-size: 2rem;
+    gap: 10px;
+  }
+
+  .jumping-text {
+    font-size: 2rem;
+    gap: 5px;
+  }
+
+  .cta-group {
+    flex-direction: column;
+  }
+}

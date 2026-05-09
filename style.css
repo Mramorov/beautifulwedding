@@ -108,7 +108,21 @@ h6 {
     color: var(--color-text);
     text-transform: uppercase;
 }
-
+.accent {
+    border: 1px solid var(--color-primary);
+    padding: 15px;
+    font-style: italic;
+    background: var(--color-bg-alt);
+    color: var(--color-secondary);
+}
+.it-accent {
+    padding: 15px;
+    font-style: italic;
+    color: var(--color-secondary);
+}
+.small {
+    font-size: 0.85rem;
+}
 /* Layout - Grid System */
 .layout {
     display: grid;
@@ -135,18 +149,61 @@ h6 {
     flex-wrap: wrap;
 }
 
-/* removed unused: social icons, container helpers, text-center */
+/* Two-column layout for post content with contextpic */
+
+.entry-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4em;
+    margin: 30px 0;
+    grid-row: 2;
+    z-index: 0;
+}
+
+.entry-content-wrapper .entry-content {
+    order: 2;
+}
+
+.entry-contextpic {
+    position: relative;
+}
+
+.entry-contextpic img {
+    width: 100%;
+    height: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+    position: relative;
+    border-radius: 50%;
+    z-index: 10;
+    aspect-ratio: 1 / 1;
+}
+
+.entry-contextpic::after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-image: url(/wp-content/themes/beautifulwedding/img/photo-10.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    left: -23%;
+    top: -15%;
+    z-index: 0;
+    transform: rotate(3deg);
+}
 
 /* Tabs (global visual styling) */
 .svadba-tabs-nav {
     margin: 2.5rem 0 0rem;
-    border-bottom: 1px solid var(--color-primary);
+    /* border-bottom: 1px solid var(--color-primary); */
     position: relative;
 }
 
 .svadba-tab-button {
     background: none;
-    border: none;
+    border: 2px solid white;
     padding: 0.75rem 1.25rem;
     cursor: pointer;
     font-family: var(--font-accent);
@@ -155,6 +212,7 @@ h6 {
     text-transform: uppercase;
     color: var(--color-secondary);
     transition: color .25s ease, background-color .25s ease;
+    box-shadow: 0px 0 1px 1px var(--color-primary);
 }
 
 .svadba-tab-button:hover:not(.active) {
@@ -167,13 +225,13 @@ h6 {
 }
 
 .svadba-tab-button.active {
-    background: var(--color-bg-alt);
-    color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
     font-weight: 600;
     position: relative;
 }
 
-.svadba-tab-button.active::after {
+/* .svadba-tab-button.active::after {
     content: '';
     position: absolute;
     left: 0;
@@ -181,7 +239,7 @@ h6 {
     bottom: -1px;
     height: 3px;
     background: var(--color-primary);
-}
+} */
 
 .svadba-tabs-content {
     padding-top: 0.5rem;
@@ -442,6 +500,7 @@ ul.with-checkmarks li::before {
 .svadba-gallery-grid {
     column-count: 5;
     column-gap: 6px;
+    padding: 10px;
 }
 
 .svadba-gallery-item {
@@ -455,7 +514,7 @@ ul.with-checkmarks li::before {
 
 
 .svadba-gallery-item:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px); 
     box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
 }
 
@@ -501,16 +560,18 @@ ul.with-checkmarks li::before {
     font-size: 1.15em;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     /* align-content: space-between; */
     height: 100%;
     position: relative;
     align-items: center;
 }
+.svadba-hero-content .empty-div {
+    height: 20vh;
+}
 
 .head-price-field {
     font-size: 2em;
-    margin-bottom: 2em;
 }
 
 span.old-price-value {
@@ -525,9 +586,9 @@ span.new-price-value {
 .svadba-hero .entry-title {
     color: var(--color-bg);
     font-size: clamp(2.5rem, 5vw, 3.5rem);
-    margin: 0;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
     text-transform: capitalize;
+    margin: 0;
 }
 
 .svadba-hero .entry-meta {
@@ -538,17 +599,46 @@ span.new-price-value {
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
+/* Animated Title (global) */
+.svadba-animated-title {
+    display: inline-block;
+    line-height: 1.1;
+    letter-spacing: -0.05em;
+}
+
+.svadba-animated-title .word {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.svadba-animated-title .word-space {
+    display: inline-block;
+    width: 0.25em;
+}
+
+.svadba-animated-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+    filter: blur(6px);
+    animation: svadba-rise-in 0.8s cubic-bezier(0.2, 0.7, 0, 1) forwards;
+    animation-delay: calc(var(--i) * 40ms);
+}
+
+
+@keyframes svadba-rise-in {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
 
 
 /* ============================================
    Responsive Media Queries
    ============================================ */
-
-@media (min-width: 1600px) {
-    .svadba-gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    }
-}
 
 @media (max-width: 900px) {
     .svadba-gallery-grid {

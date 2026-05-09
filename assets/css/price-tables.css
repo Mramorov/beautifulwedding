@@ -1,0 +1,98 @@
+/* Табличные стили для шорткода [bw_services] и секций прайс-листа */
+
+.price-section {
+    margin-bottom: 3rem;
+}
+
+.price-section h3 {
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+/* Таблица цен */
+.price-table {
+    border: 1px solid var(--color-bg-alt);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--color-white);
+}
+
+.price-table-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    background: var(--color-bg-alt);
+    font-weight: 600;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+}
+
+.price-table-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    border-top: 1px solid var(--color-bg-alt);
+    transition: background-color 0.2s ease;
+}
+
+.price-table-row:hover {
+    background: var(--color-bg);
+}
+
+.price-cell {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+}
+
+.price-cell-name {
+    text-align: left;
+}
+
+.price-cell-price {
+    text-align: right;
+    font-weight: 600;
+    color: var(--color-primary);
+    min-width: 120px;
+    justify-content: flex-end;
+}
+
+.price-table-header .price-cell-price {
+    color: var(--color-secondary);
+}
+
+/* Адаптив только для таблиц */
+@media (max-width: 768px) {
+    .price-cell {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+    .price-section h3 {
+        font-size: 1rem;
+    }
+    .price-table-header {
+        font-size: 0.85rem;
+    }
+    .price-cell-price {
+        min-width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .price-table-header,
+    .price-table-row {
+        grid-template-columns: 1fr;
+    }
+    .price-cell-price {
+        border-top: 1px solid var(--color-bg-alt);
+        padding-top: 8px;
+        margin-top: 8px;
+    }
+    .price-table-row .price-cell-name {
+        padding-bottom: 0;
+    }
+}

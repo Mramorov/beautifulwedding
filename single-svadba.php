@@ -4,6 +4,12 @@
  * Template for single Svadba posts
  * File: single-svadba.php
  */
+if (!defined('ABSPATH')) {
+  exit;
+}
+
+require_once get_template_directory() . '/inc/utils/svadba-packets.php';
+require_once get_template_directory() . '/inc/utils/svadba-main.php';
 
 get_header('svadba');
 ?>
@@ -23,13 +29,30 @@ get_header('svadba');
         <?php
         // Location terms
         $post_id = get_queried_object_id();
+        $google_map_url = get_post_meta($post_id, 'google_map_url', true);
+        $map_iframe_url = '';
+        $map_external_url = '';
+        if (!empty($google_map_url)) {
+          if (strpos($google_map_url, '/maps/embed') !== false) {
+            $map_iframe_url = $google_map_url;
+          } elseif (strpos($google_map_url, 'maps.app.goo.gl') !== false) {
+            $map_external_url = $google_map_url;
+          } else {
+            $map_iframe_url = add_query_arg('output', 'embed', $google_map_url);
+            $map_external_url = $google_map_url;
+          }
+        }
         $terms = get_the_terms($post_id, 'location');
         if (! empty($terms) && ! is_wp_error($terms)) {
           $term_links = array();
           foreach ($terms as $term) {
             $term_links[] = '<a href="' . esc_url(get_term_link($term)) . '">' . esc_html($term->name) . '</a>';
           }
-          echo '<div class="head-label">Локация: ' . implode(', ', $term_links) . '</div>';
+          $map_string = '';
+          if (!empty($map_iframe_url) || !empty($map_external_url)) {
+             $map_string = '<button type="button" class="map-trigger" id="openMapModal">| cмотреть на карте...</button>';
+          }
+          echo '<div class="head-label">Локация: ' . implode(', ', $term_links) . $map_string .'</div>';
         }
 
         // Ceremonies terms
@@ -97,7 +120,7 @@ get_header('svadba');
       $repeater = get_svadba_repeater_data(get_the_ID());
       if (! empty($repeater) && is_array($repeater)) : ?>
         <section class="svadba-repeater boxed">
-          <h2>Дополнительные залы и места</h2>
+          <h2>Залы и места</h2>
           <p>(выбор места может влиять на цену пакета)</p>
           <div class="repeater-list">
             <?php
@@ -133,9 +156,9 @@ get_header('svadba');
     ?>
     <section class="svadba-tabs-section boxed">
       <div class="svadba-tabs-nav">
-        <button type="button" class="svadba-tab-button active" data-tab="base-tab">Базовый пакет</button>
-        <button type="button" class="svadba-tab-button" data-tab="packets-tab">Готовые пакеты</button>
-        <button type="button" class="svadba-tab-button" data-tab="individ-tab">Пакет "Под ключ"</button>
+        <button type="button" class="svadba-tab-button active" data-tab="base-tab">Пакет Classic</button>
+        <button type="button" class="svadba-tab-button" data-tab="packets-tab">Другие пакеты</button>
+        <button type="button" class="svadba-tab-button" data-tab="individ-tab">Пакет Custom</button>
       </div>
 
       <div class="svadba-tabs-content">
@@ -144,11 +167,11 @@ get_header('svadba');
           // Display base package price
           $base_price = get_post_meta(get_the_ID(), 'fromnew', true);
           if ($base_price) : ?>
-            <h3 class="main-place-price">Основной пакет услуг <span id="main-packet-sum" class="new-price" data-mainpacket-sum="<?php echo esc_attr($base_price); ?>"><?php echo esc_html($base_price); ?></span> <span class="kc-sign">€</span></h3>
+            <h3 class="main-place-price">Основной пакет услуг Classic <span id="main-packet-sum" class="new-price" data-mainpacket-sum="<?php echo esc_attr($base_price); ?>"><?php echo esc_html($base_price); ?></span> <span class="kc-sign">€</span></h3>
 
             <?php get_template_part('template-parts/svadba-block'); ?>
 
-            <div class="send-button-wrap"><button type="button" id="main_order_button" class="button-main" data-formid="main">Заказать базовый пакет</button></div>
+            <div class="send-button-wrap"><button type="button" id="main_order_button" class="button-main" data-formid="main">Заказать пакет Classic</button></div>
             <div id="main-message-form"></div>
           <?php endif; ?>
         </div>
@@ -190,6 +213,33 @@ get_header('svadba');
       <div id="fill-error-mess" class="send-error"></div>
     </div>
 
+    <?php if (!empty($map_iframe_url) || !empty($map_external_url)) : ?>
+      <div class="map-modal-overlay" id="mapModalOverlay"></div>
+      <div class="map-modal" id="mapModal" aria-hidden="true" role="dialog" aria-label="Карта локации">
+        <div class="map-modal-header">
+          <button class="close-button" id="closeMapModal" aria-label="Закрыть карту">&times;</button>
+        </div>
+        <div class="map-modal-body">
+          <?php if (!empty($map_iframe_url)) : ?>
+            <iframe
+              src="<?php echo esc_url($map_iframe_url); ?>"
+              width="100%"
+              height="100%"
+              style="border:0;"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen></iframe>
+          <?php else : ?>
+            <div class="map-modal-fallback">
+              <p>Эта ссылка Google Maps не поддерживает встроенное отображение в iframe.</p>
+              <p>Откройте карту в новой вкладке или используйте в админке полную embed-ссылку Google Maps.</p>
+              <a class="button-main" href="<?php echo esc_url($map_external_url); ?>" target="_blank" rel="noopener noreferrer">Открыть карту в Google Maps</a>
+            </div>
+          <?php endif; ?>
+        </div>
+      </div>
+    <?php endif; ?>
+
     <?php
     // 7. Галерея с PhotoSwipe 5 (мета 'svadba_gallery' хранит ID вложений)
     $gallery = get_post_meta(get_the_ID(), 'svadba_gallery', true);
@@ -197,7 +247,6 @@ get_header('svadba');
       $gallery_id = 'svadba-gallery-' . get_the_ID();
     ?>
       <section class="svadba-gallery full">
-        <h2>Галерея</h2>
         <div class="svadba-gallery-grid" id="<?php echo esc_attr($gallery_id); ?>">
           <?php
           foreach ($gallery as $att_id) {
@@ -205,29 +254,13 @@ get_header('svadba');
             $thumb_html = wp_get_attachment_image(intval($att_id), 'medium_large', false, array('loading' => 'lazy'));
             if ($full) {
               $url = $full[0];
-              $w = (int) $full[1];
-              $h = (int) $full[2];
-              echo '<a href="' . esc_url($url) . '" data-pswp-width="' . esc_attr($w) . '" data-pswp-height="' . esc_attr($h) . '" class="svadba-gallery-item" data-pswp-gallery="' . esc_attr($gallery_id) . '">' . $thumb_html . '</a>';
+              echo '<a href="' . esc_url($url) . '" class="svadba-gallery-item glightbox" data-gallery="' . esc_attr($gallery_id) . '">' . $thumb_html . '</a>';
             }
           }
           ?>
         </div>
       </section>
     <?php endif; ?>
-
-    <svg width="0" height="0" style="position: absolute;">
-      <defs>
-        <!-- clipPathUnits="objectBoundingBox" — это МАГИЯ. 
-         Она переключает координаты: 0 = 0%, 1 = 100% -->
-        <clipPath id="wave-clip" clipPathUnits="objectBoundingBox">
-          <path d="M 0,0 L 1,0 L 1,0.85 C 0.55,0.75 0.8,1 0,0.9 Z" />
-          <!--<path d="M 0,0 L 1,0 L 1,0.85 C 0.7,0.8 0.35,1.15 0,0.9 Z" />
- <path d="M 0,0 L 1,0 L 1,0.85 C 0.75,1 0.25,0.7 0,0.9 Z" /> 
-<path d="M 0,0 L 1,0 L 1,0.9 C 0.5,0.7 0.5,0.7 0,0.9 Z" />-->
-
-        </clipPath>
-      </defs>
-    </svg>
   </main>
 <?php endwhile; ?>
 
