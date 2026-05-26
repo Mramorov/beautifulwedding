@@ -17,13 +17,17 @@
 .price-table {
     border: 1px solid var(--color-bg-alt);
     border-radius: 6px;
-    overflow: hidden;
+    overflow-x: auto;
     background: var(--color-white);
 }
 
+.price-table-table {
+    width: 100%;
+    min-width: 420px;
+    border-collapse: collapse;
+}
+
 .price-table-header {
-    display: grid;
-    grid-template-columns: 1fr auto;
     background: var(--color-bg-alt);
     font-weight: 600;
     color: var(--color-secondary);
@@ -32,25 +36,26 @@
     letter-spacing: 0.05em;
 }
 
-.price-table-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
+.price-table-table tbody tr + tr {
     border-top: 1px solid var(--color-bg-alt);
+}
+
+.price-table-row {
     transition: background-color 0.2s ease;
 }
 
-.price-table-row:hover {
+.price-table-table tbody .price-table-row:hover {
     background: var(--color-bg);
 }
 
 .price-cell {
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
+    padding: 14px 2%;
+    vertical-align: top;
 }
 
 .price-cell-name {
     text-align: left;
+    padding-left: 6%;
 }
 
 .price-cell-price {
@@ -58,12 +63,32 @@
     font-weight: 600;
     color: var(--color-primary);
     min-width: 120px;
-    justify-content: flex-end;
+    padding-right: 6%;
+    white-space: nowrap;
 }
 
 .price-table-header .price-cell-price {
     color: var(--color-secondary);
 }
+
+/* Legacy div-grid table rules (unused after semantic <table> migration) */
+/*
+.price-table-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+.price-table-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    border-top: 1px solid var(--color-bg-alt);
+}
+
+.price-cell {
+    display: flex;
+    align-items: center;
+}
+*/
 
 /* Адаптив только для таблиц */
 @media (max-width: 768px) {
@@ -82,6 +107,8 @@
     }
 }
 
+/* Legacy mobile stacking for div-grid table (unused after semantic <table> migration) */
+/*
 @media (max-width: 480px) {
     .price-table-header,
     .price-table-row {
@@ -96,3 +123,4 @@
         padding-bottom: 0;
     }
 }
+*/

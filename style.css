@@ -15,6 +15,10 @@ Tags: wedding, minimal, blog, classic
 
 
 /* Тема по умолчанию (розовая) */
+html {
+    scroll-behavior: smooth;
+}
+
 :root,
 body.theme-default {
     --content-width: 1200px;
@@ -24,6 +28,7 @@ body.theme-default {
     --color-bg: #FFF9F5;
     --color-bg-alt: #FFF5F0;
     --color-white: #FFFFFF;
+    --color-link: #d2577e;
     --font-heading: 'EB Cormorant', serif;
     --font-hero: 'EB Garamond', serif;
     --font-body: 'Open Sans', sans-serif;
@@ -150,14 +155,17 @@ h6 {
 }
 
 /* Two-column layout for post content with contextpic */
-
+.block-through-two-columns {
+    order: 3;
+    grid-column: 1 / 3;
+    text-align: center;
+}
 .entry-content-wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
     gap: 4em;
-    margin: 30px 0;
-    grid-row: 2;
+    margin: 80px 0;
     z-index: 0;
 }
 
@@ -192,6 +200,109 @@ h6 {
     top: -15%;
     z-index: 0;
     transform: rotate(3deg);
+}
+
+/* Decorative animation utilities */
+.shrink-animation,
+.grow-animation {
+    position: relative;
+    isolation: isolate;
+    overflow: visible;
+}
+
+.shrink-animation::after,
+.grow-animation::before {
+    content: "";
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: contain;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+    will-change: transform, opacity;
+}
+
+/* Right decor: slightly below section, shrinks while scrolling */
+.shrink-animation::after {
+    width: clamp(180px, 22vw, 520px);
+    height: clamp(180px, 22vw, 520px);
+    right: calc(50% - 50vw - 16px);
+    bottom: clamp(-160px, -11vw, -90px);
+    background-image: url(/wp-content/themes/beautifulwedding/img/back-2.png);
+    background-size: contain;
+    background-position: right;
+    transform-origin: right bottom;
+    transform: scale(1.5);
+}
+
+/* Left decor: upper-left area of tabs, grows while scrolling */
+.grow-animation::before {
+    width: clamp(180px, 22vw, 520px);
+    height: clamp(180px, 22vw, 520px);
+    left: calc(50% - 50vw - 16px);
+    top: clamp(6px, 1.8vw, 24px);
+    background-image: url(/wp-content/themes/beautifulwedding/img/back-1.png);
+    transform-origin: left top;
+    transform: scale(0.72);
+}
+
+.shrink-animation > *,
+.grow-animation > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Utility: clip horizontal overflow for animated decorative sections. */
+.overflowed {
+    overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+    .overflowed {
+        overflow-x: hidden;
+    }
+}
+
+@keyframes section-decor-shrink {
+    from {
+        transform: scale(1.4);
+        opacity: 0.4;
+    }
+
+    to {
+        transform: scale(0.72);
+        opacity: 0.1;
+    }
+}
+
+@keyframes section-decor-grow {
+    from {
+        transform: scale(0.72);
+        opacity: 0.1;
+    }
+
+    to {
+        transform: scale(1.4);
+        opacity: 0.4;
+    }
+}
+
+@supports (animation-timeline: view()) {
+    .shrink-animation::after {
+        animation-name: section-decor-shrink;
+        animation-timeline: view();
+        animation-range: entry 0% cover 100%;
+        animation-fill-mode: both;
+        animation-timing-function: linear;
+    }
+
+    .grow-animation::before {
+        animation-name: section-decor-grow;
+        animation-timeline: view();
+        animation-range: entry 0% cover 100%;
+        animation-fill-mode: both;
+        animation-timing-function: linear;
+    }
 }
 
 /* Tabs (global visual styling) */
@@ -537,15 +648,14 @@ ul.with-checkmarks li::before {
 
 .svadba-hero-overlay {
     position: absolute;
-    inset: 0.5rem;
-    border-radius: 5px;
+    inset: 0;
     background: rgb(0 0 0);
     background-image: url(/wp-content/themes/beautifulwedding/img/graph-1.png), url(/wp-content/themes/beautifulwedding/img/graph-2.png), url(/wp-content/themes/beautifulwedding/img/graph-3.png);
     background-repeat: no-repeat;
     background-position-x: 32vw, 53vw, 100%;
     background-position-y: 78vh, 66vh, 97%;
     z-index: 1;
-    opacity: 0.7;
+    opacity: 0.55;
     background-size: 20vw, 35vw, 10vw;
     clip-path: url(#wave-clip);
 }

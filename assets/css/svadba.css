@@ -38,19 +38,6 @@
     justify-content: flex-end;
 }
 
-/* Accent bar on top of each card */
-/* .calcresult-subblock::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 4px;
-    background: var(--color-primary);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-} */
-
 /* Text and values */
 .calcresult-text {
     display: block;
@@ -162,7 +149,7 @@
 }
 
 .svadba-selfpay-block {
-    border-bottom: 1px solid var(--color-primary);
+    /* border-bottom: 1px solid var(--color-primary); */
     padding-bottom: 2em;
 }
 
@@ -172,10 +159,6 @@ section.svadba-repeater h2 {
 
 section.svadba-repeater p {
     font-size: 0.85em;
-}
-
-section.svadba-tabs-section {
-    grid-row: 4;
 }
 
 .place-item {
@@ -194,44 +177,18 @@ section.svadba-tabs-section {
     mask-repeat: no-repeat;
 }
 
-/* Циклическое применение масок brush-1, brush-2, brush-3, brush-4 
-.place-item:nth-child(4n+1) .repeater-image {
-    mask-image: url(/wp-content/themes/beautifulwedding/img/svg/brush-1.svg);
-}
-
-.place-item:nth-child(4n+2) .repeater-image {
-    mask-image: url(/wp-content/themes/beautifulwedding/img/svg/brush-2.svg);
-}
-
-.place-item:nth-child(4n+3) .repeater-image {
-    mask-image: url(/wp-content/themes/beautifulwedding/img/svg/brush-3.svg);
-}
-
-.place-item:nth-child(4n+4) .repeater-image {
-    mask-image: url(/wp-content/themes/beautifulwedding/img/svg/brush-4.svg);
-}
-*/
-
 .place-item .repeater-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: saturate(92%) contrast(0.95) brightness(0.9);
+    filter: saturate(32%) contrast(0.85) brightness(0.8);
     aspect-ratio: 1.5 / 1;
+    border-radius: 4px;
 }
-
-/* Dark overlay for text readability */
-/* .place-item::after {
-    content: '';
-    position: absolute;
-    margin: 7px;
-    inset: 0;
-    background: color-mix(in srgb, var(--color-primary) 60%, transparent);
-    transition: opacity .2s ease;
-    z-index: 1;
-    border-radius: 50%;
-} */
+.place-item .repeater-image img:hover {
+    filter: none;
+}
 
 .place-item:hover {
     transform: translateY(-2px);
@@ -254,6 +211,7 @@ section.svadba-tabs-section {
     padding: 10px;
     pointer-events: none;
     z-index: 2;
+    border-radius: 3px;
     /* over overlay */
 }
 
@@ -275,8 +233,22 @@ section.svadba-tabs-section {
     background: rgb(0 0 0 / 70%); 
 } */
 
+.place-item.active-place .repeater-mesto {
+   border: 4px solid #ffc9d8;
+}
+
 .place-item.active-place::after {
-    opacity: 0;
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border-radius: 50%;
+    background: #ffb0b0;
+    z-index: 100;
+    top: -8px;
+    right: -3px;
+
 }
 
 .place-item.active-place .repeater-image img {
@@ -339,7 +311,7 @@ section.svadba-tabs-section {
     background: transparent;
 }
 .map-trigger:hover {
-    color: #d2577e;
+    color: var(--color-link);
     transition: background-color 0.2s, color 0.2s;
 }
 .map-modal-overlay {
@@ -417,7 +389,7 @@ body.no-scroll {
 
 .modal-header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
 .close-button {
@@ -507,119 +479,6 @@ body.no-scroll {
 .svadba-hero-meta .entry-meta>div>a,
 .svadba-hero-meta .entry-meta>div>span {
     font-style: italic;
-}
-
-
-/* 1. Базовое позиционирование в Гриде */
-.flower-decor,
-.flower-decor-left {
-    pointer-events: none;
-    user-select: none;
-    height: auto;
-    align-self: start;
-    z-index: 0;
-}
-
-.flower-decor {
-    grid-column: 2 / 4;
-    grid-row: 2;
-    width: 500px;
-    justify-self: end;
-    /* Начальное смещение, если нужно подвинуть чуть выше/ниже */
-    transform: translateY(0);
-}
-
-.flower-decor-left {
-    grid-column: 1 / 3;
-    grid-row: 4;
-    width: 450px;
-    justify-self: start;
-    /* Начальное смещение, если нужно подвинуть чуть выше/ниже */
-    transform: translateY(0);
-}
-
-/* 1. Настраиваем сценарий движения */
-@keyframes flower-mood {
-    from {
-        /* Начальное состояние (когда цветок только показался снизу) */
-        transform: translateY(0) scale(1);
-    }
-
-    to {
-        /* Конечное состояние (когда цветок уезжает наверх) */
-
-        /* translateY(150px) -> сдвигает вниз. 
-           Чем БОЛЬШЕ число, тем МЕДЛЕННЕЕ визуально движется цветок относительно текста.
-           Попробуйте 100px, 200px или 300px, чтобы найти идеал.
-        */
-
-        /* scale(0.85) -> уменьшает до 85% размера */
-        transform: translateY(500px) scale(0.55);
-    }
-}
-
-@keyframes flower-mood-left {
-    from {
-        /* Начальное состояние (когда цветок только показался снизу) */
-        transform: translateY(0) scale(0.3);
-    }
-
-    to {
-        /* Конечное состояние (когда цветок уезжает наверх) */
-
-        /* translateY(150px) -> сдвигает вниз. 
-           Чем БОЛЬШЕ число, тем МЕДЛЕННЕЕ визуально движется цветок относительно текста.
-           Попробуйте 100px, 200px или 300px, чтобы найти идеал.
-        */
-
-        /* scale(0.85) -> уменьшает до 85% размера */
-        transform: translateY(-100px) scale(1);
-    }
-}
-
-/* 2. Применяем */
-@supports (animation-timeline: view()) {
-
-    .flower-decor,
-    .flower-decor-left {
-
-        /* view() означает: "проигрывай анимацию, пока ЭТОТ элемент виден на экране" */
-        animation-timeline: view();
-        /* entry 0% -> старт, когда верхушка цветка появилась снизу экрана */
-        /* cover 100% -> конец, когда низ цветка полностью ушел за верх экрана */
-        animation-range: entry 0% cover 100%;
-        animation-fill-mode: both;
-        animation-timing-function: linear;
-    }
-
-    .flower-decor {
-        animation-name: flower-mood;
-        /* Точка трансформации: центр (по умолчанию) или 
-          можно 'top center', чтобы он уменьшался, "прилипая" к верху */
-        transform-origin: center right;
-    }
-
-    .flower-decor-left {
-        animation-name: flower-mood-left;
-        transform-origin: center left;
-    }
-
-}
-
-/* 3. Мобильная адаптация */
-@media (max-width: 1024px) {
-    .flower-decor {
-        /* На планшетах и телефонах лучше скрыть или убрать анимацию */
-        display: none;
-    }
-}
-
-@media (max-width: 1700px) {
-
-    .flower-decor,
-    .flower-decor-left {
-        opacity: 0.3;
-    }
 }
 
 @media (max-width: 899px) {

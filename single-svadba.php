@@ -15,15 +15,7 @@ get_header('svadba');
 ?>
 
 <?php while (have_posts()) : the_post(); ?>
-  <main id="post-<?php the_ID(); ?>" <?php post_class('layout'); ?>>
-    <img
-      src="/wp-content/themes/beautifulwedding/img/back-2.png"
-      class="flower-decor"
-      alt="">
-    <img
-      src="/wp-content/themes/beautifulwedding/img/back-1.png"
-      class="flower-decor-left"
-      alt="">
+  <main id="post-<?php the_ID(); ?>" <?php post_class('layout overflowed'); ?>>
     <div class="svadba-hero-meta">
       <div class="entry-meta">
         <?php
@@ -103,7 +95,7 @@ get_header('svadba');
     <?php // 2. Post content with contextpic image 
     $contextpic_id = get_post_meta(get_the_ID(), 'contextpic', true);
     ?>
-    <section class="entry-content-wrapper boxed">
+    <section class="entry-content-wrapper shrink-animation boxed">
       <div class="entry-content">
         <?php the_content(); ?>
       </div>
@@ -112,6 +104,9 @@ get_header('svadba');
           <?php echo wp_get_attachment_image(intval($contextpic_id), 'large'); ?>
         </div>
       <?php endif; ?>
+      <div class="block-through-two-columns">
+        <a href="#svadba-gallery-section">Смотреть фото</a>
+      </div>
     </section>
 
     <?php
@@ -154,7 +149,7 @@ get_header('svadba');
 
     <?php // 3, 5 & 6. Svadba tabs: base package, form and packets 
     ?>
-    <section class="svadba-tabs-section boxed">
+    <section class="svadba-tabs-section grow-animation boxed">
       <div class="svadba-tabs-nav">
         <button type="button" class="svadba-tab-button active" data-tab="base-tab">Пакет Classic</button>
         <button type="button" class="svadba-tab-button" data-tab="packets-tab">Другие пакеты</button>
@@ -246,7 +241,7 @@ get_header('svadba');
     if (! empty($gallery) && is_array($gallery)) :
       $gallery_id = 'svadba-gallery-' . get_the_ID();
     ?>
-      <section class="svadba-gallery full">
+      <section id="svadba-gallery-section" class="svadba-gallery full">
         <div class="svadba-gallery-grid" id="<?php echo esc_attr($gallery_id); ?>">
           <?php
           foreach ($gallery as $att_id) {

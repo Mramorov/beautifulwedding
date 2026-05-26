@@ -186,10 +186,39 @@ add_action('add_meta_boxes', 'svadba_add_contextpic_metabox');
 function svadba_contextpic_callback($post)
 {
     wp_nonce_field('svadba_contextpic_nonce', 'svadba_contextpic_nonce');
+    $post_type = get_post_type($post);
+    $is_service = ($post_type === 'service');
     $contextpic_id = get_post_meta($post->ID, 'contextpic', true);
     $contextpic_url = $contextpic_id ? wp_get_attachment_image_url($contextpic_id, 'medium') : '';
 ?>
-    <div id="svadba_contextpic_container">
+    <?php if ($is_service): ?>
+        <style>
+            .service-meta-layout {
+                display: grid;
+                grid-template-columns: minmax(320px, 380px) minmax(360px, 1fr);
+                gap: 24px;
+                align-items: start;
+            }
+
+            .service-meta-json-wrap textarea {
+                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                min-height: 440px;
+            }
+
+            @media (max-width: 980px) {
+                .service-meta-layout {
+                    grid-template-columns: 1fr;
+                }
+
+                .service-meta-json-wrap textarea {
+                    min-height: 260px;
+                }
+            }
+        </style>
+    <?php endif; ?>
+
+    <div id="svadba_contextpic_container" class="<?php echo $is_service ? 'service-meta-layout' : ''; ?>">
+        <div class="service-meta-image-wrap">
         <input type="hidden" id="contextpic" name="contextpic" value="<?php echo esc_attr($contextpic_id); ?>" />
         <div id="contextpic_preview">
             <?php if ($contextpic_url): ?>
@@ -201,6 +230,13 @@ function svadba_contextpic_callback($post)
         </button>
         <?php if ($contextpic_id): ?>
             <button type="button" class="button" id="contextpic_remove_button">Удалить изображение</button>
+        <?php endif; ?>
+        </div>
+
+        <?php if ($is_service): ?>
+            <div class="service-meta-json-wrap">
+                <?php service_shortcode_settings_callback($post); ?>
+            </div>
         <?php endif; ?>
     </div>
     <script>
@@ -263,3 +299,82 @@ function svadba_save_contextpic($post_id)
     }
 }
 add_action('save_post', 'svadba_save_contextpic');
+
+// --- Service shortcode settings ---
+function service_shortcode_settings_callback($post)
+{
+    wp_nonce_field('service_shortcode_settings_nonce', 'service_shortcode_settings_nonce');
+
+    $service_price_tables_json = (string) get_post_meta($post->ID, 'service_price_tables_json', true);
+    ?>
+    <p>
+        <label for="service_price_tables_json"><strong>Service price tables JSON</strong></label>
+    </p>
+    <textarea
+        id="service_price_tables_json"
+        name="service_price_tables_json"
+        class="widefat"
+        rows="12"
+        spellcheck="false"
+    ><?php echo esc_textarea($service_price_tables_json); ?></textarea>
+    <p class="description">Храните данные как JSON-массив секций. Каждая секция: {"title":"...","key":"photo"}.</p>
+    <?php
+}
+
+function service_save_shortcode_settings($post_id)
+{
+    if (!isset($_POST['service_shortcode_settings_nonce']) || !wp_verify_nonce($_POST['service_shortcode_settings_nonce'], 'service_shortcode_settings_nonce')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    if (!isset($_POST['service_price_tables_json'])) {
+        return;
+    }
+
+    $raw_json = trim((string) wp_unslash($_POST['service_price_tables_json']));
+    if ($raw_json === '') {
+        delete_post_meta($post_id, 'service_price_tables_json');
+        return;
+    }
+
+    $decoded = json_decode($raw_json, true);
+    if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
+        update_post_meta($post_id, 'service_price_tables_json', $raw_json);
+        return;
+    }
+
+    $normalized = array();
+    foreach ($decoded as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+
+        $title = isset($row['title']) ? trim((string) $row['title']) : '';
+        $key = isset($row['key']) ? trim((string) $row['key']) : '';
+        if ($key === '' && isset($row['keys'])) {
+            $keys_input = $row['keys'];
+            if (is_string($keys_input)) {
+                $keys_input = explode(',', $keys_input);
+            }
+            if (is_array($keys_input) && !empty($keys_input)) {
+                $key = trim((string) reset($keys_input));
+            }
+        }
+
+        if ($title === '' && $key === '') {
+            continue;
+        }
+
+        $normalized[] = array(
+            'title' => $title,
+            'key' => $key,
+        );
+    }
+
+    update_post_meta(
+        $post_id,
+        'service_price_tables_json',
+        wp_json_encode($normalized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
+    );
+}
+add_action('save_post_service', 'service_save_shortcode_settings');

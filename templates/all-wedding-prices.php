@@ -22,8 +22,6 @@ function enqueue_price_page_assets() {
 }
 add_action('wp_enqueue_scripts', 'enqueue_price_page_assets');
 
-get_header();
-
 // Локальная конфигурация вкладок и секций для прайс-листа
 $tabs_config = [
     'weddings' => [
@@ -72,7 +70,7 @@ $tabs_config = [
     'other' => [
         'tab' => 'Прочие услуги',
         'sections' => [
-            ['title' => 'Название услуги', 'keys' => 'other'],
+            ['title' => 'Разные услуги', 'keys' => 'other'],
             ['title' => 'Почтовые услуги', 'keys' => 'post'],
         ],
     ],
@@ -125,42 +123,6 @@ function format_service_name($item) {
         $formatted .= ' ' . $detail;
     }
     return $formatted;
-}
-
-// Функция отрисовки таблицы
-function render_price_table($section) {
-    if (empty($section['keys'])) {
-        return '';
-    }
-    
-    $items = get_prices_by_keys($section['keys']);
-    
-    if (empty($items)) {
-        return '';
-    }
-    
-    $output = '<div class="price-section">';
-    
-    if (!empty($section['title'])) {
-        $output .= '<h3>' . esc_html($section['title']) . '</h3>';
-    }
-    
-    $output .= '<div class="price-table">';
-    $output .= '<div class="price-table-header">';
-    $output .= '<div class="price-cell price-cell-name">Название услуги</div>';
-    $output .= '<div class="price-cell price-cell-price">Цена</div>';
-    $output .= '</div>';
-    
-    foreach ($items as $item) {
-        $output .= '<div class="price-table-row">';
-        $output .= '<div class="price-cell price-cell-name">' . esc_html(format_service_name($item)) . '</div>';
-        $output .= '<div class="price-cell price-cell-price">' . format_price($item->sprice) . '</div>';
-        $output .= '</div>';
-    }
-    
-    $output .= '</div></div>';
-    
-    return $output;
 }
 
 // Функция расчета цен по пакетам для мест свадеб
@@ -295,7 +257,7 @@ function render_wedding_places_table() {
     return $output;
 }
 
-get_header();
+get_header('service');
 
 ?>
 

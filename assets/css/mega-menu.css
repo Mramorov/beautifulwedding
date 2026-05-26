@@ -14,6 +14,7 @@
 .main-navigation {
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .custom-mega-menu {
@@ -30,7 +31,9 @@
    ============================================ */
 
 .custom-mega-menu > li {
-    position: relative;
+    position: static;
+    display: flex;
+    align-items: center;
 }
 
 .custom-mega-menu > li > a {
@@ -63,6 +66,7 @@
     border-radius: 6px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     min-width: 300px;
+    max-width: 100vw;
 }
 
 .custom-mega-menu > li.has-mega-menu:hover .mega-menu,
@@ -76,6 +80,7 @@
     display: flex;
     align-items: stretch;
     gap: 0;
+    width: 100%;
 }
 
 /* ============================================
@@ -85,11 +90,11 @@
 .custom-mega-menu .mega-menu-list {
     display: grid;
     grid-template-columns: repeat(var(--mm-cols, 2), 1fr);
-    gap: 0.5rem 1rem;
+    gap: 0 0.5rem;
     list-style: none;
     margin: 0;
     padding: 24px 20px;
-    min-width: 500px;
+    min-width: 300px;
 }
 
 .custom-mega-menu .mega-menu-list li {
@@ -160,8 +165,12 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(7, 2, 31, 0.55);
+    background: rgba(7, 2, 31, 0.30);
     border-radius: 0 6px 6px 0;
+}
+
+.banner-overlay--service {
+    background: rgba(7, 2, 31, 0.15);
 }
 
 /* Текстовый блок с информацией */
@@ -171,7 +180,7 @@
     padding: 1.5rem;
     text-align: center;
     width: 100%;
-    text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.8);
+    text-shadow: 2px 2px 1px black;
 }
 
 .banner-textblock p {
@@ -193,15 +202,15 @@
 }
 
 .banner-textblock-title {
-    font-weight: 700;
-    font-size: 0.95rem;
+    font-weight: 500;
+    font-size: 1.2rem;
     min-width: 120px;
     flex-shrink: 0;
 }
 
 .banner-textblock-values {
     font-style: italic;
-    font-size: 0.9rem;
+    font-size: 1.3rem;
 }
 
 /* Разделители между значениями */

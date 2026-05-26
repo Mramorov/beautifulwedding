@@ -14,7 +14,7 @@ jQuery(function($) {
 
     // Лейблы для отображения данных в баннере
     const labels = {
-        fromnew: 'Цена',
+        fromnew: 'Стоимость',
         capacity: 'Вместимость',
         mesta: 'Места',
         ceremonies: 'Церемония',
@@ -28,6 +28,7 @@ jQuery(function($) {
         const $item = $(this);
         const dataInfo = $item.attr('data-info');
         const dataBg = $item.attr('data-bg');
+        const hasInfo = !!dataInfo;
 
         // Пропускаем пустые элементы
         if ($item.hasClass('empty-list')) {
@@ -38,60 +39,70 @@ jQuery(function($) {
         const $banner = $item.closest('.mega-menu-inner').find('.right-mega-banner');
         const $textblock = $banner.find('.banner-textblock');
 
-        // Сохраняем оригинальное содержимое при первом наведении
-        if (!$textblock.data('original')) {
-            $textblock.data('original', $textblock.html());
-        }
+        // Рендерим текст только для пунктов, где есть data-info (места свадеб).
+        if (hasInfo && $textblock.length) {
+            // Сохраняем оригинальное содержимое при первом наведении
+            if (!$textblock.data('original')) {
+                $textblock.data('original', $textblock.html());
+            }
 
-        // Парсим данные места
-        let data = {};
-        try {
-            data = dataInfo ? JSON.parse(dataInfo) : {};
-        } catch(e) {
-            console.warn('Ошибка парсинга data-info:', e);
-            return;
-        }
-
-        // Очищаем контейнер
-        $textblock.empty();
-
-        // Рендерим информацию о месте
-        $.each(data, function(key, value) {
-            // Пропускаем пустые значения
-            if (!value || (Array.isArray(value) && value.length === 0)) {
+            // Парсим данные места
+            let data = {};
+            try {
+                data = JSON.parse(dataInfo);
+            } catch(e) {
+                console.warn('Ошибка парсинга data-info:', e);
                 return;
             }
 
-            const label = labels[key] || key;
-            const $wrapper = $('<div>').addClass('info-' + key);
+            // Очищаем контейнер
+            $textblock.empty();
 
-            // Заголовок поля
-            $('<div>')
-                .addClass('banner-textblock-title')
-                .text(label + ':')
-                .appendTo($wrapper);
+            // Рендерим информацию о месте
+            $.each(data, function(key, value) {
+                // Пропускаем пустые значения
+                if (!value || (Array.isArray(value) && value.length === 0)) {
+                    return;
+                }
 
-            // Значения
-            const $valuesDiv = $('<div>').addClass('banner-textblock-values');
-            
-            if (Array.isArray(value)) {
-                $.each(value, function(_, item) {
-                    $valuesDiv.append($('<span>').text(item));
+                const label = labels[key] || key;
+                const $wrapper = $('<div>').addClass('info-' + key);
+
+                // Заголовок поля
+                $('<div>')
+                    .addClass('banner-textblock-title')
+                    .text(label + ':')
+                    .appendTo($wrapper);
+
+                // Значения
+                const $valuesDiv = $('<div>').addClass('banner-textblock-values');
+                
+                if (Array.isArray(value)) {
+                    $.each(value, function(_, item) {
+                        $valuesDiv.append($('<span>').text(item));
+                    });
+                } else {
+                    $valuesDiv.append($('<span>').text(value));
+                }
+
+                $wrapper.append($valuesDiv);
+                $textblock.append($wrapper);
+            });
+        }
+
+        // Для услуг затемнение мягче, чем для пунктов с текстовой информацией.
+        if (dataBg) {
+            if (hasInfo) {
+                $banner.stop(true, true).fadeTo(200, 0.3, function() {
+                    $banner.css('background-image', 'url(' + dataBg + ')');
+                    $banner.fadeTo(200, 1);
                 });
             } else {
-                $valuesDiv.append($('<span>').text(value));
+                $banner.stop(true, true).fadeTo(200, 0.65, function() {
+                    $banner.css('background-image', 'url(' + dataBg + ')');
+                    $banner.fadeTo(200, 1);
+                });
             }
-
-            $wrapper.append($valuesDiv);
-            $textblock.append($wrapper);
-        });
-
-        // Смена фонового изображения с плавным переходом
-        if (dataBg) {
-            $banner.stop(true, true).fadeTo(200, 0.3, function() {
-                $banner.css('background-image', 'url(' + dataBg + ')');
-                $banner.fadeTo(200, 1);
-            });
         }
     });
 

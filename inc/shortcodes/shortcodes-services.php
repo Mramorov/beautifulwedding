@@ -50,18 +50,24 @@ function bw_render_price_section($title, $keys) {
         $out .= '<h3>' . esc_html($title) . '</h3>';
     }
     $out .= '<div class="price-table">';
-    $out .= '<div class="price-table-header">';
-    $out .= '<div class="price-cell price-cell-name">Название услуги</div>';
-    $out .= '<div class="price-cell price-cell-price">Цена</div>';
-    $out .= '</div>';
+    $out .= '<table class="price-table-table">';
+    $out .= '<thead>';
+    $out .= '<tr class="price-table-header">';
+    $out .= '<th scope="col" class="price-cell price-cell-name">Название услуги</th>';
+    $out .= '<th scope="col" class="price-cell price-cell-price">Цена</th>';
+    $out .= '</tr>';
+    $out .= '</thead>';
+    $out .= '<tbody>';
 
     foreach ($items as $item) {
-        $out .= '<div class="price-table-row">';
-        $out .= '<div class="price-cell price-cell-name">' . esc_html(bw_format_service_name($item)) . '</div>';
-        $out .= '<div class="price-cell price-cell-price">' . esc_html(bw_format_price_value($item->sprice)) . '</div>';
-        $out .= '</div>';
+        $out .= '<tr class="price-table-row">';
+        $out .= '<td class="price-cell price-cell-name">' . esc_html(bw_format_service_name($item)) . '</td>';
+        $out .= '<td class="price-cell price-cell-price">' . esc_html(bw_format_price_value($item->sprice)) . '</td>';
+        $out .= '</tr>';
     }
 
+    $out .= '</tbody>';
+    $out .= '</table>';
     $out .= '</div></div>';
     return $out;
 }
