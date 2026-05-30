@@ -48,7 +48,8 @@ if (!function_exists('beautifulwedding_register_post_types')):
                 'thumbnail',
                 'excerpt',
                 'revisions',
-                'custom-fields'
+                'custom-fields',
+                'page-attributes'
             )
         );
 

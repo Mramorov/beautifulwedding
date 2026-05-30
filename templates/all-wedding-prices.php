@@ -257,6 +257,170 @@ function render_wedding_places_table() {
     return $output;
 }
 
+// Дубликат render_wedding_places_table:
+// - вывод через HTML table
+// - одна общая таблица, внутри которой локации разделены строками-заголовками
+function render_wedding_places_table_by_location() {
+    global $wpdb;
+
+    require_once get_template_directory() . '/inc/utils/svadba-common.php';
+
+    $packets = svadba_get_packets();
+    $table = $wpdb->prefix . 'svadba_prices';
+
+    $base_auto_price_row = $wpdb->get_row(
+        "SELECT MIN(sprice) as min_price FROM {$table} WHERE pr_key = 'auto'",
+        ARRAY_A
+    );
+    $base_auto_price = $base_auto_price_row ? (float)$base_auto_price_row['min_price'] : 0;
+
+    $auto_prices = array();
+    $auto_rows = $wpdb->get_results(
+        "SELECT sprice, packet FROM {$table} WHERE pr_key = 'auto' AND packet IS NOT NULL AND packet <> ''",
+        ARRAY_A
+    );
+    foreach ($auto_rows as $row) {
+        $packet_indices = array_map('trim', explode(',', $row['packet']));
+        foreach ($packet_indices as $idx) {
+            if (!isset($auto_prices[$idx])) {
+                $auto_prices[$idx] = 0;
+            }
+            $auto_prices[$idx] += (float)$row['sprice'];
+        }
+    }
+
+    $other_prices = array();
+    $other_keys = array('photo', 'bqt', 'cake', 'phvid', 'other', 'dress', 'hair');
+    $keys_placeholders = implode(',', array_fill(0, count($other_keys), '%s'));
+    $other_rows = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT sprice, packet, pr_key FROM {$table} WHERE pr_key IN ($keys_placeholders) AND packet IS NOT NULL AND packet <> ''",
+            $other_keys
+        ),
+        ARRAY_A
+    );
+    $packet_has_photovideo = array();
+    foreach ($other_rows as $row) {
+        $packet_indices = array_map('trim', explode(',', $row['packet']));
+        foreach ($packet_indices as $idx) {
+            if (!isset($other_prices[$idx])) {
+                $other_prices[$idx] = 0;
+            }
+            $other_prices[$idx] += (float)$row['sprice'];
+
+            if (!isset($packet_has_photovideo[$idx])) {
+                $packet_has_photovideo[$idx] = false;
+            }
+            if ($row['pr_key'] === 'photo' || $row['pr_key'] === 'video') {
+                $packet_has_photovideo[$idx] = true;
+            }
+        }
+    }
+
+    $args = array(
+        'post_type' => 'svadba',
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        'orderby' => 'title',
+        'order' => 'ASC'
+    );
+    $places = get_posts($args);
+
+    if (empty($places)) {
+        return '<div class="price-placeholder"><p><em>Нет доступных мест для свадеб</em></p></div>';
+    }
+
+    $grouped_places = array();
+    $taxonomy = 'location';
+
+    foreach ($places as $place) {
+        $terms = taxonomy_exists($taxonomy) ? get_the_terms($place->ID, $taxonomy) : false;
+
+        if (is_wp_error($terms) || empty($terms)) {
+            if (!isset($grouped_places['__no_location'])) {
+                $grouped_places['__no_location'] = array(
+                    'label' => 'Без локации',
+                    'places' => array(),
+                );
+            }
+            $grouped_places['__no_location']['places'][] = $place;
+            continue;
+        }
+
+        foreach ($terms as $term) {
+            if (!isset($grouped_places[$term->term_id])) {
+                $grouped_places[$term->term_id] = array(
+                    'label' => $term->name,
+                    'places' => array(),
+                );
+            }
+            $grouped_places[$term->term_id]['places'][] = $place;
+        }
+    }
+
+    uasort($grouped_places, function ($a, $b) {
+        return strcasecmp((string)$a['label'], (string)$b['label']);
+    });
+
+    $colspan = count($packets) + 2;
+    $output = '<div class="wedding-places-table-wrap">';
+    $output .= '<table class="wedding-places-table">';
+    $output .= '<thead><tr>';
+    $output .= '<th>Место свадьбы</th>';
+    $output .= '<th>Базовая цена</th>';
+    foreach ($packets as $packet_data) {
+        $output .= '<th>' . esc_html($packet_data['name']) . '</th>';
+    }
+    $output .= '</tr></thead>';
+    $output .= '<tbody>';
+
+    foreach ($grouped_places as $group) {
+        if (empty($group['places'])) {
+            continue;
+        }
+
+        $output .= '<tr class="location-group-row">';
+        $output .= '<th colspan="' . esc_attr($colspan) . '">' . esc_html($group['label']) . '</th>';
+        $output .= '</tr>';
+
+        foreach ($group['places'] as $place) {
+            $distance = max(BW_MIN_DISTANCE, (int)get_post_meta($place->ID, 'distance', true));
+            $base_place_price = (float)get_post_meta($place->ID, 'fromnew', true);
+
+            $base_auto_minus = round(($base_auto_price * $distance * BW_AUTO_DEDUCTION_COEF) / BW_ROUND_STEP) * BW_ROUND_STEP;
+
+            $output .= '<tr>';
+            $output .= '<td class="place-name"><a href="' . esc_url(get_permalink($place->ID)) . '">' . esc_html($place->post_title) . '</a></td>';
+            $output .= '<td class="place-price">' . number_format($base_place_price, 0, ',', ' ') . ' €</td>';
+
+            foreach ($packets as $packet_idx => $packet_data) {
+                if ($distance == 2) {
+                    $sv_hours = $distance + $packet_idx + 1;
+                } else {
+                    $sv_hours = $distance;
+                }
+
+                $auto_price = isset($auto_prices[$packet_idx]) ? $auto_prices[$packet_idx] : 0;
+                $other_price = isset($other_prices[$packet_idx]) ? $other_prices[$packet_idx] : 0;
+
+                $pack_price = ($auto_price * $sv_hours - $base_auto_minus) + $other_price;
+                if ($distance > BW_MIN_DISTANCE && !empty($packet_has_photovideo[$packet_idx])) {
+                    $pack_price += ($distance - BW_MIN_DISTANCE) * BW_TRAVEL_RATE_PHOTO_VIDEO;
+                }
+
+                $total_price = $base_place_price + round(($pack_price * BW_PACKET_DISCOUNT_COEF) / BW_ROUND_STEP) * BW_ROUND_STEP;
+                $output .= '<td class="packet-price">' . number_format($total_price, 0, ',', ' ') . ' €</td>';
+            }
+
+            $output .= '</tr>';
+        }
+    }
+
+    $output .= '</tbody></table></div>';
+
+    return $output;
+}
+
 get_header('service');
 
 ?>
@@ -272,7 +436,7 @@ get_header('service');
         <?php endwhile; endif; ?>
     </section>
 
-    <section class="price-tabs-section boxed">
+    <section class="price-tabs-section shrink-animation grow-animation boxed">
         <div class="svadba-tabs-nav">
             <?php 
             $first = true;
@@ -298,7 +462,7 @@ get_header('service');
                      class="svadba-tab-pane<?php echo $first ? ' active' : ''; ?>">
                     
                     <?php if ($tab_key === 'weddings') : ?>
-                        <?php echo render_wedding_places_table(); ?>
+                        <?php echo render_wedding_places_table_by_location(); ?>
                     <?php else : ?>
                         <?php foreach ($tab_data['sections'] as $section) : ?>
                             <?php 

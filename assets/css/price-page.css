@@ -34,7 +34,8 @@
 
 /* Секции с таблицами */
 
-/* Таблица мест свадеб с пакетами - плоская grid-сетка */
+/* ===== Старая разметка (grid). Временно отключена ===== */
+/*
 .wedding-places-grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -57,7 +58,6 @@
     border-right: none;
 }
 
-/* Ячейки заголовка */
 .place-cell.header {
     background: var(--color-bg-alt);
     font-weight: 600;
@@ -69,7 +69,6 @@
     justify-content: center;
 }
 
-/* Ячейки с названиями мест */
 .place-cell.place-name {
     text-align: left;
 }
@@ -84,7 +83,6 @@
     color: var(--color-primary);
 }
 
-/* Ячейки с ценами */
 .place-cell.place-price,
 .place-cell.packet-price {
     text-align: right;
@@ -93,7 +91,6 @@
     justify-content: flex-end;
 }
 
-/* Адаптив */
 @media (max-width: 768px) {
     .wedding-places-grid {
         grid-template-columns: 1fr;
@@ -117,6 +114,109 @@
         content: attr(data-packet-name) ': ';
         font-weight: normal;
         color: var(--color-text);
+    }
+}
+*/
+
+/* ===== Новая разметка (table) ===== */
+.wedding-places-table-wrap {
+    margin: 2rem 0;
+    overflow-x: auto;
+}
+
+.wedding-places-table {
+    width: 100%;
+    min-width: 820px;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--color-bg-alt);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--color-white);
+}
+
+.wedding-places-table th,
+.wedding-places-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--color-bg-alt);
+    border-right: 1px solid var(--color-bg-alt);
+}
+
+.wedding-places-table th:last-child,
+.wedding-places-table td:last-child {
+    border-right: none;
+}
+
+.wedding-places-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.wedding-places-table th {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+}
+
+.wedding-places-table thead th {
+    background: var(--color-bg-alt);
+    font-weight: 600;
+    color: var(--color-secondary);
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    text-align: center;
+    border-top: 1px solid var(--color-primary);
+    border-bottom: 1px solid var(--color-bg-alt);
+    border-right: 1px solid var(--color-bg-alt);
+}
+
+.wedding-places-table .location-group-row th {
+    color: var(--color-secondary);
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    border-top: 1px solid var(--color-primary);
+    border-bottom: 1px solid var(--color-primary);
+}
+
+.wedding-places-table td.place-name {
+    text-align: left;
+}
+
+.wedding-places-table td.place-name a {
+    color: var(--color-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.wedding-places-table td.place-name a:hover {
+    color: var(--color-primary);
+}
+
+.wedding-places-table td.place-price,
+.wedding-places-table td.packet-price {
+    text-align: right;
+    font-weight: 600;
+    color: var(--color-primary);
+    white-space: nowrap;
+    text-align: center;
+}
+
+.price-tabs-section.shrink-animation::after {
+    bottom: 50%;
+}
+
+@media (max-width: 1024px) {
+}
+
+@media (max-width: 768px) {
+    .wedding-places-table th,
+    .wedding-places-table td {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .wedding-places-table .location-group-row th {
+        font-size: 0.98rem;
+        padding: 12px;
     }
 }
 

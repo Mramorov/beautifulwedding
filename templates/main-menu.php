@@ -78,7 +78,7 @@ $MENU_ITEMS = [
     ],
     [
         'title'   => 'Цены',
-        'url'     => home_url('/price/'),
+        'url'     => home_url('/prajs-svadebnyh-uslug/'),
         'classes' => [],
         'type'    => 'link',
         'params'  => [],

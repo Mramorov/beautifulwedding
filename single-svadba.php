@@ -42,9 +42,9 @@ get_header('svadba');
           }
           $map_string = '';
           if (!empty($map_iframe_url) || !empty($map_external_url)) {
-             $map_string = '<button type="button" class="map-trigger" id="openMapModal">| cмотреть на карте...</button>';
+            $map_string = '<button type="button" class="map-trigger" id="openMapModal">| cмотреть на карте...</button>';
           }
-          echo '<div class="head-label">Локация: ' . implode(', ', $term_links) . $map_string .'</div>';
+          echo '<div class="head-label">Локация: ' . implode(', ', $term_links) . $map_string . '</div>';
         }
 
         // Ceremonies terms
@@ -105,7 +105,8 @@ get_header('svadba');
         </div>
       <?php endif; ?>
       <div class="block-through-two-columns">
-        <a href="#svadba-gallery-section">Смотреть фото</a>
+        <div class="seegallery"><a href="#svadba-gallery-section">Смотреть фото</a></div>
+        <div class="separate-text">Ниже вы можете оформить предварительный заказ на свадьбу вашей мечты и сориентироваться по цене</div>
       </div>
     </section>
 
@@ -115,8 +116,9 @@ get_header('svadba');
       $repeater = get_svadba_repeater_data(get_the_ID());
       if (! empty($repeater) && is_array($repeater)) : ?>
         <section class="svadba-repeater boxed">
-          <h2>Залы и места</h2>
-          <p>(выбор места может влиять на цену пакета)</p>
+
+          <h2 class="wotopmargin">Выберите зал или место</h2>
+          <!--      <p>(выбор места может влиять на цену пакета)</p> -->
           <div class="repeater-list">
             <?php
             $index = 0;

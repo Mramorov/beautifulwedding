@@ -55,6 +55,13 @@ function beautifulwedding_scripts()
     $front_css_ver = file_exists($front_css) ? filemtime($front_css) : $style_ver;
     wp_enqueue_style('bw-front-page', get_stylesheet_directory_uri() . '/assets/css/front-page.css', array('minimal-style'), $front_css_ver);
   }
+
+  // Базовые стили шаблона таксономии location
+  if (is_tax('location')) {
+    $location_css = get_stylesheet_directory() . '/assets/css/taxonomy-location.css';
+    $location_css_ver = file_exists($location_css) ? filemtime($location_css) : $style_ver;
+    wp_enqueue_style('bw-taxonomy-location', get_stylesheet_directory_uri() . '/assets/css/taxonomy-location.css', array('minimal-style'), $location_css_ver);
+  }
 }
 add_action('wp_enqueue_scripts', 'beautifulwedding_scripts');
 
@@ -198,6 +205,7 @@ function beautifulwedding_enqueue_lightbox_assets() {
     filemtime( get_template_directory() . '/assets/js/glightbox-init.js' ),
     true
   );
+
 }
 add_action( 'wp_enqueue_scripts', 'beautifulwedding_enqueue_lightbox_assets' );
 

@@ -132,14 +132,13 @@
     display: flex;
     gap: 20px;
     justify-content: space-evenly;
-    /* flex-wrap: wrap; */
+    margin-top: 2rem;
 }
 
 /* Visual - Place tiles (Дополнительные залы и места) */
 .svadba-repeater,
 .svadba-selfpay-block {
-    margin-top: 3em;
-    border-top: 1px solid var(--color-primary);
+    margin-top: 1em;
 }
 
 .svadba-repeater {
@@ -164,10 +163,7 @@ section.svadba-repeater p {
 .place-item {
     position: relative;
     cursor: pointer;
-    box-shadow: none;
-    border-color: transparent;
-    border-radius: 50%;
-    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, filter .2s ease;
+    overflow: hidden;
 }
 
 
@@ -186,6 +182,7 @@ section.svadba-repeater p {
     aspect-ratio: 1.5 / 1;
     border-radius: 4px;
 }
+
 .place-item .repeater-image img:hover {
     filter: none;
 }
@@ -231,23 +228,23 @@ section.svadba-repeater p {
     box-shadow: 0 4px 18px rgba(212, 165, 160, .45);
     transform: translateY(-2px) scale(1.003);
     background: rgb(0 0 0 / 70%); 
-} */
 
-.place-item.active-place .repeater-mesto {
-   border: 4px solid #ffc9d8;
 }
+.place-item.active-place .repeater-mesto {
+    border: 4px solid #ffc9d8;
+}
+ */
 
 .place-item.active-place::after {
     content: "";
     position: absolute;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border-radius: 50%;
-    background: #ffb0b0;
-    z-index: 100;
-    top: -8px;
-    right: -3px;
+    width: 350px;
+    height: 350px;
+    background: url(/wp-content/themes/beautifulwedding/img/graph-1.png);
+    top: 76px;
+    right: -177px;
+    background-size: contain;
+    transform: rotate(30deg);
 
 }
 
@@ -310,10 +307,12 @@ section.svadba-repeater p {
     border: none;
     background: transparent;
 }
+
 .map-trigger:hover {
     color: var(--color-link);
     transition: background-color 0.2s, color 0.2s;
 }
+
 .map-modal-overlay {
     position: fixed;
     inset: 0;
@@ -468,7 +467,12 @@ body.no-scroll {
     align-items: center;
     position: relative;
     grid-column: 2;
-    grid-row: 1;
+    /* grid-row: 1; */
+    background: linear-gradient(to left, rgb(255 249 245) 0%, #ffffff 50%, rgb(255 249 245) 100%);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    padding: 2rem 0;
+    margin: 1rem 0 6rem;
 }
 
 .svadba-hero-meta .entry-meta>div,

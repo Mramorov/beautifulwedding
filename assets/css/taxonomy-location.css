@@ -1,0 +1,138 @@
+/* Base layout for location taxonomy page; visual polish will be added later. */
+
+.taxonomy-location-main {
+  display: grid;
+  gap: 32px;
+  padding-bottom: 48px;
+}
+
+.taxonomy-location-hero-text {
+  text-align: center;
+  max-width: 900px;
+}
+
+.taxonomy-location-hero-text .entry-title {
+  margin-bottom: 12px;
+}
+
+.taxonomy-location-description {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.location-section-title {
+  margin: 0 0 14px;
+}
+
+.location-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.location-grid--popular {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.location-grid--mixed {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: minmax(180px, auto);
+  grid-auto-flow: dense;
+}
+
+.location-grid--other-terms {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.location-card {
+  display: grid;
+  gap: 10px;
+}
+
+.location-card-banner {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.location-card-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.location-card-title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.location-card-excerpt {
+  margin: 0;
+}
+
+.location-card-meta p {
+  margin: 0 0 8px;
+}
+
+.location-card-characteristics {
+  font-size: 0.95rem;
+}
+
+.location-card--11 {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+.location-card--21 {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.location-card--12 {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+.location-card--22 {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.location-text-gap-inner {
+  min-height: 120px;
+}
+
+@media (max-width: 980px) {
+  .location-grid--popular {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .location-grid--mixed {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .location-grid--other-terms {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .location-grid--popular,
+  .location-grid--mixed,
+  .location-grid--other-terms {
+    grid-template-columns: 1fr;
+  }
+
+  .location-card--11,
+  .location-card--21,
+  .location-card--12,
+  .location-card--22 {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .location-card-banner {
+    aspect-ratio: 16 / 10;
+  }
+}

@@ -24,51 +24,55 @@ get_header('service');
       </div>
     <?php endif; ?>
   </section>
-  <section class="price-wrapper grow-animation boxed">
-    <?php
-    $raw_tables_json = trim((string) get_post_meta(get_the_ID(), 'service_price_tables_json', true));
-    $table_sections = array();
+  <?php
+  $raw_tables_json = trim((string) get_post_meta(get_the_ID(), 'service_price_tables_json', true));
+  $table_sections = array();
 
-    if ($raw_tables_json !== '') {
-      $decoded_sections = json_decode($raw_tables_json, true);
-      if (json_last_error() === JSON_ERROR_NONE && is_array($decoded_sections)) {
-        $table_sections = $decoded_sections;
-      }
+  if ($raw_tables_json !== '') {
+    $decoded_sections = json_decode($raw_tables_json, true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded_sections)) {
+      $table_sections = $decoded_sections;
     }
+  }
 
-    foreach ($table_sections as $section) {
-      if (!is_array($section)) {
-        continue;
-      }
+  if (!empty($table_sections)) :
+  ?>
+    <section class="price-wrapper grow-animation boxed">
+      <?php
+      foreach ($table_sections as $section) {
+        if (!is_array($section)) {
+          continue;
+        }
 
-      $title = isset($section['title']) ? trim((string) $section['title']) : '';
-      $key = isset($section['key']) ? trim((string) $section['key']) : '';
-      if ($key === '' && isset($section['keys'])) {
-        $keys_input = $section['keys'];
-        if (is_string($keys_input)) {
-          $key = trim((string) $keys_input);
-        } elseif (is_array($keys_input) && !empty($keys_input)) {
-          $key = trim((string) reset($keys_input));
+        $title = isset($section['title']) ? trim((string) $section['title']) : '';
+        $key = isset($section['key']) ? trim((string) $section['key']) : '';
+        if ($key === '' && isset($section['keys'])) {
+          $keys_input = $section['keys'];
+          if (is_string($keys_input)) {
+            $key = trim((string) $keys_input);
+          } elseif (is_array($keys_input) && !empty($keys_input)) {
+            $key = trim((string) reset($keys_input));
+          }
+        }
+
+        if ($key === '') {
+          continue;
+        }
+
+        if (function_exists('bw_render_price_section')) {
+          echo bw_render_price_section($title, array($key));
+        } else {
+          $service_shortcode = sprintf(
+            '[bw_services keys="%s" title="%s"]',
+            esc_attr($key),
+            esc_attr($title)
+          );
+          echo do_shortcode($service_shortcode);
         }
       }
-
-      if ($key === '') {
-        continue;
-      }
-
-      if (function_exists('bw_render_price_section')) {
-        echo bw_render_price_section($title, array($key));
-      } else {
-        $service_shortcode = sprintf(
-          '[bw_services keys="%s" title="%s"]',
-          esc_attr($key),
-          esc_attr($title)
-        );
-        echo do_shortcode($service_shortcode);
-      }
-    }
-    ?>
-  </section>
+      ?>
+    </section>
+  <?php endif; ?>
   <?php
   // Галерея (GLightbox). Используем общее метаполе 'svadba_gallery' и для свадеб, и для услуг.
   $gallery = get_post_meta(get_the_ID(), 'svadba_gallery', true);
