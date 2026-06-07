@@ -92,6 +92,11 @@
     padding: 7px 10px;
 }
 
+.select-detail,
+.chk-text-wrapper .form-error-message {
+    font-size: 0.8em;
+}
+
 /* Layout - Auto Hours Controls */
 
 .select-control .auto-hours-select {
@@ -99,18 +104,22 @@
     min-width: 90px;
 }
 
-/* Layout - Checkboxes Block (Grid) */
+/* Layout - Checkboxes Block */
 .check-block {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
     gap: 12px 20px;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 510px;
 }
 
 .chk-lbl {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
     cursor: pointer;
+    width: 50%;
+    box-sizing: content-box;
 }
 
 .chk-lbl input[type="checkbox"],
@@ -119,6 +128,8 @@
     min-height: 20px;
     flex-shrink: 0;
     cursor: pointer;
+    margin-top: 3px;
+    accent-color: #b57f79;
 }
 
 /* Layout - Button Area */
@@ -505,10 +516,6 @@ body.no-scroll {
 @media (min-width: 700px) {
     .select-block {
         grid-template-columns: 1fr;
-    }
-
-    .check-block {
-        grid-template-columns: 1fr 1fr;
     }
 }
 

@@ -146,6 +146,10 @@ add_filter('get_terms', function($terms, $taxonomies, $args) {
     if (!in_array('wedding_days', (array)$taxonomies)) {
         return $terms;
     }
+
+    if (empty($terms) || !is_array($terms) || !is_object(reset($terms))) {
+        return $terms;
+    }
     
     // Weekday order
     $order = array(

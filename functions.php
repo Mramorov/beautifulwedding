@@ -56,11 +56,25 @@ function beautifulwedding_scripts()
     wp_enqueue_style('bw-front-page', get_stylesheet_directory_uri() . '/assets/css/front-page.css', array('minimal-style'), $front_css_ver);
   }
 
-  // Базовые стили шаблона таксономии location
-  if (is_tax('location')) {
+  // Базовые стили таксономий svadba (location/wedding_days/ceremonies)
+  if (is_tax(array('location', 'wedding_days', 'ceremonies'))) {
     $location_css = get_stylesheet_directory() . '/assets/css/taxonomy-location.css';
     $location_css_ver = file_exists($location_css) ? filemtime($location_css) : $style_ver;
     wp_enqueue_style('bw-taxonomy-location', get_stylesheet_directory_uri() . '/assets/css/taxonomy-location.css', array('minimal-style'), $location_css_ver);
+  }
+
+  // Карта нужна только для location
+  if (is_tax('location')) {
+    $leaflet_css = get_stylesheet_directory() . '/assets/css/vendor/leaflet.css';
+    $leaflet_js = get_stylesheet_directory() . '/assets/js/vendor/leaflet.js';
+    $location_map_js = get_stylesheet_directory() . '/assets/js/taxonomy-location-map.js';
+    $leaflet_css_ver = file_exists($leaflet_css) ? filemtime($leaflet_css) : $style_ver;
+    $leaflet_js_ver = file_exists($leaflet_js) ? filemtime($leaflet_js) : $style_ver;
+    $location_map_js_ver = file_exists($location_map_js) ? filemtime($location_map_js) : $style_ver;
+
+    wp_enqueue_style('bw-leaflet', get_stylesheet_directory_uri() . '/assets/css/vendor/leaflet.css', array('minimal-style'), $leaflet_css_ver);
+    wp_enqueue_script('bw-leaflet', get_stylesheet_directory_uri() . '/assets/js/vendor/leaflet.js', array(), $leaflet_js_ver, true);
+    wp_enqueue_script('bw-taxonomy-location-map', get_stylesheet_directory_uri() . '/assets/js/taxonomy-location-map.js', array('bw-leaflet'), $location_map_js_ver, true);
   }
 }
 add_action('wp_enqueue_scripts', 'beautifulwedding_scripts');

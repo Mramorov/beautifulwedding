@@ -13,6 +13,8 @@ Tags: wedding, minimal, blog, classic
 /* CSS Variables - Colors & Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Open+Sans:wght@300;400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap&subset=cyrillic,cyrillic-ext,latin,latin-ext');
 
+/* @import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Montserrat:ital,wght@0,300;0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Tenor+Sans&display=swap'); */
+
 
 /* Тема по умолчанию (розовая) */
 html {
@@ -507,6 +509,7 @@ button {
     color: var(--color-white);
     border-radius: 4px;
     box-shadow: 0 2px 8px rgba(212, 165, 160, .25);
+    text-decoration: none;
 }
 
 .button-main:hover {

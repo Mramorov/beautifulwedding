@@ -47,24 +47,14 @@ get_header('svadba');
           echo '<div class="head-label">Локация: ' . implode(', ', $term_links) . $map_string . '</div>';
         }
 
-        // Ceremonies terms
-        $ceremonies = get_the_terms($post_id, 'ceremonies');
-        if (! empty($ceremonies) && ! is_wp_error($ceremonies)) {
-          $cer_links = array();
-          foreach ($ceremonies as $term) {
-            $cer_links[] = '<a href="' . esc_url(get_term_link($term)) . '">' . esc_html($term->name) . '</a>';
-          }
-          echo '<div class="head-label">Церемония: ' . implode(', ', $cer_links) . '</div>';
+        $ceremonies = trim((string) get_post_meta($post_id, 'ceremonies', true));
+        if ($ceremonies !== '') {
+          echo '<div class="head-label">Церемония: <span class="field-value">' . esc_html($ceremonies) . '</span></div>';
         }
 
-        // Wedding days terms
-        $days = get_the_terms($post_id, 'wedding_days');
-        if (! empty($days) && ! is_wp_error($days)) {
-          $day_links = array();
-          foreach ($days as $term) {
-            $day_links[] = '<a href="' . esc_url(get_term_link($term)) . '">' . esc_html($term->name) . '</a>';
-          }
-          echo '<div class="head-label">Свадебные дни: ' . implode(', ', $day_links) . '</div>';
+        $days = trim((string) get_post_meta($post_id, 'wedding_days', true));
+        if ($days !== '') {
+          echo '<div class="head-label">Свадебные дни: <span class="field-value">' . esc_html($days) . '</span></div>';
         }
         // Capacity meta field
         $capacity = get_post_meta($post_id, 'capacity', true);

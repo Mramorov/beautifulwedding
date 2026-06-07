@@ -3,8 +3,11 @@
  * Template part: Animated title
  * Displays page/post title with character-by-character animation
  */
-$post_id = get_queried_object_id();
-$title_text = get_the_title($post_id);
+$title_text = get_query_var('animated_title_text');
+if (empty($title_text)) {
+  $post_id = get_queried_object_id();
+  $title_text = get_the_title($post_id);
+}
 $words = explode(' ', $title_text);
 $char_index = 0;
 ?>

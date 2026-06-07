@@ -1,11 +1,13 @@
 <?php
+
 /**
  * Template Name: Прайс-лист услуг
  * Template Post Type: page
  */
 
 // Enqueue assets
-function enqueue_price_page_assets() {
+function enqueue_price_page_assets()
+{
     // Табличные стили (общие для шорткода и страницы)
     $tables_css = get_template_directory() . '/assets/css/price-tables.css';
     $tables_ver = file_exists($tables_css) ? filemtime($tables_css) : wp_get_theme()->get('Version');
@@ -15,7 +17,7 @@ function enqueue_price_page_assets() {
     $css_file = get_template_directory() . '/assets/css/price-page.css';
     $css_version = file_exists($css_file) ? filemtime($css_file) : wp_get_theme()->get('Version');
     wp_enqueue_style('price-page-styles', get_template_directory_uri() . '/assets/css/price-page.css', array('bw-price-tables'), $css_version);
-    
+
     $js_file = get_template_directory() . '/assets/js/price-page.js';
     $js_version = file_exists($js_file) ? filemtime($js_file) : wp_get_theme()->get('Version');
     wp_enqueue_script('price-page-script', get_template_directory_uri() . '/assets/js/price-page.js', array(), $js_version, true);
@@ -61,6 +63,12 @@ $tabs_config = [
             ['title' => '', 'keys' => 'cake'],
         ],
     ],
+    'arches' => [
+        'tab' => 'Арки',
+        'sections' => [
+            ['title' => '', 'keys' => 'arch'],
+        ],
+    ],
     'dresses' => [
         'tab' => 'Платья',
         'sections' => [
@@ -77,7 +85,8 @@ $tabs_config = [
 ];
 
 // Функция получения данных из БД
-function get_prices_by_keys($keys) {
+function get_prices_by_keys($keys)
+{
     global $wpdb;
     $keys_placeholders = implode(',', array_fill(0, count($keys), '%s'));
     $query = $wpdb->prepare(
@@ -88,7 +97,8 @@ function get_prices_by_keys($keys) {
 }
 
 // Функция форматирования цены
-function format_price($price) {
+function format_price($price)
+{
     if ($price == -999) {
         return 'договорная';
     }
@@ -96,10 +106,11 @@ function format_price($price) {
 }
 
 // Функция форматирования названия услуги
-function format_service_name($item) {
+function format_service_name($item)
+{
     $name = $item->sname;
     $detail = $item->sdetail;
-    
+
     // Специальная логика для фото и видео
     if ($item->pr_key === 'photo') {
         $formatted = 'Фотосъёмка – ' . $name;
@@ -108,7 +119,7 @@ function format_service_name($item) {
         }
         return $formatted;
     }
-    
+
     if ($item->pr_key === 'video') {
         $formatted = 'Видеосъёмка – ' . $name;
         if ($detail) {
@@ -116,7 +127,7 @@ function format_service_name($item) {
         }
         return $formatted;
     }
-    
+
     // Для остальных категорий
     $formatted = $name;
     if ($detail) {
@@ -126,22 +137,23 @@ function format_service_name($item) {
 }
 
 // Функция расчета цен по пакетам для мест свадеб
-function render_wedding_places_table() {
+function render_wedding_places_table()
+{
     global $wpdb;
-    
+
     // Подключаем svadba-common.php для доступа к svadba_get_packets()
     require_once get_template_directory() . '/inc/utils/svadba-common.php';
-    
+
     $packets = svadba_get_packets();
     $table = $wpdb->prefix . 'svadba_prices';
-    
+
     // Получаем минимальную цену авто (base_auto_price)
     $base_auto_price_row = $wpdb->get_row(
         "SELECT MIN(sprice) as min_price FROM {$table} WHERE pr_key = 'auto'",
         ARRAY_A
     );
     $base_auto_price = $base_auto_price_row ? (float)$base_auto_price_row['min_price'] : 0;
-    
+
     // Собираем цены по пакетам для категории auto
     $auto_prices = array();
     $auto_rows = $wpdb->get_results(
@@ -155,7 +167,7 @@ function render_wedding_places_table() {
             $auto_prices[$idx] += (float)$row['sprice'];
         }
     }
-    
+
     // Собираем цены остальных услуг по пакетам (photo, bqt, cake, phvid, other)
     $other_prices = array();
     // Включаем категории, входящие в фиксированные пакеты: фото, видео-доп., цветы, торт, прочие, платье, причёски/макияж
@@ -180,7 +192,7 @@ function render_wedding_places_table() {
             }
         }
     }
-    
+
     // Получаем все опубликованные места свадеб
     $args = array(
         'post_type' => 'svadba',
@@ -190,38 +202,38 @@ function render_wedding_places_table() {
         'order' => 'ASC'
     );
     $places = get_posts($args);
-    
+
     if (empty($places)) {
         return '<div class="price-placeholder"><p><em>Нет доступных мест для свадеб</em></p></div>';
     }
-    
+
     // Формируем таблицу (плоская grid-сетка)
     $output = '<div class="wedding-places-grid">';
-    
+
     // Ячейки заголовка
     $output .= '<div class="place-cell header">Место свадьбы</div>';
     $output .= '<div class="place-cell header">Базовая цена</div>';
     foreach ($packets as $packet_idx => $packet_data) {
         $output .= '<div class="place-cell header">' . esc_html($packet_data['name']) . '</div>';
     }
-    
+
     // Ячейки с данными
     foreach ($places as $place) {
         $distance = max(BW_MIN_DISTANCE, (int)get_post_meta($place->ID, 'distance', true));
-        
+
         $base_place_price = (float)get_post_meta($place->ID, 'fromnew', true);
-        
+
         // Расчет base_auto_minus (используем коэффициент 0.7 как в JS)
         $base_auto_minus = round(($base_auto_price * $distance * BW_AUTO_DEDUCTION_COEF) / BW_ROUND_STEP) * BW_ROUND_STEP;
-        
+
         // Ячейка с названием места
         $output .= '<div class="place-cell place-name">';
         $output .= '<a href="' . get_permalink($place->ID) . '">' . esc_html($place->post_title) . '</a>';
         $output .= '</div>';
-        
+
         // Ячейка с базовой ценой
         $output .= '<div class="place-cell place-price">' . number_format($base_place_price, 0, ',', ' ') . ' €</div>';
-        
+
         // Ячейки с ценами по пакетам
         foreach ($packets as $packet_idx => $packet_data) {
             // Вычисляем sv_hours
@@ -232,35 +244,36 @@ function render_wedding_places_table() {
                 // За Прагой: время = distance
                 $sv_hours = $distance;
             }
-            
+
             // Получаем цены для пакета
             $auto_price = isset($auto_prices[$packet_idx]) ? $auto_prices[$packet_idx] : 0;
             $other_price = isset($other_prices[$packet_idx]) ? $other_prices[$packet_idx] : 0;
-            
+
             // Расчет pack_price
             $pack_price = ($auto_price * $sv_hours - $base_auto_minus) + $other_price;
             // Единовременная доплата за дорогу для фото/видео, если distance > 2 и пакет включает фото/видео
             if ($distance > BW_MIN_DISTANCE && !empty($packet_has_photovideo[$packet_idx])) {
                 $pack_price += ($distance - BW_MIN_DISTANCE) * BW_TRAVEL_RATE_PHOTO_VIDEO;
             }
-            
+
             // Итоговая цена (округление как в старом коде)
             $total_price = $base_place_price + round(($pack_price * BW_PACKET_DISCOUNT_COEF) / BW_ROUND_STEP) * BW_ROUND_STEP;
-            
+
             $output .= '<div class="place-cell packet-price">';
             $output .= number_format($total_price, 0, ',', ' ') . ' €</div>';
         }
     }
-    
+
     $output .= '</div>';
-    
+
     return $output;
 }
 
 // Дубликат render_wedding_places_table:
 // - вывод через HTML table
 // - одна общая таблица, внутри которой локации разделены строками-заголовками
-function render_wedding_places_table_by_location() {
+function render_wedding_places_table_by_location()
+{
     global $wpdb;
 
     require_once get_template_directory() . '/inc/utils/svadba-common.php';
@@ -426,46 +439,47 @@ get_header('service');
 ?>
 
 <main id="post-<?php the_ID(); ?>" <?php post_class('layout'); ?>>
-    
+
     <section class="price-header boxed">
         <h1><?php the_title(); ?></h1>
         <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-            <div class="entry-content">
-                <?php the_content(); ?>
-            </div>
-        <?php endwhile; endif; ?>
+                <div class="entry-content">
+                    <?php the_content(); ?>
+                </div>
+        <?php endwhile;
+        endif; ?>
     </section>
 
     <section class="price-tabs-section shrink-animation grow-animation boxed">
         <div class="svadba-tabs-nav">
-            <?php 
+            <?php
             $first = true;
-            foreach ($tabs_config as $tab_key => $tab_data) : 
+            foreach ($tabs_config as $tab_key => $tab_data) :
             ?>
-                <button type="button" 
-                        class="svadba-tab-button<?php echo $first ? ' active' : ''; ?>" 
-                        data-tab="<?php echo esc_attr($tab_key); ?>-tab">
+                <button type="button"
+                    class="svadba-tab-button<?php echo $first ? ' active' : ''; ?>"
+                    data-tab="<?php echo esc_attr($tab_key); ?>-tab">
                     <?php echo esc_html($tab_data['tab']); ?>
                 </button>
-            <?php 
+            <?php
                 $first = false;
-            endforeach; 
+            endforeach;
             ?>
         </div>
 
         <div class="svadba-tabs-content">
-            <?php 
+            <?php
             $first = true;
-            foreach ($tabs_config as $tab_key => $tab_data) : 
+            foreach ($tabs_config as $tab_key => $tab_data) :
             ?>
-                <div id="<?php echo esc_attr($tab_key); ?>-tab" 
-                     class="svadba-tab-pane<?php echo $first ? ' active' : ''; ?>">
-                    
+                <div id="<?php echo esc_attr($tab_key); ?>-tab"
+                    class="svadba-tab-pane<?php echo $first ? ' active' : ''; ?>">
+
                     <?php if ($tab_key === 'weddings') : ?>
                         <?php echo render_wedding_places_table_by_location(); ?>
                     <?php else : ?>
                         <?php foreach ($tab_data['sections'] as $section) : ?>
-                            <?php 
+                            <?php
                             // Render via shortcode for reuse across pages
                             $keys_attr = esc_attr($section['keys']);
                             $title_attr = esc_attr($section['title']);
@@ -473,11 +487,11 @@ get_header('service');
                             ?>
                         <?php endforeach; ?>
                     <?php endif; ?>
-                    
+
                 </div>
-            <?php 
+            <?php
                 $first = false;
-            endforeach; 
+            endforeach;
             ?>
         </div>
     </section>

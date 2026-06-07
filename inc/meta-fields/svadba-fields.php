@@ -29,6 +29,8 @@ function svadba_price_fields_callback($post)
     $capacity = get_post_meta($post->ID, 'capacity', true);
     $distance = get_post_meta($post->ID, 'distance', true);
     $cer_time = get_post_meta($post->ID, 'cer-time', true);
+    $wedding_days = get_post_meta($post->ID, 'wedding_days', true);
+    $ceremonies = get_post_meta($post->ID, 'ceremonies', true);
     $google_map_url = get_post_meta($post->ID, 'google_map_url', true);
 ?>
     <style>
@@ -89,6 +91,28 @@ function svadba_price_fields_callback($post)
             <input type="url" id="google_map_url" name="google_map_url" value="<?php echo esc_attr($google_map_url); ?>" placeholder="https://www.google.com/maps/..." />
         </div>
     </div>
+    <div class="svadba-fields-row">
+        <div class="svadba-field">
+            <label for="wedding_days">Wedding days (plain string)</label>
+            <input
+                type="text"
+                id="wedding_days"
+                name="wedding_days"
+                value="<?php echo esc_attr($wedding_days); ?>"
+                placeholder="Вторник, Пятница, По договорённости"
+            />
+        </div>
+        <div class="svadba-field">
+            <label for="ceremonies">Ceremonies (plain string)</label>
+            <input
+                type="text"
+                id="ceremonies"
+                name="ceremonies"
+                value="<?php echo esc_attr($ceremonies); ?>"
+                placeholder="Выездная, Символическая"
+            />
+        </div>
+    </div>
 <?php
 }
 
@@ -97,7 +121,7 @@ function svadba_save_price_fields($post_id)
     if (!isset($_POST['svadba_price_fields_nonce']) || !wp_verify_nonce($_POST['svadba_price_fields_nonce'], 'svadba_price_fields_nonce')) return;
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
     if (!current_user_can('edit_post', $post_id)) return;
-    $fields = array('fromold', 'fromnew', 'capacity', 'distance', 'cer-time');
+    $fields = array('fromold', 'fromnew', 'capacity', 'distance', 'cer-time', 'wedding_days', 'ceremonies');
     foreach ($fields as $field) {
         if (isset($_POST[$field])) {
             update_post_meta($post_id, $field, sanitize_text_field($_POST[$field]));

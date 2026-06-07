@@ -11,7 +11,6 @@
   <?php
   $term = get_queried_object();
   $term_name = ($term instanceof WP_Term) ? $term->name : '';
-  $term_description = ($term instanceof WP_Term) ? term_description($term) : '';
   $hero_bg_url = '';
 
   if ($term instanceof WP_Term) {
@@ -19,12 +18,11 @@
       'post_type'      => 'svadba',
       'posts_per_page' => 1,
       'orderby'        => array(
-        'menu_order' => 'ASC',
         'date'       => 'DESC',
       ),
       'tax_query'      => array(
         array(
-          'taxonomy' => 'location',
+          'taxonomy' => $term->taxonomy,
           'field'    => 'term_id',
           'terms'    => $term->term_id,
         ),
@@ -35,22 +33,20 @@
       $hero_bg_url = get_the_post_thumbnail_url((int) $hero_posts[0]->ID, 'full');
     }
   }
+  $featured_image_url = $hero_bg_url;
   ?>
 
-  <header class="entry-header svadba-hero full" <?php if ($hero_bg_url) : ?>style="background-image: url('<?php echo esc_url($hero_bg_url); ?>');" <?php endif; ?>>
-    <div class="svadba-hero-overlay"></div>
+  <header class="entry-header svadba-hero full" <?php if ($featured_image_url) : ?>style="background-image: url('<?php echo esc_url($featured_image_url); ?>');" <?php endif; ?>>
+    <div class="svadba-hero-overlay falling-leaves"></div>
     <div class="svadba-hero-content">
       <div class="svadba-hero-menu-center">
         <?php get_template_part('templates/main-menu'); ?>
       </div>
-      <div class="head-title-wrap taxonomy-location-hero-text">
-        <h1 class="entry-title"><?php echo esc_html($term_name); ?></h1>
-        <?php if (!empty(trim(wp_strip_all_tags($term_description)))) : ?>
-          <div class="taxonomy-location-description">
-            <?php echo wp_kses_post($term_description); ?>
-          </div>
-        <?php endif; ?>
-      </div>
+      <?php
+      // Pass taxonomy name into the animated title template.
+      set_query_var('animated_title_text', $term_name);
+      get_template_part('templates/animated-title');
+      ?>
       <div class="empty-div"></div>
     </div>
     <svg width="0" height="0" style="position: absolute;">

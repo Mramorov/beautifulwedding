@@ -36,6 +36,7 @@ if (!function_exists('svadba_get_labels')) {
             'video' => 'Видеосъёмка свадебной церемонии, прогулки по Праге',
             'bqt'   => 'Букет невесты',
             'cake'  => 'Свадебный торт',
+            'arch'  => 'Свадебные арки',
             'post'  => 'Отправка экспресс почтой EMS/DHL/Fedex свидетельства о браке',
             // Дополнено из словаря в svadba.js
             'car_hours' => 'Время автомобиля (час)',
@@ -66,6 +67,7 @@ if (!function_exists('svadba_get_service_order')) {
             'video' => 40,
             'bqt'   => 50,
             'cake'  => 60,
+            'arch'  => 65,
             'post'  => 70,
             // Other services will get default priority 999
         );

@@ -34,7 +34,7 @@ $MENU_ITEMS = [
     ],
     [
         'title'   => 'Свадьба в Праге',
-        'url'     => home_url('/svadba-v-prage/'),
+        'url'     => home_url('/location/svadba-v-prage/'),
         'classes' => ['has-mega-menu'],
         'type'    => 'svadba_places',
         'params'  => [
@@ -45,7 +45,7 @@ $MENU_ITEMS = [
     ],
     [
         'title'   => 'Свадьба в замке',
-        'url'     => home_url('/svadba-v-zamke-chehii/'),
+        'url'     => home_url('/location/svadba-v-zamke-chehii/'),
         'classes' => ['has-mega-menu'],
         'type'    => 'svadba_places',
         'params'  => [
@@ -56,7 +56,7 @@ $MENU_ITEMS = [
     ],
     [
         'title'   => 'Свадьба на корабле',
-        'url'     => home_url('/svadba-na-korable/'),
+        'url'     => home_url('/location/svadba-na-korable/'),
         'classes' => ['has-mega-menu'],
         'type'    => 'svadba_places',
         'params'  => [
@@ -202,24 +202,28 @@ function render_svadba_places_dropdown(array $args): string
                     $data['capacity'] = "до {$capacity} человек";
                 }
 
-                // Типы церемоний
-                $ceremonies = wp_get_post_terms($post_id, 'ceremonies', ['fields' => 'names']);
-                if (!empty($ceremonies) && !is_wp_error($ceremonies)) {
-                    $data['ceremonies'] = array_values($ceremonies);
+                // Церемонии и дни проведения храним как plain-string мета-поля
+                $ceremonies = trim((string) get_post_meta($post_id, 'ceremonies', true));
+                if ($ceremonies !== '') {
+                    $data['ceremonies'] = $ceremonies;
                 }
 
-                // Дни проведения свадеб (сортировка Пн-Вс)
-                $wedding_days = wp_get_post_terms($post_id, 'wedding-days', ['fields' => 'names']);
-                if (!empty($wedding_days) && !is_wp_error($wedding_days)) {
-                    usort($wedding_days, function ($a, $b) use ($ordered_days) {
-                        $pos_a = array_search($a, array_keys($ordered_days));
-                        $pos_b = array_search($b, array_keys($ordered_days));
-                        return ($pos_a === false ? 999 : $pos_a) <=> ($pos_b === false ? 999 : $pos_b);
-                    });
-                    $sorted_days = array_map(function ($day) use ($ordered_days) {
-                        return $ordered_days[$day] ?? $day;
-                    }, $wedding_days);
-                    $data['wedding_days'] = $sorted_days;
+                $wedding_days = trim((string) get_post_meta($post_id, 'wedding_days', true));
+                if ($wedding_days !== '') {
+                    $days_parts = array_filter(array_map('trim', explode(',', $wedding_days)));
+                    if (!empty($days_parts)) {
+                        usort($days_parts, function ($a, $b) use ($ordered_days) {
+                            $pos_a = array_search($a, array_keys($ordered_days), true);
+                            $pos_b = array_search($b, array_keys($ordered_days), true);
+                            return ($pos_a === false ? 999 : $pos_a) <=> ($pos_b === false ? 999 : $pos_b);
+                        });
+                        $short_days = array_map(function ($day) use ($ordered_days) {
+                            return $ordered_days[$day] ?? $day;
+                        }, $days_parts);
+                        $data['wedding_days'] = implode(', ', $short_days);
+                    } else {
+                        $data['wedding_days'] = $wedding_days;
+                    }
                 }
 
                 // Залы/места проведения
