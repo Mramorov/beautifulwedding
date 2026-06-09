@@ -56,11 +56,18 @@ function beautifulwedding_scripts()
     wp_enqueue_style('bw-front-page', get_stylesheet_directory_uri() . '/assets/css/front-page.css', array('minimal-style'), $front_css_ver);
   }
 
-  // Базовые стили таксономий svadba (location/wedding_days/ceremonies)
-  if (is_tax(array('location', 'wedding_days', 'ceremonies'))) {
+  // Общие стили таксономий и service-архива
+  if (is_tax() || is_post_type_archive('service')) {
+    $taxonomy_css = get_stylesheet_directory() . '/assets/css/taxonomy.css';
+    $taxonomy_css_ver = file_exists($taxonomy_css) ? filemtime($taxonomy_css) : $style_ver;
+    wp_enqueue_style('bw-taxonomy', get_stylesheet_directory_uri() . '/assets/css/taxonomy.css', array('minimal-style'), $taxonomy_css_ver);
+  }
+
+  // Специфичные стили только для taxonomy-location
+  if (is_tax('location')) {
     $location_css = get_stylesheet_directory() . '/assets/css/taxonomy-location.css';
     $location_css_ver = file_exists($location_css) ? filemtime($location_css) : $style_ver;
-    wp_enqueue_style('bw-taxonomy-location', get_stylesheet_directory_uri() . '/assets/css/taxonomy-location.css', array('minimal-style'), $location_css_ver);
+    wp_enqueue_style('bw-taxonomy-location', get_stylesheet_directory_uri() . '/assets/css/taxonomy-location.css', array('bw-taxonomy'), $location_css_ver);
   }
 
   // Карта нужна только для location

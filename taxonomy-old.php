@@ -12,11 +12,7 @@ $term = get_queried_object();
 $taxonomy_object = ($term instanceof WP_Term) ? get_taxonomy($term->taxonomy) : false;
 $is_svadba_taxonomy = $taxonomy_object && in_array('svadba', (array) $taxonomy_object->object_type, true);
 
-if ($is_svadba_taxonomy) {
-  get_header('location');
-} else {
-  get_header();
-}
+get_header('taxonomy');
 
 if (!($term instanceof WP_Term)) {
   get_footer();

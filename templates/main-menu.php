@@ -18,10 +18,6 @@ if (!defined('ABSPATH')) {
 /**
  * ВАЖНО: Соответствие слагов таксономии location
  * При изменении слагов терминов в админке обновить здесь!
- * 
- * Активные термины таксономии location:
- * - praga          : Прага
- * - zamki-chehii   : Замки Чехии
  */
 
 $MENU_ITEMS = [
@@ -30,65 +26,45 @@ $MENU_ITEMS = [
         'url'     => home_url('/'),
         'classes' => [],
         'type'    => 'link',
-        'params'  => [],
     ],
     [
         'title'   => 'Свадьба в Праге',
-        'url'     => home_url('/location/svadba-v-prage/'),
         'classes' => ['has-mega-menu'],
         'type'    => 'svadba_places',
-        'params'  => [
-            'location_slug' => 'svadba-v-prage',
-            'columns' => 3,
-            'banner_fallback' => wp_get_attachment_image_url(195, 'medium_large'),
-        ],
+        'location_slug' => 'svadba-v-prage',
+        'columns' => 3,
     ],
     [
         'title'   => 'Свадьба в замке',
-        'url'     => home_url('/location/svadba-v-zamke-chehii/'),
         'classes' => ['has-mega-menu'],
         'type'    => 'svadba_places',
-        'params'  => [
-            'location_slug' => 'svadba-v-zamke-chehii',
-            'columns' => 3,
-            'banner_fallback' => '',
-        ],
+        'location_slug' => 'svadba-v-zamke-chehii',
+        'columns' => 3,
     ],
     [
         'title'   => 'Свадьба на корабле',
-        'url'     => home_url('/location/svadba-na-korable/'),
-        'classes' => ['has-mega-menu'],
+        'classes' => ['has-mega-menu', 'left-banner'],
         'type'    => 'svadba_places',
-        'params'  => [
-            'location_slug' => '/svadba-na-korable/',
-            'columns' => 1,
-            'banner_fallback' => '',
-        ],
+        'location_slug' => 'svadba-na-korable',
+        'columns' => 1,
     ],
     [
         'title'   => 'Услуги',
-        'url'     => home_url('/service/'),
-        'classes' => ['has-mega-menu'],
+        'classes' => ['has-mega-menu', 'left-banner'],
         'type'    => 'service',
-        'params'  => [
-            'location_slug' => 'service',
-            'columns' => 1,
-            'banner_fallback' => '',
-        ],
+        'columns' => 1,
     ],
     [
         'title'   => 'Цены',
         'url'     => home_url('/prajs-svadebnyh-uslug/'),
         'classes' => [],
         'type'    => 'link',
-        'params'  => [],
     ],
     [
         'title'   => 'Контакты',
         'url'     => home_url('/contacts/'),
         'classes' => [],
         'type'    => 'link',
-        'params'  => [],
     ],
 ];
 
@@ -110,14 +86,28 @@ $RENDERERS = [
     // Выпадающее меню со списком мест свадеб
     'svadba_places' => function (array $item) {
         $title   = $item['title'] ?? '';
-        $url     = $item['url'] ?? '#';
         $classes = implode(' ', $item['classes'] ?? []);
-        $params  = $item['params'] ?? [];
+        $location_slug = sanitize_title($item['location_slug'] ?? '');
+        $columns = max(1, intval($item['columns'] ?? 2));
+
+        $url = '#';
+        if ($location_slug !== '') {
+            $term = get_term_by('slug', $location_slug, 'location');
+            if ($term instanceof WP_Term) {
+                $term_link = get_term_link($term);
+                if (!is_wp_error($term_link)) {
+                    $url = $term_link;
+                }
+            }
+        }
 
         echo '<li class="' . esc_attr($classes) . '">';
         echo '<a href="' . esc_url($url) . '">' . esc_html($title) . '</a>';
         echo '<div class="mega-menu"><div class="mega-menu-inner">';
-        echo render_svadba_places_dropdown($params);
+        echo render_svadba_places_dropdown([
+            'location_slug' => $location_slug,
+            'columns' => $columns,
+        ]);
         echo '</div></div>';
         echo '</li>';
     },
@@ -125,14 +115,17 @@ $RENDERERS = [
     // Выпадающее меню со списком услуг
     'service' => function (array $item) {
         $title   = $item['title'] ?? '';
-        $url     = $item['url'] ?? '#';
         $classes = implode(' ', $item['classes'] ?? []);
-        $params  = $item['params'] ?? [];
+        $columns = max(1, intval($item['columns'] ?? 1));
+
+        $url = get_post_type_archive_link('service') ?: home_url('/service/');
 
         echo '<li class="' . esc_attr($classes) . '">';
         echo '<a href="' . esc_url($url) . '">' . esc_html($title) . '</a>';
         echo '<div class="mega-menu"><div class="mega-menu-inner">';
-        echo render_service_dropdown($params);
+        echo render_service_dropdown([
+            'columns' => $columns,
+        ]);
         echo '</div></div>';
         echo '</li>';
     },
@@ -152,7 +145,7 @@ function render_svadba_places_dropdown(array $args): string
 {
     $location_slug = sanitize_title($args['location_slug'] ?? '');
     $columns     = max(1, intval($args['columns'] ?? 2));
-    $fallback    = esc_url($args['banner_fallback'] ?? '');
+    $fallback    = '';
 
     if (empty($location_slug)) {
         return '<!-- Не указан слаг таксономии location -->';
@@ -170,17 +163,6 @@ function render_svadba_places_dropdown(array $args): string
             'terms'    => $location_slug,
         ]],
     ]);
-
-    // Маппинг дней недели для сортировки
-    $ordered_days = [
-        'Понедельник' => 'Пн',
-        'Вторник'     => 'Вт',
-        'Среда'       => 'Ср',
-        'Четверг'     => 'Чт',
-        'Пятница'     => 'Пт',
-        'Суббота'     => 'Сб',
-        'Воскресенье' => 'Вс',
-    ];
 
     ob_start();
 ?>
@@ -210,34 +192,7 @@ function render_svadba_places_dropdown(array $args): string
 
                 $wedding_days = trim((string) get_post_meta($post_id, 'wedding_days', true));
                 if ($wedding_days !== '') {
-                    $days_parts = array_filter(array_map('trim', explode(',', $wedding_days)));
-                    if (!empty($days_parts)) {
-                        usort($days_parts, function ($a, $b) use ($ordered_days) {
-                            $pos_a = array_search($a, array_keys($ordered_days), true);
-                            $pos_b = array_search($b, array_keys($ordered_days), true);
-                            return ($pos_a === false ? 999 : $pos_a) <=> ($pos_b === false ? 999 : $pos_b);
-                        });
-                        $short_days = array_map(function ($day) use ($ordered_days) {
-                            return $ordered_days[$day] ?? $day;
-                        }, $days_parts);
-                        $data['wedding_days'] = implode(', ', $short_days);
-                    } else {
-                        $data['wedding_days'] = $wedding_days;
-                    }
-                }
-
-                // Залы/места проведения
-                $zaly_mesta = get_post_meta($post_id, 'zaly_mesta', true);
-                if (is_array($zaly_mesta) && !empty($zaly_mesta)) {
-                    $filtered_zaly = [];
-                    foreach ($zaly_mesta as $item) {
-                        if (!empty($item['mesto'])) {
-                            $filtered_zaly[] = $item['mesto'];
-                        }
-                    }
-                    if (!empty($filtered_zaly)) {
-                        $data['mesta'] = $filtered_zaly;
-                    }
+                    $data['wedding_days'] = $wedding_days;
                 }
 
                 // JSON для data-info
@@ -245,6 +200,9 @@ function render_svadba_places_dropdown(array $args): string
 
                 // Изображение для баннера
                 $thumbnail_url = get_the_post_thumbnail_url($post_id, 'medium');
+                if ($fallback === '' && !empty($thumbnail_url)) {
+                    $fallback = $thumbnail_url;
+                }
                 $data_bg_attr = $thumbnail_url ? ' data-bg="' . esc_url($thumbnail_url) . '"' : '';
             ?>
                 <li data-info="<?php echo $data_attr; ?>" <?php echo $data_bg_attr; ?>>
@@ -259,7 +217,7 @@ function render_svadba_places_dropdown(array $args): string
         <?php endif; ?>
     </ul>
 
-    <div class="right-mega-banner" <?php echo $fallback ? ' style="background-image:url(' . $fallback . ')"' : ''; ?>>
+    <div class="right-mega-banner" <?php echo $fallback ? ' style="background-image:url(' . esc_url($fallback) . ')"' : ''; ?>>
         <div class="banner-overlay"></div>
         <div class="banner-textblock">
             <p>Наведите мышку на пункт меню для просмотра краткой информации</p>
@@ -281,7 +239,7 @@ function render_svadba_places_dropdown(array $args): string
 function render_service_dropdown(array $args): string
 {
     $columns  = max(1, intval($args['columns'] ?? 1));
-    $fallback = esc_url($args['banner_fallback'] ?? '');
+    $fallback = '';
 
     // Услуги выводятся без фильтрации по таксономии.
     $query = new WP_Query([
@@ -298,6 +256,9 @@ function render_service_dropdown(array $args): string
             <?php while ($query->have_posts()): $query->the_post();
                 $post_id = get_the_ID();
                 $thumbnail_url = get_the_post_thumbnail_url($post_id, 'medium');
+                if ($fallback === '' && !empty($thumbnail_url)) {
+                    $fallback = $thumbnail_url;
+                }
                 $data_bg_attr = $thumbnail_url ? ' data-bg="' . esc_url($thumbnail_url) . '"' : '';
             ?>
                 <li <?php echo $data_bg_attr; ?>>
@@ -312,7 +273,7 @@ function render_service_dropdown(array $args): string
         <?php endif; ?>
     </ul>
 
-    <div class="right-mega-banner" <?php echo $fallback ? ' style="background-image:url(' . $fallback . ')"' : ''; ?>>
+    <div class="right-mega-banner" <?php echo $fallback ? ' style="background-image:url(' . esc_url($fallback) . ')"' : ''; ?>>
         <div class="banner-overlay banner-overlay--service"></div>
     </div>
 <?php

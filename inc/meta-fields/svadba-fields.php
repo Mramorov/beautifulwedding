@@ -87,20 +87,13 @@ function svadba_price_fields_callback($post)
     </div>
     <div class="svadba-fields-row">
         <div class="svadba-field">
-            <label for="google_map_url">Google Map link (embed or regular URL)</label>
-            <input type="url" id="google_map_url" name="google_map_url" value="<?php echo esc_attr($google_map_url); ?>" placeholder="https://www.google.com/maps/..." />
-        </div>
-    </div>
-    <div class="svadba-fields-row">
-        <div class="svadba-field">
             <label for="wedding_days">Wedding days (plain string)</label>
             <input
                 type="text"
                 id="wedding_days"
                 name="wedding_days"
                 value="<?php echo esc_attr($wedding_days); ?>"
-                placeholder="Вторник, Пятница, По договорённости"
-            />
+                placeholder="Вторник, Пятница, По договорённости" />
         </div>
         <div class="svadba-field">
             <label for="ceremonies">Ceremonies (plain string)</label>
@@ -109,8 +102,13 @@ function svadba_price_fields_callback($post)
                 id="ceremonies"
                 name="ceremonies"
                 value="<?php echo esc_attr($ceremonies); ?>"
-                placeholder="Выездная, Символическая"
-            />
+                placeholder="Выездная, Символическая" />
+        </div>
+    </div>
+    <div class="svadba-fields-row">
+        <div class="svadba-field">
+            <label for="google_map_url">Google Map link (embed or regular URL)</label>
+            <input type="url" id="google_map_url" name="google_map_url" value="<?php echo esc_attr($google_map_url); ?>" placeholder="https://www.google.com/maps/..." />
         </div>
     </div>
 <?php
@@ -243,18 +241,18 @@ function svadba_contextpic_callback($post)
 
     <div id="svadba_contextpic_container" class="<?php echo $is_service ? 'service-meta-layout' : ''; ?>">
         <div class="service-meta-image-wrap">
-        <input type="hidden" id="contextpic" name="contextpic" value="<?php echo esc_attr($contextpic_id); ?>" />
-        <div id="contextpic_preview">
-            <?php if ($contextpic_url): ?>
-                <img src="<?php echo esc_url($contextpic_url); ?>" style="max-width: 300px; display: block; margin-bottom: 10px;" />
+            <input type="hidden" id="contextpic" name="contextpic" value="<?php echo esc_attr($contextpic_id); ?>" />
+            <div id="contextpic_preview">
+                <?php if ($contextpic_url): ?>
+                    <img src="<?php echo esc_url($contextpic_url); ?>" style="max-width: 300px; display: block; margin-bottom: 10px;" />
+                <?php endif; ?>
+            </div>
+            <button type="button" class="button" id="contextpic_upload_button">
+                <?php echo $contextpic_id ? 'Изменить изображение' : 'Выбрать изображение'; ?>
+            </button>
+            <?php if ($contextpic_id): ?>
+                <button type="button" class="button" id="contextpic_remove_button">Удалить изображение</button>
             <?php endif; ?>
-        </div>
-        <button type="button" class="button" id="contextpic_upload_button">
-            <?php echo $contextpic_id ? 'Изменить изображение' : 'Выбрать изображение'; ?>
-        </button>
-        <?php if ($contextpic_id): ?>
-            <button type="button" class="button" id="contextpic_remove_button">Удалить изображение</button>
-        <?php endif; ?>
         </div>
 
         <?php if ($is_service): ?>
@@ -307,7 +305,7 @@ function svadba_save_contextpic($post_id)
     // Check post type
     $post_type = get_post_type($post_id);
     if (!in_array($post_type, array('svadba', 'service'))) return;
-    
+
     if (!isset($_POST['svadba_contextpic_nonce']) || !wp_verify_nonce($_POST['svadba_contextpic_nonce'], 'svadba_contextpic_nonce')) return;
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
     if (!current_user_can('edit_post', $post_id)) return;
@@ -330,7 +328,7 @@ function service_shortcode_settings_callback($post)
     wp_nonce_field('service_shortcode_settings_nonce', 'service_shortcode_settings_nonce');
 
     $service_price_tables_json = (string) get_post_meta($post->ID, 'service_price_tables_json', true);
-    ?>
+?>
     <p>
         <label for="service_price_tables_json"><strong>Service price tables JSON</strong></label>
     </p>
@@ -339,10 +337,9 @@ function service_shortcode_settings_callback($post)
         name="service_price_tables_json"
         class="widefat"
         rows="12"
-        spellcheck="false"
-    ><?php echo esc_textarea($service_price_tables_json); ?></textarea>
+        spellcheck="false"><?php echo esc_textarea($service_price_tables_json); ?></textarea>
     <p class="description">Храните данные как JSON-массив секций. Каждая секция: {"title":"...","key":"photo"}.</p>
-    <?php
+<?php
 }
 
 function service_save_shortcode_settings($post_id)

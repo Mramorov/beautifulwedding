@@ -30,13 +30,13 @@
    Пункты меню первого уровня
    ============================================ */
 
-.custom-mega-menu > li {
+.custom-mega-menu>li {
     position: static;
     display: flex;
     align-items: center;
 }
 
-.custom-mega-menu > li > a {
+.custom-mega-menu>li>a {
     display: block;
     padding: 10px 16px;
     text-decoration: none;
@@ -46,7 +46,7 @@
     white-space: nowrap;
 }
 
-.custom-mega-menu > li > a:hover {
+.custom-mega-menu>li>a:hover {
     color: var(--color-primary, #D232E0);
 }
 
@@ -60,20 +60,24 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
-    display: none;
-    background: #33223b;
-    border: 1px solid #4c3557;
-    border-radius: 6px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
     min-width: 300px;
-    max-width: 100vw;
+    max-width: 98vw;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    text-shadow: 1px 1px 1px black;
+    display: none;
 }
 
-.custom-mega-menu > li.has-mega-menu:hover .mega-menu,
-.custom-mega-menu > li.has-mega-menu:focus-within .mega-menu,
-.custom-mega-menu > li.has-mega-menu .mega-menu:hover {
+.custom-mega-menu>li.has-mega-menu:hover .mega-menu,
+.custom-mega-menu>li.has-mega-menu:focus-within .mega-menu,
+.custom-mega-menu>li.has-mega-menu .mega-menu:hover {
     display: block;
-} 
+}
 
 /* Внутренний flex-контейнер: список + баннер */
 .custom-mega-menu .mega-menu-inner {
@@ -81,6 +85,10 @@
     align-items: stretch;
     gap: 0;
     width: 100%;
+}
+
+.left-banner .mega-menu-inner {
+    flex-direction: row-reverse;
 }
 
 /* ============================================
@@ -110,7 +118,7 @@
     font-family: "Font Awesome 5 Free", "Font Awesome 6 Free";
     padding-right: 10px;
     font-size: 22px;
-    color: var(--color-primary, #D232E0);
+    color: var(--color-bg);
     transition: padding 0.3s ease;
 }
 
@@ -155,7 +163,11 @@
     align-items: center;
     justify-content: center;
     color: #fff;
-    border-radius: 0 6px 6px 0;
+    border-radius: 0 0 6px 0;
+}
+
+.left-banner .mega-menu-inner .right-mega-banner {
+    border-radius: 0 0 0 6px;
 }
 
 /* Затемняющий оверлей */
@@ -166,7 +178,6 @@
     right: 0;
     bottom: 0;
     background: rgba(7, 2, 31, 0.30);
-    border-radius: 0 6px 6px 0;
 }
 
 .banner-overlay--service {
@@ -190,14 +201,14 @@
 }
 
 /* Блоки информации о месте */
-.banner-textblock > div {
+.banner-textblock>div {
     display: flex;
     gap: 10px;
     margin-bottom: 12px;
     text-align: left;
 }
 
-.banner-textblock > div:last-child {
+.banner-textblock>div:last-child {
     margin-bottom: 0;
 }
 
@@ -238,7 +249,7 @@
         gap: 15px;
     }
 
-    .custom-mega-menu > li > a {
+    .custom-mega-menu>li>a {
         padding: 8px 12px;
         font-size: 0.95rem;
     }
@@ -269,7 +280,7 @@
         gap: 10px;
     }
 
-    .custom-mega-menu > li {
+    .custom-mega-menu>li {
         width: 100%;
     }
 
@@ -278,7 +289,7 @@
         display: none;
     }
 
-    .custom-mega-menu > li.has-mega-menu.active .mega-menu {
+    .custom-mega-menu>li.has-mega-menu.active .mega-menu {
         display: block;
     }
 

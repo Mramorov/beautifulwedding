@@ -16,7 +16,6 @@ jQuery(function($) {
     const labels = {
         fromnew: 'Стоимость',
         capacity: 'Вместимость',
-        mesta: 'Места',
         ceremonies: 'Церемония',
         wedding_days: 'Дни проведения'
     };

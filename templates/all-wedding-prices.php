@@ -30,6 +30,13 @@ $tabs_config = [
         'tab' => 'Свадьбы в Чехии',
         'sections' => [], // отдельная логика генерируется в шаблоне
     ],
+     'auto' => [
+        'tab' => 'Авто',
+        'sections' => [
+            ['title' => 'Трансфер аэропорт-отель и трансферы по городу (в одну сторону)', 'keys' => 'trans'],
+            ['title' => 'Транспорт в день свадьбы (минимально 2 часа, цена указана за 1 час)', 'keys' => 'auto'],
+        ],
+    ],   
     'photo-video' => [
         'tab' => 'Фото, видео',
         'sections' => [
@@ -38,13 +45,7 @@ $tabs_config = [
             ['title' => 'Дополнительные услуги', 'keys' => 'phvid'],
         ],
     ],
-    'auto' => [
-        'tab' => 'Автомобили',
-        'sections' => [
-            ['title' => 'Трансфер аэропорт-отель и трансферы по городу (в одну сторону)', 'keys' => 'trans'],
-            ['title' => 'Транспорт в день свадьбы (минимально 2 часа, цена указана за 1 час)', 'keys' => 'auto'],
-        ],
-    ],
+
     'hair-makeup' => [
         'tab' => 'Причёски, макияж',
         'sections' => [
@@ -52,15 +53,10 @@ $tabs_config = [
         ],
     ],
     'flowers' => [
-        'tab' => 'Цветы',
+        'tab' => 'Цветы, торты',
         'sections' => [
-            ['title' => '', 'keys' => 'bqt'],
-        ],
-    ],
-    'cakes' => [
-        'tab' => 'Торты',
-        'sections' => [
-            ['title' => '', 'keys' => 'cake'],
+            ['title' => 'Цветы', 'keys' => 'bqt'],
+            ['title' => 'Торты', 'keys' => 'cake']
         ],
     ],
     'arches' => [
@@ -136,139 +132,6 @@ function format_service_name($item)
     return $formatted;
 }
 
-// Функция расчета цен по пакетам для мест свадеб
-function render_wedding_places_table()
-{
-    global $wpdb;
-
-    // Подключаем svadba-common.php для доступа к svadba_get_packets()
-    require_once get_template_directory() . '/inc/utils/svadba-common.php';
-
-    $packets = svadba_get_packets();
-    $table = $wpdb->prefix . 'svadba_prices';
-
-    // Получаем минимальную цену авто (base_auto_price)
-    $base_auto_price_row = $wpdb->get_row(
-        "SELECT MIN(sprice) as min_price FROM {$table} WHERE pr_key = 'auto'",
-        ARRAY_A
-    );
-    $base_auto_price = $base_auto_price_row ? (float)$base_auto_price_row['min_price'] : 0;
-
-    // Собираем цены по пакетам для категории auto
-    $auto_prices = array();
-    $auto_rows = $wpdb->get_results(
-        "SELECT sprice, packet FROM {$table} WHERE pr_key = 'auto' AND packet IS NOT NULL AND packet <> ''",
-        ARRAY_A
-    );
-    foreach ($auto_rows as $row) {
-        $packet_indices = array_map('trim', explode(',', $row['packet']));
-        foreach ($packet_indices as $idx) {
-            if (!isset($auto_prices[$idx])) $auto_prices[$idx] = 0;
-            $auto_prices[$idx] += (float)$row['sprice'];
-        }
-    }
-
-    // Собираем цены остальных услуг по пакетам (photo, bqt, cake, phvid, other)
-    $other_prices = array();
-    // Включаем категории, входящие в фиксированные пакеты: фото, видео-доп., цветы, торт, прочие, платье, причёски/макияж
-    $other_keys = array('photo', 'bqt', 'cake', 'phvid', 'other', 'dress', 'hair');
-    $keys_placeholders = implode(',', array_fill(0, count($other_keys), '%s'));
-    $other_rows = $wpdb->get_results(
-        $wpdb->prepare(
-            "SELECT sprice, packet, pr_key FROM {$table} WHERE pr_key IN ($keys_placeholders) AND packet IS NOT NULL AND packet <> ''",
-            $other_keys
-        ),
-        ARRAY_A
-    );
-    $packet_has_photovideo = array();
-    foreach ($other_rows as $row) {
-        $packet_indices = array_map('trim', explode(',', $row['packet']));
-        foreach ($packet_indices as $idx) {
-            if (!isset($other_prices[$idx])) $other_prices[$idx] = 0;
-            $other_prices[$idx] += (float)$row['sprice'];
-            if (!isset($packet_has_photovideo[$idx])) $packet_has_photovideo[$idx] = false;
-            if ($row['pr_key'] === 'photo' || $row['pr_key'] === 'video') {
-                $packet_has_photovideo[$idx] = true;
-            }
-        }
-    }
-
-    // Получаем все опубликованные места свадеб
-    $args = array(
-        'post_type' => 'svadba',
-        'post_status' => 'publish',
-        'posts_per_page' => -1,
-        'orderby' => 'title',
-        'order' => 'ASC'
-    );
-    $places = get_posts($args);
-
-    if (empty($places)) {
-        return '<div class="price-placeholder"><p><em>Нет доступных мест для свадеб</em></p></div>';
-    }
-
-    // Формируем таблицу (плоская grid-сетка)
-    $output = '<div class="wedding-places-grid">';
-
-    // Ячейки заголовка
-    $output .= '<div class="place-cell header">Место свадьбы</div>';
-    $output .= '<div class="place-cell header">Базовая цена</div>';
-    foreach ($packets as $packet_idx => $packet_data) {
-        $output .= '<div class="place-cell header">' . esc_html($packet_data['name']) . '</div>';
-    }
-
-    // Ячейки с данными
-    foreach ($places as $place) {
-        $distance = max(BW_MIN_DISTANCE, (int)get_post_meta($place->ID, 'distance', true));
-
-        $base_place_price = (float)get_post_meta($place->ID, 'fromnew', true);
-
-        // Расчет base_auto_minus (используем коэффициент 0.7 как в JS)
-        $base_auto_minus = round(($base_auto_price * $distance * BW_AUTO_DEDUCTION_COEF) / BW_ROUND_STEP) * BW_ROUND_STEP;
-
-        // Ячейка с названием места
-        $output .= '<div class="place-cell place-name">';
-        $output .= '<a href="' . get_permalink($place->ID) . '">' . esc_html($place->post_title) . '</a>';
-        $output .= '</div>';
-
-        // Ячейка с базовой ценой
-        $output .= '<div class="place-cell place-price">' . number_format($base_place_price, 0, ',', ' ') . ' €</div>';
-
-        // Ячейки с ценами по пакетам
-        foreach ($packets as $packet_idx => $packet_data) {
-            // Вычисляем sv_hours
-            if ($distance == 2) {
-                // Прага: добавляем часы по номеру пакета
-                $sv_hours = $distance + $packet_idx + 1;
-            } else {
-                // За Прагой: время = distance
-                $sv_hours = $distance;
-            }
-
-            // Получаем цены для пакета
-            $auto_price = isset($auto_prices[$packet_idx]) ? $auto_prices[$packet_idx] : 0;
-            $other_price = isset($other_prices[$packet_idx]) ? $other_prices[$packet_idx] : 0;
-
-            // Расчет pack_price
-            $pack_price = ($auto_price * $sv_hours - $base_auto_minus) + $other_price;
-            // Единовременная доплата за дорогу для фото/видео, если distance > 2 и пакет включает фото/видео
-            if ($distance > BW_MIN_DISTANCE && !empty($packet_has_photovideo[$packet_idx])) {
-                $pack_price += ($distance - BW_MIN_DISTANCE) * BW_TRAVEL_RATE_PHOTO_VIDEO;
-            }
-
-            // Итоговая цена (округление как в старом коде)
-            $total_price = $base_place_price + round(($pack_price * BW_PACKET_DISCOUNT_COEF) / BW_ROUND_STEP) * BW_ROUND_STEP;
-
-            $output .= '<div class="place-cell packet-price">';
-            $output .= number_format($total_price, 0, ',', ' ') . ' €</div>';
-        }
-    }
-
-    $output .= '</div>';
-
-    return $output;
-}
-
 // Дубликат render_wedding_places_table:
 // - вывод через HTML table
 // - одна общая таблица, внутри которой локации разделены строками-заголовками
@@ -288,44 +151,33 @@ function render_wedding_places_table_by_location()
     $base_auto_price = $base_auto_price_row ? (float)$base_auto_price_row['min_price'] : 0;
 
     $auto_prices = array();
-    $auto_rows = $wpdb->get_results(
-        "SELECT sprice, packet FROM {$table} WHERE pr_key = 'auto' AND packet IS NOT NULL AND packet <> ''",
-        ARRAY_A
-    );
-    foreach ($auto_rows as $row) {
-        $packet_indices = array_map('trim', explode(',', $row['packet']));
-        foreach ($packet_indices as $idx) {
-            if (!isset($auto_prices[$idx])) {
-                $auto_prices[$idx] = 0;
-            }
-            $auto_prices[$idx] += (float)$row['sprice'];
-        }
-    }
-
     $other_prices = array();
-    $other_keys = array('photo', 'bqt', 'cake', 'phvid', 'other', 'dress', 'hair');
-    $keys_placeholders = implode(',', array_fill(0, count($other_keys), '%s'));
-    $other_rows = $wpdb->get_results(
-        $wpdb->prepare(
-            "SELECT sprice, packet, pr_key FROM {$table} WHERE pr_key IN ($keys_placeholders) AND packet IS NOT NULL AND packet <> ''",
-            $other_keys
-        ),
+    $rows_with_packets = $wpdb->get_results(
+        "SELECT sprice, packet, pr_key FROM {$table} WHERE packet IS NOT NULL AND packet <> ''",
         ARRAY_A
     );
     $packet_has_photovideo = array();
-    foreach ($other_rows as $row) {
-        $packet_indices = array_map('trim', explode(',', $row['packet']));
+    foreach ($rows_with_packets as $row) {
+        $row_price = (float)$row['sprice'];
+        $packet_indices = array_filter(array_map('trim', explode(',', (string)$row['packet'])), 'strlen');
         foreach ($packet_indices as $idx) {
-            if (!isset($other_prices[$idx])) {
-                $other_prices[$idx] = 0;
-            }
-            $other_prices[$idx] += (float)$row['sprice'];
+            if ($row['pr_key'] === 'auto') {
+                if (!isset($auto_prices[$idx])) {
+                    $auto_prices[$idx] = 0;
+                }
+                $auto_prices[$idx] += $row_price;
+            } else {
+                if (!isset($other_prices[$idx])) {
+                    $other_prices[$idx] = 0;
+                }
+                $other_prices[$idx] += $row_price;
 
-            if (!isset($packet_has_photovideo[$idx])) {
-                $packet_has_photovideo[$idx] = false;
-            }
-            if ($row['pr_key'] === 'photo' || $row['pr_key'] === 'video') {
-                $packet_has_photovideo[$idx] = true;
+                if (!isset($packet_has_photovideo[$idx])) {
+                    $packet_has_photovideo[$idx] = false;
+                }
+                if ($row['pr_key'] === 'photo' || $row['pr_key'] === 'video') {
+                    $packet_has_photovideo[$idx] = true;
+                }
             }
         }
     }
@@ -353,6 +205,7 @@ function render_wedding_places_table_by_location()
             if (!isset($grouped_places['__no_location'])) {
                 $grouped_places['__no_location'] = array(
                     'label' => 'Без локации',
+                    'url' => '',
                     'places' => array(),
                 );
             }
@@ -362,8 +215,10 @@ function render_wedding_places_table_by_location()
 
         foreach ($terms as $term) {
             if (!isset($grouped_places[$term->term_id])) {
+                $term_link = get_term_link($term);
                 $grouped_places[$term->term_id] = array(
                     'label' => $term->name,
+                    'url' => !is_wp_error($term_link) ? $term_link : '',
                     'places' => array(),
                 );
             }
@@ -393,7 +248,11 @@ function render_wedding_places_table_by_location()
         }
 
         $output .= '<tr class="location-group-row">';
-        $output .= '<th colspan="' . esc_attr($colspan) . '">' . esc_html($group['label']) . '</th>';
+        if (!empty($group['url'])) {
+            $output .= '<th colspan="' . esc_attr($colspan) . '"><a href="' . esc_url($group['url']) . '">' . esc_html($group['label']) . '</a></th>';
+        } else {
+            $output .= '<th colspan="' . esc_attr($colspan) . '">' . esc_html($group['label']) . '</th>';
+        }
         $output .= '</tr>';
 
         foreach ($group['places'] as $place) {

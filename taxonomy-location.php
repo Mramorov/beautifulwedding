@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-get_header('location');
+get_header('taxonomy');
 
 $term = get_queried_object();
 if (!($term instanceof WP_Term)) {
@@ -173,6 +173,9 @@ $location_map_view = $location_map_config['view'];
 $location_coordinates = $location_map_config['coordinates'];
 $location_map_enabled = $location_map_config['enabled'];
 
+// Disable responsive srcset/sizes in this template to keep a single explicit image source.
+add_filter('wp_calculate_image_srcset', '__return_false');
+
 $base_tax_query = array(
   array(
     'taxonomy' => 'location',
@@ -280,5 +283,7 @@ if ($location_map_enabled) {
     </script>
   <?php endif; ?>
 </main>
+
+<?php remove_filter('wp_calculate_image_srcset', '__return_false'); ?>
 
 <?php get_footer(); ?>
