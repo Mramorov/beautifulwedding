@@ -12,6 +12,8 @@
 jQuery(function($) {
     'use strict';
 
+    const MENU_LIGHT_CONTEXT_CLASS = 'menu-on-light-content';
+
     // Лейблы для отображения данных в баннере
     const labels = {
         fromnew: 'Стоимость',
@@ -138,4 +140,43 @@ jQuery(function($) {
         const originalBg = $banner.css('background-image');
         $banner.data('original-bg', originalBg);
     });
+
+    /**
+     * Переключает тему стекла меню при выходе из hero-блока.
+     * Пока hero находится под фиксированным меню — оставляем светлое стекло.
+     * Когда hero заканчивается и начинается светлый контент — включаем темное стекло.
+     */
+    const hero = document.querySelector('.svadba-hero');
+    const menu = document.querySelector('.svadba-hero-menu-center');
+    const body = document.body;
+
+    if (hero && menu && body && 'IntersectionObserver' in window) {
+        let heroObserver = null;
+
+        const setupHeroObserver = function() {
+            const menuHeight = Math.ceil(menu.getBoundingClientRect().height || 0);
+
+            if (heroObserver) {
+                heroObserver.disconnect();
+            }
+
+            heroObserver = new IntersectionObserver(function(entries) {
+                const entry = entries[0];
+                if (!entry) {
+                    return;
+                }
+
+                body.classList.toggle(MENU_LIGHT_CONTEXT_CLASS, !entry.isIntersecting);
+            }, {
+                root: null,
+                threshold: 0,
+                rootMargin: '-' + menuHeight + 'px 0px 0px 0px'
+            });
+
+            heroObserver.observe(hero);
+        };
+
+        setupHeroObserver();
+        window.addEventListener('resize', setupHeroObserver);
+    }
 });

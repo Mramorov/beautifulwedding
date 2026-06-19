@@ -4,184 +4,532 @@
  * Description: Главная страница сайта Beautiful Wedding
  */
 
-// Подключаем стили для главной страницы с версифицированием
-function enqueue_front_page_assets() {
-    $css_file = get_template_directory() . '/assets/css/front-page.css';
-    $css_version = file_exists($css_file) ? filemtime($css_file) : wp_get_theme()->get('Version');
-    wp_enqueue_style('front-page-styles', get_template_directory_uri() . '/assets/css/front-page.css', array('minimal-style'), $css_version);
+if (!defined('ABSPATH')) {
+  exit;
 }
-add_action('wp_enqueue_scripts', 'enqueue_front_page_assets');
 
-// Используем отдельный заголовок для главной страницы
-include get_template_directory() . '/header-front-page.php';
+/* -----------------------------------------------
+   Scenario configs
+----------------------------------------------- */
+$scenario_configs = array(
+  'svadba-v-prage' => array(
+    'title'          => 'Свадьба в Праге',
+    'lead'           => 'Город романтики, архитектуры и атмосферных площадок.',
+    'description'    => 'Исторические дворцы, панорамы Влтавы, старинные залы и уютные сады создают идеальную сцену для вашего дня. Мы бережно собираем маршрут и тайминг так, чтобы вы наслаждались моментом.',
+    'points'         => array('Иконичные городские виды', 'Фотогеничные маршруты в центре', 'Гибкие сценарии для разного формата'),
+    'term_url'       => '/location/svadba-v-prage/',
+    'popular_orders' => array(1, 2),
+  ),
+  'svadba-v-zamke-chehii' => array(
+    'title'          => 'Свадьба в замке',
+    'lead'           => 'Торжественная классика в исторических интерьерах Чехии.',
+    'description'    => 'Замковые комплексы с парками и парадными залами подходят для камерной церемонии и для большого праздника. Мы продумываем логистику, стилистику и сопровождение.',
+    'points'         => array('Величественные интерьеры', 'Парадные локации для фото', 'Полный координационный контроль'),
+    'term_url'       => '/location/svadba-v-zamke-chehii/',
+    'popular_orders' => array(3, 4),
+  ),
+  'svadba-na-korable' => array(
+    'title'          => 'Свадьба на корабле',
+    'lead'           => 'Закатный свет, вода и отдельный мир для вас и гостей.',
+    'description'    => 'Церемония на борту или прогулка после регистрации становится ярким акцентом свадебного дня. Мы подбираем лучший формат маршрута, тайминг выхода и стилистику.',
+    'points'         => array('Необычный формат праздника', 'Панорамные кадры на воде', 'Комфортный сценарий для гостей'),
+    'term_url'       => '/location/svadba-na-korable/',
+    'popular_orders' => array(1, 2),
+  ),
+);
+
+/* -----------------------------------------------
+   Build scenario data with images and popular posts
+----------------------------------------------- */
+$scenarios              = array();
+$scenario_term_by_slug  = array();
+$scenario_slug_by_tt_id = array();
+
+foreach (array_keys($scenario_configs) as $slug) {
+  $term = get_term_by('slug', $slug, 'location');
+  if ($term && !is_wp_error($term)) {
+    $scenario_term_by_slug[$slug]                          = $term;
+    $scenario_slug_by_tt_id[(int) $term->term_taxonomy_id] = $slug;
+  }
+}
+
+$scenario_selected_ids = array();
+if (!empty($scenario_slug_by_tt_id)) {
+  global $wpdb;
+  $sql = "SELECT tr.term_taxonomy_id, p.ID, p.menu_order
+     FROM {$wpdb->posts} p
+     INNER JOIN {$wpdb->term_relationships} tr ON tr.object_id = p.ID
+     INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
+     WHERE p.post_type = 'svadba'
+       AND p.post_status = 'publish'
+       AND tt.taxonomy = 'location'
+       AND p.menu_order <= 7
+     ORDER BY tr.term_taxonomy_id ASC, p.menu_order ASC, p.post_date DESC";
+
+  $rows = $wpdb->get_results($sql);
+  if (is_array($rows)) {
+    foreach ($rows as $row) {
+      $tt_id      = (int) $row->term_taxonomy_id;
+      $post_id    = (int) $row->ID;
+      $menu_order = (int) $row->menu_order;
+      if (!isset($scenario_slug_by_tt_id[$tt_id])) {
+        continue;
+      }
+      $slug = $scenario_slug_by_tt_id[$tt_id];
+      if (!isset($scenario_selected_ids[$slug])) {
+        $scenario_selected_ids[$slug] = array();
+      }
+      if (!isset($scenario_selected_ids[$slug][$menu_order])) {
+        $scenario_selected_ids[$slug][$menu_order] = $post_id;
+      }
+    }
+  }
+}
+
+foreach ($scenario_configs as $slug => $config) {
+  if (!isset($scenario_term_by_slug[$slug])) {
+    continue;
+  }
+  $term       = $scenario_term_by_slug[$slug];
+  $picked_ids = isset($scenario_selected_ids[$slug]) ? $scenario_selected_ids[$slug] : array();
+
+  $popular_ids = array();
+  foreach ($config['popular_orders'] as $ord) {
+    if (isset($picked_ids[$ord])) {
+      $popular_ids[] = (int) $picked_ids[$ord];
+    }
+  }
+
+  $best_offer_id = isset($picked_ids[7]) ? (int) $picked_ids[7] : 0;
+  if ($best_offer_id === 0 && !empty($popular_ids)) {
+    $best_offer_id = (int) $popular_ids[0];
+  }
+
+  $hero_image_id = $best_offer_id > 0 ? (int) get_post_thumbnail_id($best_offer_id) : 0;
+  if ($hero_image_id === 0 && !empty($popular_ids)) {
+    $hero_image_id = (int) get_post_thumbnail_id((int) $popular_ids[0]);
+  }
+
+  $scenarios[] = array(
+    'slug'        => $slug,
+    'term_name'   => $term->name,
+    'term_link'   => get_term_link($term),
+    'title'       => $config['title'],
+    'lead'        => $config['lead'],
+    'description' => $config['description'],
+    'points'      => $config['points'],
+    'best_offer'  => $best_offer_id,
+    'popular'     => $popular_ids,
+    'hero_image'  => $hero_image_id,
+    'fallback_url'=> home_url($config['term_url']),
+  );
+}
+
+/* -----------------------------------------------
+   Services + gallery posts
+----------------------------------------------- */
+$services_ids = get_posts(array(
+  'post_type'              => 'service',
+  'post_status'            => 'publish',
+  'posts_per_page'         => 6,
+  'fields'                 => 'ids',
+  'orderby'                => array('menu_order' => 'ASC', 'date' => 'DESC'),
+  'no_found_rows'          => true,
+  'update_post_meta_cache' => false,
+  'update_post_term_cache' => false,
+));
+
+$gallery_menu_order_filter = function( $where ) {
+  global $wpdb;
+  $where .= " AND {$wpdb->posts}.menu_order > 7";
+  return $where;
+};
+add_filter( 'posts_where', $gallery_menu_order_filter );
+
+$gallery_ids = get_posts(array(
+  'post_type'              => 'svadba',
+  'post_status'            => 'publish',
+  'posts_per_page'         => 12,
+  'fields'                 => 'ids',
+  'orderby'                => 'date',
+  'order'                  => 'DESC',
+  'no_found_rows'          => true,
+  'update_post_meta_cache' => false,
+  'update_post_term_cache' => false,
+));
+
+remove_filter( 'posts_where', $gallery_menu_order_filter );
+
+$fp_gallery_ids = array_filter((array) get_post_meta(2436, 'svadba_gallery', true));
+
+/* -----------------------------------------------
+   Hero background — page featured image or fallback
+----------------------------------------------- */
+$fp_post_id  = get_queried_object_id();
+$fp_hero_url = $fp_post_id ? (string) get_the_post_thumbnail_url($fp_post_id, 'full') : '';
+if ($fp_hero_url === '') {
+  $fp_hero_url = get_template_directory_uri() . '/img/photo-10.png';
+}
+
+set_query_var('bw_fp_custom_hero', true);
+get_header('front-page');
 ?>
 
-<main class="front-page">
-  
-  <!-- Hero Section -->
-  <section class="hero-section full">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <h1 class="hero-title">Beautiful Wedding</h1>
-      <p class="hero-subtitle">Организация свадеб в Чехии</p>
-      <p class="hero-description">Создадим для вас незабываемую свадьбу в самом сердце Европы</p>
-      <div class="hero-cta">
-        <a href="#services" class="btn btn-primary">Наши услуги</a>
-        <a href="#contact" class="btn btn-secondary">Связаться с нами</a>
-      </div>
-    </div>
-  </section>
+<main class="bw-front-page layout overflowed">
 
-  <!-- About Section -->
-  <section class="about-section boxed">
-    <div class="section-content">
-      <h2>О нас</h2>
-      <div class="about-text">
-        <p>Мы специализируемся на организации свадебных церемоний в Чехии. Наша команда профессионалов поможет вам создать идеальный день, о котором вы всегда мечтали.</p>
-        <p>С нами ваша свадьба в Праге станет незабываемым событием, наполненным романтикой и волшебством.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Services Section -->
-  <section id="services" class="services-section boxed">
-    <h2>Наши услуги</h2>
-    <div class="services-grid">
-      
+  <!-- ===================== HERO ===================== -->
+  <section class="bw-fp-hero svadba-hero full" id="top"
+    style="background-image: url('<?php echo esc_url($fp_hero_url); ?>');">
+    <div class="bw-fp-hero__overlay" aria-hidden="true"></div>
+    <div class="svadba-hero-content bw-fp-hero__content">
+      <p class="bw-fp-kicker" style="color: rgba(220,185,155,0.9)">Wedding Best</p>
       <?php
-      // Получаем записи типа "service"
-      $services_query = new WP_Query(array(
-        'post_type' => 'service',
-        'posts_per_page' => 6,
-        'orderby' => 'menu_order',
-        'order' => 'ASC'
-      ));
-
-      if ($services_query->have_posts()) :
-        while ($services_query->have_posts()) : $services_query->the_post();
+      set_query_var('animated_title_text', 'Свадьба в Чехии');
+      get_template_part('templates/animated-title');
       ?>
-          <div class="service-card">
-            <?php if (has_post_thumbnail()) : ?>
-              <div class="service-image">
-                <a href="<?php the_permalink(); ?>">
-                  <?php the_post_thumbnail('medium'); ?>
+      <p class="bw-fp-subtitle">Создаём атмосферные церемонии в Праге, замках и на воде — от первой консультации до финального бокала шампанского в день свадьбы.</p>
+      <div class="bw-fp-hero__actions">
+        <a href="#scenarios" class="bw-fp-btn bw-fp-btn--main">Выбрать локацию</a>
+        <a href="/anketa/" class="bw-fp-btn bw-fp-btn--ghost">Обсудить ваш день</a>
+      </div>
+    </div>
+    <svg width="0" height="0" style="position:absolute;">
+      <defs>
+        <clipPath id="wave-clip" clipPathUnits="objectBoundingBox">
+          <path d="M 0,0 L 1,0 L 1,0.85 C 0.55,0.75 0.8,1 0,0.9 Z" />
+        </clipPath>
+      </defs>
+    </svg>
+  </section>
+
+  <!-- ===================== TRUST BAR ===================== -->
+  <section class="bw-fp-trust full" aria-label="Наши достижения">
+    <div class="bw-fp-trust__inner boxed">
+      <div class="bw-fp-metric">
+        <strong>10+ лет</strong>
+        <span>опыта в Чехии</span>
+      </div>
+      <div class="bw-fp-metric">
+        <strong>350+</strong>
+        <span>проведённых свадеб</span>
+      </div>
+      <div class="bw-fp-metric">
+        <strong>3 языка</strong>
+        <span>сопровождения пары</span>
+      </div>
+      <div class="bw-fp-metric">
+        <strong>Полный цикл</strong>
+        <span>организации и координации</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SCENARIOS ===================== -->
+  <div class="bw-fp-scenarios full" id="scenarios">
+    <?php $scenario_count = count($scenarios); ?>
+    <?php foreach ($scenarios as $index => $scenario) : ?>
+      <?php
+      $term_link  = is_string($scenario['term_link']) ? $scenario['term_link'] : $scenario['fallback_url'];
+      $is_reverse = $index % 2 !== 0;
+      $bg_url     = '';
+      if ((int) $scenario['hero_image'] > 0) {
+        $bg_url = (string) wp_get_attachment_image_url((int) $scenario['hero_image'], 'full');
+      }
+      ?>
+      <section class="bw-fp-scenario full<?php echo $is_reverse ? ' bw-fp-scenario--reverse' : ''; ?><?php echo !$is_reverse ? ' bw-fp-scenario--light' : ''; ?>"<?php echo ($bg_url !== '') ? ' style="--scenario-bg:url(\'' . esc_url($bg_url) . '\');"' : ''; ?>>
+        <div class="bw-fp-scenario__bg" aria-hidden="true"></div>
+        <div class="bw-fp-scenario__inner boxed">
+
+          <div class="bw-fp-scenario__text">
+            <p class="bw-fp-kicker"><?php echo esc_html($scenario['term_name']); ?></p>
+            <h2><?php echo esc_html($scenario['title']); ?></h2>
+            <p class="bw-fp-scenario__lead"><?php echo esc_html($scenario['lead']); ?></p>
+            <p><?php echo esc_html($scenario['description']); ?></p>
+            <ul class="bw-fp-scenario__points">
+              <?php foreach ($scenario['points'] as $point) : ?>
+                <li><?php echo esc_html($point); ?></li>
+              <?php endforeach; ?>
+            </ul>
+            <a class="bw-fp-btn bw-fp-btn--main" href="<?php echo esc_url($term_link); ?>">Смотреть локации</a>
+          </div>
+
+          <div class="bw-fp-scenario__cards">
+            <?php if ((int) $scenario['best_offer'] > 0) : ?>
+              <article class="location-card bw-fp-scenario__main-card">
+                <a class="location-card__banner" href="<?php echo esc_url(get_permalink((int) $scenario['best_offer'])); ?>">
+                  <?php if (has_post_thumbnail((int) $scenario['best_offer'])) : ?>
+                    <?php echo get_the_post_thumbnail((int) $scenario['best_offer'], 'large', array('loading' => 'lazy')); ?>
+                  <?php endif; ?>
+                  <span class="location-card__title-wrap">
+                    <span class="location-card__title"><?php echo esc_html(get_the_title((int) $scenario['best_offer'])); ?></span>
+                  </span>
                 </a>
+              </article>
+            <?php endif; ?>
+
+            <?php
+            $mini_ids = array_slice($scenario['popular'], 0, 2);
+            if (!empty($mini_ids)) :
+            ?>
+              <div class="bw-fp-scenario__mini-cards">
+                <?php foreach ($mini_ids as $mini_id) : ?>
+                  <article class="location-card">
+                    <a class="location-card__banner" href="<?php echo esc_url(get_permalink((int) $mini_id)); ?>">
+                      <?php if (has_post_thumbnail((int) $mini_id)) : ?>
+                        <?php echo get_the_post_thumbnail((int) $mini_id, 'medium_large', array('loading' => 'lazy')); ?>
+                      <?php endif; ?>
+                      <span class="location-card__title-wrap">
+                        <span class="location-card__title"><?php echo esc_html(get_the_title((int) $mini_id)); ?></span>
+                      </span>
+                    </a>
+                  </article>
+                <?php endforeach; ?>
               </div>
             <?php endif; ?>
-            <div class="service-content">
-              <h3 class="service-title">
-                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-              </h3>
-              <div class="service-excerpt">
-                <?php the_excerpt(); ?>
+          </div>
+
+        </div>
+      </section>
+
+      <?php if ($index < $scenario_count - 1) : ?>
+
+        <?php if ($index === 0) : ?>
+          <!-- ========= SEPARATOR 1: цитата пары ========= -->
+          <div class="bw-fp-sep-testimonial full">
+            <div class="bw-fp-sep-testimonial__inner">
+              <div class="bw-fp-sep-testimonial__body">
+                <span class="bw-fp-sep-testimonial__mark" aria-hidden="true">&ldquo;</span>
+                <p class="bw-fp-sep-testimonial__quote">Мы даже не представляли, насколько можно влюбиться в Прагу ещё раз. Команда Beautiful Wedding превратила наши мечты в идеальный день — с каждой деталью, с каждым цветком, с каждой улыбкой наших гостей.</p>
+                <p class="bw-fp-sep-testimonial__attr">
+                  <strong>Анна и Михаил</strong>&nbsp;&middot; Замок Конопиште&nbsp;&middot; Сентябрь 2024
+                </p>
               </div>
-              <a href="<?php the_permalink(); ?>" class="service-link">Подробнее →</a>
+              <?php echo wp_get_attachment_image(1035, 'medium', false, [
+                'class'   => 'bw-fp-sep-testimonial__photo',
+                'loading' => 'lazy',
+                'alt'     => 'Счастливая пара в день свадьбы',
+              ]); ?>
             </div>
           </div>
-      <?php
-        endwhile;
-        wp_reset_postdata();
-      else :
-      ?>
-        <p>Услуги скоро будут добавлены.</p>
+
+        <?php else : ?>
+          <!-- ========= SEPARATOR 2: заглушка ========= -->
+          <div class="bw-fp-sep-placeholder full" aria-hidden="true"></div>
+
+        <?php endif; ?>
+
       <?php endif; ?>
-      
+
+    <?php endforeach; ?>
+  </div>
+
+  <!-- ===================== SERVICES ===================== -->
+  <section class="bw-fp-services boxed shrink-animation" id="services">
+    <div class="bw-fp-section-head">
+      <span class="bw-fp-watermark" aria-hidden="true">Services</span>
+      <p class="bw-fp-kicker">Сервис</p>
+      <h2>Берём на себя всю организацию</h2>
+      <p>От концепции и логистики до командной координации в день церемонии. Вы фокусируетесь на эмоциях — мы закрываем процессы.</p>
     </div>
-    <div class="services-cta">
-      <a href="<?php echo get_post_type_archive_link('service'); ?>" class="btn btn-primary">Все услуги</a>
+    <?php if (!empty($services_ids)) : ?>
+      <div class="bw-fp-service-grid">
+        <?php foreach ($services_ids as $service_id) : ?>
+          <article class="location-card">
+            <a class="location-card__banner" href="<?php echo esc_url(get_permalink($service_id)); ?>">
+              <?php if (has_post_thumbnail($service_id)) : ?>
+                <?php echo get_the_post_thumbnail($service_id, 'large', array('loading' => 'lazy')); ?>
+              <?php endif; ?>
+              <span class="location-card__title-wrap">
+                <span class="location-card__title"><?php echo esc_html(get_the_title($service_id)); ?></span>
+              </span>
+            </a>
+          </article>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
+  </section>
+
+  <!-- ===================== PROCESS ===================== -->
+  <section class="bw-fp-process full grow-animation">
+    <div class="bw-fp-process__inner boxed">
+      <div class="bw-fp-section-head">
+        <span class="bw-fp-watermark" aria-hidden="true">Journey</span>
+        <p class="bw-fp-kicker">Путь пары</p>
+        <h2>Как мы работаем</h2>
+      </div>
+      <ol class="bw-fp-steps" aria-label="Этапы работы">
+        <li>
+          <span class="bw-fp-step-num">01</span>
+          <strong>Знакомство</strong>
+          <span>Уточняем формат свадьбы, стиль и ваши ожидания на первой консультации.</span>
+        </li>
+        <li>
+          <span class="bw-fp-step-num">02</span>
+          <strong>Концепция</strong>
+          <span>Предлагаем площадки, сценарий дня и команду профильных специалистов.</span>
+        </li>
+        <li>
+          <span class="bw-fp-step-num">03</span>
+          <strong>Подготовка</strong>
+          <span>Собираем документы, бронируем локации и согласуем финальный тайминг.</span>
+        </li>
+        <li>
+          <span class="bw-fp-step-num">04</span>
+          <strong>Координация</strong>
+          <span>Ведём ваш день, контролируя все процессы на площадке в режиме реального времени.</span>
+        </li>
+        <li>
+          <span class="bw-fp-step-num">05</span>
+          <strong>Финал</strong>
+          <span>Остаются только впечатления, фотографии и ваша личная история навсегда.</span>
+        </li>
+      </ol>
     </div>
   </section>
 
-  <!-- Weddings Section -->
-  <section class="weddings-section boxed">
-    <h2>Наши свадьбы</h2>
-    <div class="weddings-grid">
-      
-      <?php
-      // Получаем записи типа "svadba"
-      $weddings_query = new WP_Query(array(
-        'post_type' => 'svadba',
-        'posts_per_page' => 3,
-        'orderby' => 'date',
-        'order' => 'DESC'
-      ));
-
-      if ($weddings_query->have_posts()) :
-        while ($weddings_query->have_posts()) : $weddings_query->the_post();
-      ?>
-          <div class="wedding-card">
-            <?php if (has_post_thumbnail()) : ?>
-              <div class="wedding-image">
-                <a href="<?php the_permalink(); ?>">
-                  <?php the_post_thumbnail('large'); ?>
-                </a>
-              </div>
-            <?php endif; ?>
-            <div class="wedding-content">
-              <h3 class="wedding-title">
-                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-              </h3>
-              <div class="wedding-date">
-                <?php echo get_the_date(); ?>
-              </div>
-            </div>
-          </div>
-      <?php
-        endwhile;
-        wp_reset_postdata();
-      else :
-      ?>
-        <p>Скоро здесь появятся фотографии наших свадеб.</p>
-      <?php endif; ?>
-      
+  <!-- ===================== OTHER PLACES ===================== -->
+  <section class="bw-fp-other-places full">
+    <div class="bw-fp-section-head boxed">
+      <span class="bw-fp-watermark" aria-hidden="true">Places</span>
+      <p class="bw-fp-kicker">Площадки</p>
+      <h2>Другие популярные свадьбы</h2>
     </div>
-    <div class="weddings-cta">
-      <a href="<?php echo get_post_type_archive_link('svadba'); ?>" class="btn btn-primary">Посмотреть все свадьбы</a>
-    </div>
+    <?php if (!empty($gallery_ids)) : ?>
+      <div class="bw-fp-other-places__grid boxed">
+        <?php foreach ($gallery_ids as $gallery_id) : ?>
+          <article class="location-card">
+            <a class="location-card__banner" href="<?php echo esc_url(get_permalink((int) $gallery_id)); ?>">
+              <?php if (has_post_thumbnail((int) $gallery_id)) : ?>
+                <?php echo get_the_post_thumbnail((int) $gallery_id, 'large', array('loading' => 'lazy')); ?>
+              <?php endif; ?>
+              <span class="location-card__title-wrap">
+                <span class="location-card__title"><?php echo esc_html(get_the_title((int) $gallery_id)); ?></span>
+              </span>
+            </a>
+          </article>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
   </section>
 
-  <!-- Why Us Section -->
-  <section class="why-us-section boxed">
-    <h2>Почему выбирают нас</h2>
-    <div class="features-grid">
-      <div class="feature-item">
-        <div class="feature-icon">✓</div>
-        <h3>Опыт</h3>
-        <p>Более 10 лет организуем свадьбы в Чехии</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">♥</div>
-        <h3>Индивидуальный подход</h3>
-        <p>Учитываем все ваши пожелания и предпочтения</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">★</div>
-        <h3>Профессионализм</h3>
-        <p>Работаем с лучшими специалистами</p>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">☆</div>
-        <h3>Комплексный сервис</h3>
-        <p>Организуем все от документов до банкета</p>
-      </div>
+  <!-- ===================== GALLERY ===================== -->
+  <?php if (!empty($fp_gallery_ids)) : ?>
+  <section class="bw-fp-gallery full">
+    <div class="bw-fp-gallery__grid">
+      <?php foreach ($fp_gallery_ids as $gal_id) : ?>
+        <?php $full_url = wp_get_attachment_image_url((int) $gal_id, 'full'); ?>
+        <article class="location-card">
+          <a class="location-card__banner svadba-gallery-item glightbox"
+             href="<?php echo esc_url($full_url ?: '#'); ?>"
+             data-gallery="fp-gallery">
+            <?php echo wp_get_attachment_image((int) $gal_id, 'large', false, ['loading' => 'lazy', 'alt' => '']); ?>
+          </a>
+        </article>
+      <?php endforeach; ?>
     </div>
   </section>
+  <?php endif; ?>
 
-  <!-- Contact Section -->
-  <section id="contact" class="contact-section boxed">
-    <h2>Свяжитесь с нами</h2>
-    <div class="contact-content">
-      <p>Готовы начать планирование вашей свадьбы мечты? Мы всегда рады ответить на ваши вопросы!</p>
-      <div class="contact-info">
-        <p><strong>Email:</strong> <a href="mailto:info@beautifulwedding.cz">info@beautifulwedding.cz</a></p>
-        <p><strong>Телефон:</strong> <a href="tel:+420123456789">+420 123 456 789</a></p>
-      </div>
-      <div class="contact-cta">
-        <a href="/anketa" class="btn btn-primary btn-large">Заполнить анкету</a>
+  <!-- ===================== CTA ===================== -->
+  <section class="bw-fp-cta full" id="contact">
+    <div class="bw-fp-cta__radial" aria-hidden="true"></div>
+    <div class="bw-fp-cta__inner boxed">
+      <p class="bw-fp-kicker">Начнём подготовку</p>
+      <h2>Расскажите о вашей свадьбе —<br>мы предложим лучший сценарий</h2>
+      <p>Заполните анкету или напишите нам в мессенджер. Первая консультация проходит в удобном для вас формате.</p>
+      <div class="bw-fp-cta__actions">
+        <a class="bw-fp-btn bw-fp-btn--main" href="/anketa/">Оставить заявку</a>
+        <a class="bw-fp-btn bw-fp-btn--ghost" href="/kontakty/">Открыть контакты</a>
       </div>
     </div>
   </section>
 
 </main>
+
+<script>
+  /*
+   * Параллакс фоновых слоёв секций-сценариев.
+   *
+   * Механизм:
+   *   Каждый .bw-fp-scenario__bg — это абсолютно позиционированный div
+   *   с фоновым изображением. Он чуть больше родителя (inset:-4% в CSS)
+   *   и масштабирован (scale 1.08), чтобы при сдвиге края не были видны.
+   *   На каждый кадр скролла мы вычисляем, насколько центр секции смещён
+   *   от центра вьюпорта, и двигаем фон на долю этого расстояния —
+   *   медленнее контента, что даёт иллюзию глубины.
+   */
+  (function () {
+    /* Уважаем системную настройку «уменьшить движение» */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var layers = document.querySelectorAll('.bw-fp-scenario__bg');
+    if (!layers.length) return;
+
+    /* Флаг rAF-тротлинга: не ставим больше одного кадра в очередь */
+    var ticking = false;
+
+    function update() {
+      /*
+       * Ниже 861px — мобильные. Параллакс отключаем: на тач-скролле
+       * он тормозит, а секции занимают почти весь экран в высоту,
+       * поэтому эффект всё равно почти не виден.
+       */
+      if (window.innerWidth < 861) {
+        layers.forEach(function (l) { l.style.transform = 'none'; });
+        return;
+      }
+
+      /* Вертикальная середина вьюпорта — точка отсчёта */
+      var vc = window.innerHeight / 2;
+
+      layers.forEach(function (l) {
+        var host = l.parentElement; /* .bw-fp-scenario — родительская секция */
+        if (!host) return;
+
+        var rect = host.getBoundingClientRect();
+
+        /*
+         * dist — расстояние от центра секции до центра вьюпорта (px).
+         *   > 0: секция ниже центра экрана (ещё не доскроллили до неё)
+         *   = 0: секция точно посередине экрана
+         *   < 0: секция выше центра (уже проскроллили мимо)
+         */
+        var dist = (rect.top + rect.height / 2) - vc;
+
+        /*
+         * Скорость параллакса: 0.10 = фон движется в 10 раз медленнее
+         * контента относительно центра вьюпорта.
+         *
+         *   Увеличить → более выраженный параллакс (рискуем обнажить края)
+         *   Уменьшить → едва заметный эффект глубины
+         *   Безопасный диапазон ≈ 0.05 – 0.18 при текущем inset/scale.
+         *
+         * Знак минус: фон смещается в ту же сторону, что и секция,
+         * но медленнее — именно это создаёт ощущение, что фон «сзади».
+         */
+        var offset = -dist * 0.15;
+
+        /*
+         * scale(1.08) — обязательно повторяем CSS-значение из .bw-fp-scenario__bg.
+         * JS-transform полностью перезаписывает CSS-transform, поэтому
+         * если убрать scale отсюда, фон «схлопнется» до исходного размера
+         * и края станут видны во время скролла.
+         */
+        l.style.transform = 'translate3d(0,' + offset.toFixed(2) + 'px,0) scale(1.08)';
+      });
+    }
+
+    function tick() {
+      if (ticking) return; /* Пропускаем, если кадр уже запрошен */
+      ticking = true;
+      requestAnimationFrame(function () { update(); ticking = false; });
+    }
+
+    /* passive:true — браузер не ждёт JS перед прокруткой (плавнее) */
+    window.addEventListener('scroll', tick, { passive: true });
+    window.addEventListener('resize', tick);
+    tick(); /* Применить сразу при загрузке без скролла */
+  })();
+</script>
 
 <?php get_footer(); ?>

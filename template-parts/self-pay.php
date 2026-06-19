@@ -2,8 +2,6 @@
 
 /**
  * Template Part: Self Pay Block
- *
- * Временная тестовая разметка для вывода в single-svadba.php.
  */
 ?>
 <section class="svadba-selfpay-block boxed">

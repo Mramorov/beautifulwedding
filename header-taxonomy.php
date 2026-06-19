@@ -8,6 +8,9 @@
 </head>
 
 <body <?php body_class(); ?>>
+  <div class="svadba-hero-menu-center">
+    <?php get_template_part('templates/main-menu'); ?>
+  </div>
   <?php
   $queried_object = get_queried_object();
   $title_text = '';
@@ -69,9 +72,6 @@
   <header class="entry-header svadba-hero full" <?php if ($featured_image_url) : ?>style="background-image: url('<?php echo esc_url($featured_image_url); ?>');" <?php endif; ?>>
     <div class="svadba-hero-overlay falling-leaves"></div>
     <div class="svadba-hero-content">
-      <div class="svadba-hero-menu-center">
-        <?php get_template_part('templates/main-menu'); ?>
-      </div>
       <?php
       set_query_var('animated_title_text', $title_text);
       get_template_part('templates/animated-title');

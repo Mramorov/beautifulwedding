@@ -11,6 +11,57 @@
    Основной контейнер навигации
    ============================================ */
 
+.site-nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.svadba-hero-menu-center {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-bg);
+    font-family: var(--font-hero);
+    font-size: 1.15em;
+    text-shadow: 1px 1px 1px #444444;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 20;
+}
+
+.svadba-hero-menu-center a {
+    color: inherit;
+}
+
+.svadba-hero-menu-center::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgb(0 0 0 / 30%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    z-index: -1;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.menu-on-light-content .svadba-hero-menu-center::before,
+body.menu-on-light-content .custom-mega-menu .mega-menu {
+    /*  background: rgba(0, 0, 0, 0.45); */
+    background: #6a414191;
+}
+
+.admin-bar .svadba-hero-menu-center {
+    top: 32px;
+}
+
 .main-navigation {
     display: flex;
     align-items: center;
@@ -38,16 +89,39 @@
 
 .custom-mega-menu>li>a {
     display: block;
-    padding: 10px 16px;
+    padding: 10px 10px;
     text-decoration: none;
+    position: relative;
     color: var(--color-white, #fff);
-    font-weight: 500;
     transition: color 0.3s ease;
     white-space: nowrap;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+}
+
+.custom-mega-menu>li>a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 80px;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.28s ease;
+}
+
+.custom-mega-menu>li.is-active>a::after,
+.custom-mega-menu>li>a:hover::after,
+.custom-mega-menu>li>a:focus-visible::after,
+.custom-mega-menu>li:focus-within>a::after {
+    transform:  scaleX(1) translateX(-50%);
 }
 
 .custom-mega-menu>li>a:hover {
-    color: var(--color-primary, #D232E0);
+    color: #ffffff8f;
 }
 
 /* ============================================
@@ -66,10 +140,10 @@
     box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
     min-width: 300px;
     max-width: 98vw;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(0 0 0 / 30%);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    text-shadow: 1px 1px 1px black;
+    text-shadow: 1px 1px 1px #444444;
     display: none;
 }
 
@@ -130,6 +204,7 @@
 
 .custom-mega-menu .mega-menu-list li a {
     text-decoration: none;
+    color: var(--color-bg);
     transition: color 0.2s ease;
 }
 
@@ -177,7 +252,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(7, 2, 31, 0.30);
+    background: rgba(7, 2, 31, 0.40);
 }
 
 .banner-overlay--service {
@@ -275,6 +350,11 @@
 }
 
 @media (max-width: 768px) {
+    .site-nav ul {
+        flex-direction: column;
+        gap: 15px;
+    }
+
     .custom-mega-menu {
         flex-direction: column;
         gap: 10px;

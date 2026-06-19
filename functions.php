@@ -54,6 +54,23 @@ function beautifulwedding_scripts()
     $front_css = get_stylesheet_directory() . '/assets/css/front-page.css';
     $front_css_ver = file_exists($front_css) ? filemtime($front_css) : $style_ver;
     wp_enqueue_style('bw-front-page', get_stylesheet_directory_uri() . '/assets/css/front-page.css', array('minimal-style'), $front_css_ver);
+    $front_js = get_stylesheet_directory() . '/assets/js/front-page.js';
+    $front_js_ver = file_exists($front_js) ? filemtime($front_js) : $style_ver;
+    wp_enqueue_script('bw-front-page', get_stylesheet_directory_uri() . '/assets/js/front-page.js', array(), $front_js_ver, true);
+  }
+
+  // Стили страницы контактов.
+  if (is_page('kontakty')) {
+    $contacts_css = get_stylesheet_directory() . '/assets/css/contacts.css';
+    $contacts_js = get_stylesheet_directory() . '/assets/js/contacts-form.js';
+    $contacts_css_ver = file_exists($contacts_css) ? filemtime($contacts_css) : $style_ver;
+    $contacts_js_ver = file_exists($contacts_js) ? filemtime($contacts_js) : $style_ver;
+    wp_enqueue_style('bw-contacts-page', get_stylesheet_directory_uri() . '/assets/css/contacts.css', array('minimal-style'), $contacts_css_ver);
+    wp_enqueue_script('bw-contacts-form', get_stylesheet_directory_uri() . '/assets/js/contacts-form.js', array(), $contacts_js_ver, true);
+    wp_localize_script('bw-contacts-form', 'bwContactsForm', array(
+      'ajaxUrl' => admin_url('admin-ajax.php'),
+      'nonce' => wp_create_nonce('bw_contacts_form_nonce'),
+    ));
   }
 
   // Общие стили таксономий и service-архива
@@ -199,7 +216,7 @@ add_action( 'rest_api_init', function() {
 
 /** Enqueue GLightbox assets */
 function beautifulwedding_enqueue_lightbox_assets() {
-  if ( ! ( is_singular( 'svadba' ) || is_singular( 'service' ) ) ) {
+  if ( ! ( is_singular( 'svadba' ) || is_singular( 'service' ) || is_front_page() ) ) {
     return;
   }
 
@@ -229,6 +246,55 @@ function beautifulwedding_enqueue_lightbox_assets() {
 
 }
 add_action( 'wp_enqueue_scripts', 'beautifulwedding_enqueue_lightbox_assets' );
+
+/** AJAX handler for contacts page form submission */
+function beautifulwedding_submit_contacts_form() {
+  check_ajax_referer('bw_contacts_form_nonce', 'nonce');
+
+  $website = isset($_POST['website']) ? trim((string) wp_unslash($_POST['website'])) : '';
+  if ($website !== '') {
+    wp_send_json_success(array('message' => 'ok'));
+  }
+
+  $name = isset($_POST['name']) ? sanitize_text_field(wp_unslash($_POST['name'])) : '';
+  $phone = isset($_POST['phone']) ? sanitize_text_field(wp_unslash($_POST['phone'])) : '';
+  $email = isset($_POST['email']) ? sanitize_email(wp_unslash($_POST['email'])) : '';
+  $message = isset($_POST['message']) ? sanitize_textarea_field(wp_unslash($_POST['message'])) : '';
+  $consent = isset($_POST['consent']) ? (string) wp_unslash($_POST['consent']) : '';
+
+  if ($name === '' || $phone === '' || $email === '' || $message === '' || $consent !== '1') {
+    wp_send_json_error(array('message' => 'Заполните все обязательные поля.'), 400);
+  }
+
+  if (!is_email($email)) {
+    wp_send_json_error(array('message' => 'Некорректный e-mail.'), 400);
+  }
+
+  $admin_email = get_option('admin_email');
+  if (!$admin_email || !is_email($admin_email)) {
+    wp_send_json_error(array('message' => 'Не настроен e-mail администратора сайта.'), 500);
+  }
+
+  $subject = 'Новая заявка со страницы контактов';
+  $body = "Имя: {$name}\n";
+  $body .= "Телефон: {$phone}\n";
+  $body .= "E-mail: {$email}\n\n";
+  $body .= "Сообщение:\n{$message}\n";
+
+  $headers = array(
+    'Content-Type: text/plain; charset=UTF-8',
+    'Reply-To: ' . $name . ' <' . $email . '>',
+  );
+
+  $sent = wp_mail($admin_email, $subject, $body, $headers);
+  if (!$sent) {
+    wp_send_json_error(array('message' => 'Ошибка отправки письма.'), 500);
+  }
+
+  wp_send_json_success(array('message' => 'Сообщение отправлено.'));
+}
+add_action('wp_ajax_bw_submit_contacts_form', 'beautifulwedding_submit_contacts_form');
+add_action('wp_ajax_nopriv_bw_submit_contacts_form', 'beautifulwedding_submit_contacts_form');
 
 /* add_action('template_redirect', function () {
 

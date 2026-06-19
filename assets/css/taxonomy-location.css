@@ -1,14 +1,14 @@
 /* Location taxonomy specific styles. */
 
-.location-popular-grid,
+/* .location-popular-grid,
 .location-best-offer-card {
-  background: linear-gradient(to left, rgb(255 249 245) 0%, #ffffff 50%, rgb(255 249 245) 100%);
+  background: linear-gradient(to left, rgb(255 249 245) 0%, #ffffff 50%, rgb(255 249 245) 100%); 
   border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border); 
   padding-bottom: 80px;
   padding-top: 70px;
 }
-
+ */
 .location-map-toolbar {
   position: relative;
   min-width: 600px;
@@ -21,6 +21,31 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+
+section.location-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 5em 0 6.5em;
+}
+
+.location-section-decor {
+  position: relative;
+  overflow: visible;
+}
+
+ section.location-section.location-section--best-offer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--best-offer-bg-image, none);
+  background-size: cover;
+  background-position: center;
+  filter: blur(25px);
+  transform: scale(1.05);
+  z-index: -1;
+  opacity: 0.6;
+} 
 
 .location-map-toolbar::after {
   content: "";
@@ -80,8 +105,9 @@
   grid-template-columns: minmax(0px, 1fr) minmax(0px, 2fr) minmax(0px, 1fr);
   gap: 2rem 3rem;
   min-height: 360px;
-  max-width: 1600px;
+  max-width: 1640px;
   margin: auto;
+  padding: 0 40px;
 }
 
 .location-best-offer-card__main {
@@ -142,7 +168,7 @@ body.location-map-opened {
 }
 
 .location-best-offer-card__text-cell {
-  background: linear-gradient(135deg, rgb(253, 252, 251) 0%, rgb(226, 209, 195) 100%);
+  background: linear-gradient(135deg, rgb(253 252 251 / 50%) 0%, rgb(235 228 223 / 92%) 100%);
   padding: 30px;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 10px 25px;
   display: flex;

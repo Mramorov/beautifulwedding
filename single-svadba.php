@@ -18,6 +18,7 @@ get_header('svadba');
   <main id="post-<?php the_ID(); ?>" <?php post_class('layout overflowed'); ?>>
     <div class="svadba-hero-meta">
       <div class="entry-meta">
+        <ul class="head-label-list">
         <?php
         // Location terms
         $post_id = get_queried_object_id();
@@ -44,34 +45,35 @@ get_header('svadba');
           if (!empty($map_iframe_url) || !empty($map_external_url)) {
             $map_string = '<button type="button" class="map-trigger" id="openMapModal">| cмотреть на карте...</button>';
           }
-          echo '<div class="head-label">Локация: ' . implode(', ', $term_links) . $map_string . '</div>';
+          echo '<li class="head-label">Локация: ' . implode(', ', $term_links) . $map_string . '</li>';
         }
 
         $ceremonies = trim((string) get_post_meta($post_id, 'ceremonies', true));
         if ($ceremonies !== '') {
-          echo '<div class="head-label">Церемония: <span class="field-value">' . esc_html($ceremonies) . '</span></div>';
+          echo '<li class="head-label">Церемония: <span class="field-value">' . esc_html($ceremonies) . '</span></li>';
         }
 
         $days = trim((string) get_post_meta($post_id, 'wedding_days', true));
         if ($days !== '') {
-          echo '<div class="head-label">Свадебные дни: <span class="field-value">' . esc_html($days) . '</span></div>';
+          echo '<li class="head-label">Свадебные дни: <span class="field-value">' . esc_html($days) . '</span></li>';
         }
         // Capacity meta field
         $capacity = get_post_meta($post_id, 'capacity', true);
         if ($capacity) : ?>
-          <div class="head-label">Вместимость: <span class="field-value">до <?php echo esc_html($capacity); ?> чел.</span>
-          </div>
+          <li class="head-label">Вместимость: <span class="field-value">до <?php echo esc_html($capacity); ?> чел.</span>
+          </li>
         <?php endif;
         $distance = get_post_meta($post_id, 'distance', true);
         if ($distance) : ?>
-          <div class="head-label">Базовое время автомобиля: <span class="field-value"><?php echo esc_html($distance); ?> ч.</span>
-          </div>
+          <li class="head-label">Базовое время автомобиля: <span class="field-value"><?php echo esc_html($distance); ?> ч.</span>
+          </li>
         <?php endif;
         $cer_time = get_post_meta($post_id, 'cer-time', true);
         if ($cer_time) : ?>
-          <div class="head-label">Время церемонии: <span class="field-value"><?php echo esc_html($cer_time); ?></span>
-          </div>
+          <li class="head-label">Время церемонии: <span class="field-value"><?php echo esc_html($cer_time); ?></span>
+          </li>
         <?php endif; ?>
+        </ul>
       </div>
       <?php
       // Custom meta fields

@@ -208,6 +208,8 @@ $popular_post_ids = array();
 $best_offer_post_id = 0;
 $remaining_post_ids = array();
 
+$best_offer_section_style = '';
+
 foreach ($ordered_location_post_ids as $post_id) {
   $menu_order = (int) get_post_field('menu_order', $post_id);
   if ($menu_order >= 1 && $menu_order <= 6) {
@@ -216,6 +218,13 @@ foreach ($ordered_location_post_ids as $post_id) {
     $best_offer_post_id = (int) $post_id;
   } else {
     $remaining_post_ids[] = (int) $post_id;
+  }
+}
+
+if ($best_offer_post_id > 0) {
+  $best_offer_image_url = get_the_post_thumbnail_url($best_offer_post_id, 'large');
+  if (is_string($best_offer_image_url) && $best_offer_image_url !== '') {
+    $best_offer_section_style = "--best-offer-bg-image: url('" . esc_url($best_offer_image_url) . "');";
   }
 }
 
@@ -228,7 +237,7 @@ if ($location_map_enabled) {
 ?>
 
 <main class="taxonomy-location-main overflowed">
-  <div class="description_wrap grow-animation">
+  <div class="description_wrap shrink-animation">
     <div class="location-description-intro">
       <?php if (!empty(trim((string) $term->description))) : ?>
         <?php echo $term->description; ?>
@@ -236,7 +245,7 @@ if ($location_map_enabled) {
     </div>
   </div>
 
-  <section class="location-section location-section--popular shrink-animation">
+  <section class="location-section location-section--popular">
     <h2 class="location-section-title">Популярные локации</h2>
     <div class="location-popular-grid">
       <?php foreach ($popular_post_ids as $post_id) : ?>
@@ -245,12 +254,14 @@ if ($location_map_enabled) {
     </div>
   </section>
 
-  <section class="location-section location-section--best-offer grow-animation">
-    <h2 class="location-section-title">Лучшее предложение</h2>
-    <?php if ($best_offer_post_id > 0) : ?>
-      <?php bw_render_location_best_offer_card($best_offer_post_id); ?>
-    <?php endif; ?>
-  </section>
+  <div class="location-section-decor grow-animation">
+    <section class="location-section location-section--best-offer"<?php echo $best_offer_section_style !== '' ? ' style="' . esc_attr($best_offer_section_style) . '"' : ''; ?>>
+      <h2 class="location-section-title">Лучшее предложение</h2>
+      <?php if ($best_offer_post_id > 0) : ?>
+        <?php bw_render_location_best_offer_card($best_offer_post_id); ?>
+      <?php endif; ?>
+    </section>
+  </div>
 
   <section class="location-section location-section--all">
     <h2 class="location-section-title">Другие локации</h2>

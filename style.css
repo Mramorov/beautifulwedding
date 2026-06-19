@@ -11,7 +11,7 @@ Tags: wedding, minimal, blog, classic
 */
 
 /* CSS Variables - Colors & Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Open+Sans:wght@300;400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap&subset=cyrillic,cyrillic-ext,latin,latin-ext');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@200;300;400;500;600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Open+Sans:wght@300;400;600;700&family=Source+Sans+3:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap&subset=cyrillic,cyrillic-ext,latin,latin-ext');
 
 /* @import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Montserrat:ital,wght@0,300;0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Tenor+Sans&display=swap'); */
 
@@ -32,10 +32,18 @@ body.theme-default {
     --color-white: #FFFFFF;
     --color-link: #d2577e;
     --color-border: #e7d0c5;
-    --font-heading: 'EB Cormorant', serif;
+    --font-heading: 'Cormorant Garamond', serif;
     --font-hero: 'EB Garamond', serif;
-    --font-body: 'Open Sans', sans-serif;
+    --font-body: 'Manrope', sans-serif;
     --font-accent: 'Montserrat', sans-serif;
+}
+
+::selection {
+    background: var(--color-border);
+}
+
+::marker {
+    color: var(--color-primary);
 }
 
 /* Доп. темы и dev-переключатель удалены */
@@ -155,42 +163,6 @@ h6 {
     padding-right: 20px;
 }
 
-/* Layout - Navigation */
-.site-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-}
-
-.svadba-hero-menu-center {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    text-shadow: 1px 1px 1px black;
-    position: fixed;
-    top: 0;
-    z-index: 20;
-}
-.svadba-hero-menu-center::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    z-index: -1;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.admin-bar .svadba-hero-menu-center {
-    top: 32px;
-}
-
 /* Two-column layout for post content with contextpic */
 .block-through-two-columns {
     order: 3;
@@ -223,6 +195,7 @@ h6 {
 
 .entry-contextpic {
     position: relative;
+    line-height: 0;
 }
 
 .entry-contextpic img {
@@ -234,6 +207,7 @@ h6 {
     border-radius: 50%;
     z-index: 10;
     aspect-ratio: 1 / 1;
+    /* border: 10px solid #fff9f55c; */
 }
 
 .entry-contextpic::after {
@@ -244,17 +218,30 @@ h6 {
     background-image: url(/wp-content/themes/beautifulwedding/img/photo-10.png);
     background-size: cover;
     background-repeat: no-repeat;
-    left: -23%;
+    left: -21%;
     top: -15%;
     z-index: 0;
     transform: rotate(3deg);
+}
+
+.entry-contextpic::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border: 7px solid #ffffff69;
+    /* background: radial-gradient(ellipse at center, rgb(255 255 255 / 0%) 0%, rgb(255 255 255 / 0%) 68%, rgb(255 249 245) 73%, rgb(133 99 76) 77%); */
+    z-index: 1000;
+    border-radius: 50%;
+    /* aspect-ratio:1/1; */
+    box-sizing: border-box;
 }
 
 /* Decorative animation utilities */
 .shrink-animation,
 .grow-animation {
     position: relative;
-  /*   isolation: isolate; */
+    /*   isolation: isolate; */
     overflow: visible;
 }
 
@@ -508,11 +495,15 @@ textarea {
 }
 
 .send-success {
-    color: var(--color-secondary);
-    font-size: 0.9rem;
+    color: #33524a;
     margin-top: 12px;
     text-align: center;
     line-height: 1.5;
+    padding: 20px;
+    background: #cdf5eb;
+    border-radius: 10px;
+    letter-spacing: 1px;
+    border: 1px solid #b5c8c3;
 }
 
 /* Buttons - Common */
@@ -523,19 +514,26 @@ button {
 }
 
 /* Primary button style */
-.button-main {
+.button-main,
+.button-alt {
     font-family: var(--font-accent);
+    display: inline-block;
+    text-align: center;
     font-size: 0.9rem;
     font-weight: 500;
     letter-spacing: 0.06em;
-    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
     padding: 11px 24px;
-    border: 2px solid var(--color-primary);
+    box-shadow: 0 2px 8px rgba(212, 165, 160, .25);
+    border: 1px solid var(--color-primary);
+    text-transform: uppercase;
+    line-height: 2em;
+}
+
+.button-main {
     background: var(--color-primary);
     color: var(--color-white);
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(212, 165, 160, .25);
-    text-decoration: none;
 }
 
 .button-main:hover {
@@ -557,16 +555,9 @@ button {
 
 /* Alternative button style */
 .button-alt {
-    font-family: var(--font-accent);
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 11px 24px;
-    border: 2px solid var(--color-secondary);
+    border: 1px solid var(--color-primary);
     background: transparent;
     color: var(--color-secondary);
-    border-radius: 4px;
     box-shadow: none;
 }
 
@@ -588,7 +579,7 @@ ul.with-checkmarks {
 
 ul.with-checkmarks li {
     position: relative;
-    padding-left: 1.75em;
+    padding-left: 2.5em;
     margin-bottom: 0.65em;
 }
 
@@ -599,6 +590,8 @@ ul.with-checkmarks li::before {
     top: 0.05em;
     font-weight: 700;
     font-size: 1.1em;
+    /*  background: url(/wp-content/themes/beautifulwedding/img/leaf-icon2.svg) no-repeat  center;*/
+
 }
 
 .entry-content ul.with-checkmarks li::before {
@@ -694,6 +687,7 @@ ul.with-checkmarks li::before {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    z-index: 10;
     clip-path: url(#wave-clip);
 }
 
@@ -799,6 +793,91 @@ span.new-price-value {
 
 
 /* ============================================
+   Banner Card Component (used in taxonomy, front page, etc.)
+   ============================================ */
+
+.location-card__banner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transform: translateY(0);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
+  border-radius: 12px;
+}
+
+.location-card__banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.23) 32%, rgba(41, 53, 75, 0.28) 74%, rgba(15, 20, 31, 0.42) 100%);
+  z-index: 2;
+}
+
+.location-card__banner img {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  transform: scale(1);
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.location-card__banner:hover img,
+.location-card__banner:focus-visible img {
+  transform: scale(1.015);
+}
+
+.location-card__banner:hover,
+.location-card__banner:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.location-card__title-wrap {
+  width: 90%;
+  bottom: 10px;
+  box-sizing: border-box;
+  padding: 16px 20px 12px;
+  transition: padding 0.3s ease;
+  position: absolute;
+  left: 10%;
+  z-index: 3;
+}
+
+.location-card__title-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(149, 149, 149, 0.4) 0%, rgba(133, 133, 133, 0.29) 58%, rgba(255, 255, 255, 0) 100%);
+  backdrop-filter: blur(10px) saturate(200%);
+  -webkit-backdrop-filter: blur(8px) saturate(200%);
+  mask-image: linear-gradient(to left, #00000052 0%, #000000 70%, rgba(0, 0, 0, 1) 100%);
+  -webkit-mask-image: linear-gradient(to left, #00000052 0%, #000000 70%, rgba(0, 0, 0, 1) 100%);
+  pointer-events: none;
+  border-radius: 6px;
+}
+
+.location-card__title {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: block;
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  z-index: 100;
+  position: relative;
+  text-align: left;
+}
+
+/* ============================================
    Responsive Media Queries
    ============================================ */
 @media (max-width: 1200px) {
@@ -821,11 +900,6 @@ span.new-price-value {
     .boxed {
         padding-left: 15px;
         padding-right: 15px;
-    }
-
-    .site-nav ul {
-        flex-direction: column;
-        gap: 15px;
     }
 
     .svadba-hero {

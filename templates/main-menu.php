@@ -55,26 +55,102 @@ $MENU_ITEMS = [
         'columns' => 1,
     ],
     [
-        'title'   => 'Цены',
+        'title'   => 'Прайс',
         'url'     => home_url('/prajs-svadebnyh-uslug/'),
         'classes' => [],
         'type'    => 'link',
     ],
     [
         'title'   => 'Контакты',
-        'url'     => home_url('/contacts/'),
+        'url'     => home_url('/kontakty/'),
         'classes' => [],
         'type'    => 'link',
     ],
 ];
+
+$current_request_uri = isset($_SERVER['REQUEST_URI']) ? (string) wp_unslash($_SERVER['REQUEST_URI']) : '/';
+$current_path = (string) wp_parse_url($current_request_uri, PHP_URL_PATH);
+
+$normalize_path = static function (string $path): string {
+    $normalized = '/' . ltrim($path, '/');
+    $normalized = untrailingslashit($normalized);
+    return $normalized === '' ? '/' : $normalized;
+};
+
+$is_menu_item_active = static function (array $item) use ($current_path, $normalize_path): bool {
+    $type = $item['type'] ?? 'link';
+
+    if ($type === 'link') {
+        $url = (string) ($item['url'] ?? '');
+        $item_path = (string) wp_parse_url($url, PHP_URL_PATH);
+        $current_norm = $normalize_path($current_path);
+        $item_norm = $normalize_path($item_path);
+
+        if ($item_norm === '/') {
+            return is_front_page();
+        }
+
+        return $current_norm === $item_norm;
+    }
+
+    if ($type === 'svadba_places') {
+        $location_slug = sanitize_title($item['location_slug'] ?? '');
+        if ($location_slug === '') {
+            return false;
+        }
+
+        if (is_tax('location')) {
+            $term = get_queried_object();
+            if ($term instanceof WP_Term && $term->taxonomy === 'location') {
+                return $term->slug === $location_slug;
+            }
+        }
+
+        if (is_singular('svadba')) {
+            $post_id = get_queried_object_id();
+            if ($post_id) {
+                $prague_slug = 'svadba-v-prage';
+                $czech_slug = 'svadba-v-zamke-chehii';
+                $has_prague = has_term($prague_slug, 'location', $post_id);
+                $has_czech = has_term($czech_slug, 'location', $post_id);
+
+                // Жесткий приоритет: Прага важнее Чехии при пересечении терминов.
+                if ($has_prague && $has_czech) {
+                    if ($location_slug === $prague_slug) {
+                        return true;
+                    }
+
+                    if ($location_slug === $czech_slug) {
+                        return false;
+                    }
+                }
+
+                return has_term($location_slug, 'location', $post_id);
+            }
+        }
+
+        return false;
+    }
+
+    if ($type === 'service') {
+        return is_post_type_archive('service') || is_singular('service');
+    }
+
+    return false;
+};
 
 /**
  * Регистр рендереров для разных типов пунктов меню
  */
 $RENDERERS = [
     // Простая ссылка
-    'link' => function (array $item) {
-        $classes = implode(' ', $item['classes'] ?? []);
+    'link' => function (array $item) use ($is_menu_item_active) {
+        $classes = $item['classes'] ?? [];
+        if ($is_menu_item_active($item)) {
+            $classes[] = 'is-active';
+        }
+
+        $classes = implode(' ', array_map('sanitize_html_class', array_filter($classes)));
         printf(
             '<li class="%s"><a href="%s">%s</a></li>',
             esc_attr($classes),
@@ -84,9 +160,14 @@ $RENDERERS = [
     },
 
     // Выпадающее меню со списком мест свадеб
-    'svadba_places' => function (array $item) {
+    'svadba_places' => function (array $item) use ($is_menu_item_active) {
         $title   = $item['title'] ?? '';
-        $classes = implode(' ', $item['classes'] ?? []);
+        $classes = $item['classes'] ?? [];
+        if ($is_menu_item_active($item)) {
+            $classes[] = 'is-active';
+        }
+
+        $classes = implode(' ', array_map('sanitize_html_class', array_filter($classes)));
         $location_slug = sanitize_title($item['location_slug'] ?? '');
         $columns = max(1, intval($item['columns'] ?? 2));
 
@@ -113,9 +194,14 @@ $RENDERERS = [
     },
 
     // Выпадающее меню со списком услуг
-    'service' => function (array $item) {
+    'service' => function (array $item) use ($is_menu_item_active) {
         $title   = $item['title'] ?? '';
-        $classes = implode(' ', $item['classes'] ?? []);
+        $classes = $item['classes'] ?? [];
+        if ($is_menu_item_active($item)) {
+            $classes[] = 'is-active';
+        }
+
+        $classes = implode(' ', array_map('sanitize_html_class', array_filter($classes)));
         $columns = max(1, intval($item['columns'] ?? 1));
 
         $url = get_post_type_archive_link('service') ?: home_url('/service/');
@@ -136,8 +222,7 @@ $RENDERERS = [
  * 
  * @param array $args {
  *     @type string $location_slug    Слаг термина таксономии location
- *     @type int    $columns          Количество колонок в grid (по умолчанию 2)
- *     @type string $banner_fallback  URL фоллбек-изображения для баннера
+ *     @type int    $columns          Количество колонок в grid (по умолчанию 
  * }
  * @return string HTML выпадающего блока
  */
