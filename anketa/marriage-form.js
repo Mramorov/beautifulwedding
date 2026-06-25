@@ -4,138 +4,155 @@
 (function() {
     'use strict';
 
-    const form = document.getElementById('marriageApplicationForm');
-    const submitBtn = form.querySelector('.submit-button');
+    const form        = document.getElementById('marriageApplicationForm');
+    const submitBtn   = form.querySelector('.submit-button');
     const successBlock = document.getElementById('anketaSuccessMessage');
-    
-    // Проверка наличия hash в URL для режима редактирования
+
     const urlParams = new URLSearchParams(window.location.search);
-    const editHash = urlParams.get('hash');
-    
-    /**
-     * Загрузить данные анкеты по hash при открытии страницы
-     */
+    const editHash  = urlParams.get('hash');
+
     if (editHash) {
         loadAnketaData(editHash);
         submitBtn.innerHTML = '<span class="btn-text">Сохранить изменения</span>';
     }
-    
-    /**
-     * Обработчик отправки формы
-     */
+
+    // Показ/скрытие полей свидетельства о разводе по семейному положению
+    function updateRozvodFields() {
+        const groomStatus = form.querySelector('#groom_marital_status').value;
+        const brideStatus = form.querySelector('#bride_marital_status').value;
+
+        const rozvodGroomWrap = form.querySelector('.doc-rozvod-z-wrap');
+        const rozvodBrideWrap = form.querySelector('.doc-rozvod-n-wrap');
+
+        if (rozvodGroomWrap) {
+            const hasFile = !!rozvodGroomWrap.querySelector('.doc-delete-btn');
+            if (!hasFile) {
+                const needs = groomStatus === 'Разведен' || groomStatus === 'Вдовец';
+                rozvodGroomWrap.style.display = needs ? '' : 'none';
+            }
+        }
+        if (rozvodBrideWrap) {
+            const hasFile = !!rozvodBrideWrap.querySelector('.doc-delete-btn');
+            if (!hasFile) {
+                const needs = brideStatus === 'Разведена' || brideStatus === 'Вдова';
+                rozvodBrideWrap.style.display = needs ? '' : 'none';
+            }
+        }
+    }
+
+    form.querySelector('#groom_marital_status').addEventListener('change', updateRozvodFields);
+    form.querySelector('#bride_marital_status').addEventListener('change', updateRozvodFields);
+    updateRozvodFields();
+
+    // Кнопка «Удалить» для уже загруженных документов
+    form.addEventListener('click', function(e) {
+        if (!e.target.classList.contains('doc-delete-btn')) return;
+        const btn   = e.target;
+        const group = btn.closest('.doc-upload-group');
+
+        group.querySelector('.doc-exists-state').style.display = 'none';
+        group.querySelector('.doc-upload-state').style.display = 'block';
+    });
+
+    // Обновление предупреждения при выборе нового файла после удаления
+    form.addEventListener('change', function(e) {
+        const input = e.target;
+        if (input.type !== 'file') return;
+        const group = input.closest('.doc-upload-group');
+        if (!group) return;
+        const pendingText = group.querySelector('.doc-pending-text');
+        if (!pendingText) return;
+
+        const label = group.dataset.docLabel || '';
+        if (input.files && input.files.length > 0) {
+            pendingText.innerHTML = 'Файл <strong>' + label + '</strong> будет заменён новым после нажатия кнопки «Отправить»';
+        } else {
+            pendingText.innerHTML = 'Файл <strong>' + label + '</strong> будет удалён после нажатия кнопки «Отправить»';
+        }
+    });
+
+    // Отправка формы
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        // Валидация контактных полей: должно быть заполнено хотя бы одно
+
         const contactEmail = form.querySelector('#contact_email').value.trim();
-        const contactTel = form.querySelector('#contact_tel').value.trim();
-        
+        const contactTel   = form.querySelector('#contact_tel').value.trim();
+
         if (!contactEmail && !contactTel) {
             alert('Пожалуйста, укажите хотя бы один способ связи: email или телефон');
             return;
         }
-        
-        // Заблокировать кнопку и показать индикатор загрузки
+
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="btn-spinner">⏳ Отправка...</span>';
-        
-        // Собрать данные формы
+
         const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-            data[key] = value;
-        });
-        
-        // Добавить hash если это редактирование
         if (editHash) {
-            data.hash = editHash;
+            formData.set('hash', editHash);
         }
-        
+
         try {
             const response = await fetch(anketaParams.restUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': anketaParams.nonce,
                 },
-                body: JSON.stringify(data)
+                body: formData,
             });
-            
+
             const result = await response.json();
-            
+
             if (result.success) {
                 handleSuccess(result);
             } else {
                 handleError(result.message || 'Ошибка сохранения данных');
             }
-            
+
         } catch (error) {
             console.error('Submission error:', error);
             handleError('Ошибка отправки. Проверьте подключение к интернету');
         }
     });
-    
-    /**
-     * Обработка успешной отправки
-     */
+
     function handleSuccess(result) {
-        // Сформировать абсолютную ссылку (игнорируем возможный относительный editUrl)
         let editUrl = result.editUrl;
         if (!editUrl || editUrl.indexOf('http') !== 0) {
-            // Строим от текущей страницы
             editUrl = window.location.origin + window.location.pathname + '?hash=' + result.hash;
         }
 
         const editLinkAnchor = successBlock.querySelector('#editLinkAnchor');
-        editLinkAnchor.href = editUrl;
+        editLinkAnchor.href        = editUrl;
         editLinkAnchor.textContent = editUrl;
 
-        // Показать success-блок
         successBlock.style.display = 'block';
         successBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        // Анимация исчезновения формы
         form.style.transition = 'opacity 0.3s ease-out';
-        form.style.opacity = '0';
+        form.style.opacity    = '0';
+        setTimeout(() => form.remove(), 300);
+    }
 
-        // Удалить форму из DOM через 300ms
-        setTimeout(() => {
-            form.remove();
-        }, 300);
-    }
-    
-    /**
-     * Обработка ошибки
-     */
     function handleError(message) {
-        // Разблокировать кнопку
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span class="btn-text">' + (editHash ? 'Сохранить изменения' : 'Отправить заявление') + '</span>';
-        
-        // Показать сообщение об ошибке
+        submitBtn.innerHTML = '<span class="btn-text">' + (editHash ? 'Сохранить изменения' : 'Отослать анкету') + '</span>';
         alert(message);
-        
-        // Можно добавить красивый alert-блок вместо alert()
     }
-    
-    /**
-     * Загрузить данные анкеты по hash
-     */
+
     async function loadAnketaData(hash) {
         try {
             const response = await fetch(anketaParams.restUrl.replace('/submit', '/get') + '?hash=' + encodeURIComponent(hash));
-            const result = await response.json();
-            
+            const result   = await response.json();
+
             if (result.success && result.data) {
-                // Заполнить все поля формы
                 Object.keys(result.data).forEach(key => {
                     const field = form.querySelector('[name="' + key + '"]');
                     if (field && result.data[key]) {
                         field.value = result.data[key];
                     }
                 });
+                updateRozvodFields();
             } else {
                 alert('Анкета не найдена. Будет создана новая анкета.');
-                // Перенаправить без параметра hash, чтобы гарантированно создать новую запись
                 setTimeout(() => {
                     const baseUrl = window.location.origin + window.location.pathname;
                     if (window.location.href !== baseUrl) {
@@ -148,10 +165,8 @@
             alert('Ошибка загрузки данных анкеты');
         }
     }
-    
-    /**
-     * Копирование ссылки в буфер обмена
-     */
+
+    // Копирование ссылки
     const copyBtn = successBlock.querySelector('#copyLinkBtn');
     copyBtn.addEventListener('click', function() {
         const editLinkAnchor = successBlock.querySelector('#editLinkAnchor');
@@ -177,5 +192,5 @@
         copyBtn.textContent = '✓ Скопировано!';
         setTimeout(() => { copyBtn.textContent = 'Скопировать'; }, 2000);
     }
-    
+
 })();

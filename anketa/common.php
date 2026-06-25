@@ -88,3 +88,38 @@ if (!function_exists('anketa_get_label')) {
         return isset($labels[$key]) ? $labels[$key] : $key;
     }
 }
+
+if (!function_exists('anketa_get_file_fields')) {
+    function anketa_get_file_fields() {
+        return [
+            'passport_z'  => 'Паспорт жениха',
+            'passport_n'  => 'Паспорт невесты',
+            'rozdenie_z'  => 'Свидетельство о рождении жениха',
+            'rozdenie_n'  => 'Свидетельство о рождении невесты',
+            'rozvod_z'    => 'Свидетельство о разводе жениха',
+            'rozvod_n'    => 'Свидетельство о разводе невесты',
+        ];
+    }
+}
+
+if (!function_exists('anketa_docs_dir')) {
+    function anketa_docs_dir($hash = '') {
+        $base = dirname(ABSPATH) . '/wp_svadba_docs';
+        return $hash ? $base . '/' . $hash : $base;
+    }
+}
+
+if (!function_exists('anketa_get_existing_files')) {
+    function anketa_get_existing_files($hash) {
+        if (!$hash) return [];
+        $dir = anketa_docs_dir($hash);
+        if (!is_dir($dir)) return [];
+        $result = [];
+        foreach (glob($dir . '/*') as $path) {
+            if (is_file($path)) {
+                $result[pathinfo($path, PATHINFO_FILENAME)] = pathinfo($path, PATHINFO_EXTENSION);
+            }
+        }
+        return $result;
+    }
+}

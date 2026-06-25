@@ -11,9 +11,8 @@ Tags: wedding, minimal, blog, classic
 */
 
 /* CSS Variables - Colors & Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@200;300;400;500;600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Open+Sans:wght@300;400;600;700&family=Source+Sans+3:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap&subset=cyrillic,cyrillic-ext,latin,latin-ext');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Manrope:wght@200;300;400;500;600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap&subset=cyrillic,cyrillic-ext,latin,latin-ext');
 
-/* @import url('https://fonts.googleapis.com/css2?family=Marck+Script&family=Montserrat:ital,wght@0,300;0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Tenor+Sans&display=swap'); */
 
 
 /* Тема по умолчанию (розовая) */
@@ -341,14 +340,15 @@ h6 {
     }
 }
 
-/* Tabs (global visual styling) */
+/* Tabs */
 .svadba-tabs-nav {
-    margin: 2.5rem 0 0rem;
+    margin: 2.5rem 0 0;
     position: relative;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
-
 
 .svadba-tab-button {
     background: none;
@@ -379,70 +379,28 @@ h6 {
     position: relative;
 }
 
-/* .svadba-tab-button.active::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -1px;
-    height: 3px;
-    background: var(--color-primary);
-} */
-
 .svadba-tabs-content {
     padding-top: 0.5rem;
 }
 
-/* Modal */
-.modal-overlay {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
+.svadba-tab-pane {
+    display: none;
+    animation: fadeIn 0.4s ease;
 }
 
-.modal {
-    background: var(--color-white);
-    border-radius: 8px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    padding: 32px 40px 40px;
+.svadba-tab-pane.active {
+    display: block;
 }
 
-.modal-header {
-    margin-bottom: 8px;
-}
-
-.close-button {
-    background: transparent;
-    border: none;
-    font-size: 2rem;
-    line-height: 1;
-    color: var(--color-text);
-    opacity: 0.5;
-    transition: opacity .2s ease;
-}
-
-.close-button:hover {
-    opacity: 1;
-    color: var(--color-secondary);
-}
-
-.modal-info-header {
-    margin: 0 0 1.5rem;
-    text-align: center;
-}
-
-.modal form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.modal label {
-    font-family: var(--font-accent);
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    color: var(--color-secondary);
-    margin-bottom: 4px;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Form inputs */
@@ -480,10 +438,6 @@ textarea::placeholder {
 textarea {
     resize: vertical;
     min-height: 100px;
-}
-
-.modal-footer {
-    margin-top: 8px;
 }
 
 .send-error {
@@ -598,69 +552,18 @@ ul.with-checkmarks li::before {
     color: var(--color-primary);
 }
 
-/* Packets Grid */
-.packets-grid {
-    border: 1px solid var(--color-bg-alt);
-    border-radius: 6px;
-    overflow: hidden;
-    margin: 2rem 0;
-}
-
-.packets-cell {
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--color-bg-alt);
-    border-right: 1px solid var(--color-bg-alt);
-}
-
-.packets-cell:last-child {
-    border-right: none;
-}
-
-.packets-cell.header,
-.packets-cell.footer {
-    background: var(--color-bg-alt);
-    color: var(--color-secondary);
-    font-weight: 600;
-    text-align: center;
-    padding: 16px 18px;
-    align-content: center;
-    font-family: var(--font-heading);
-    font-size: 1.25rem;
-    text-transform: uppercase;
-}
-
-
-.packets-cell.header .packet-price {
-    font-family: var(--font-accent);
-    font-size: 1.1rem;
-    color: var(--color-primary);
-    font-weight: 700;
-}
-
-.packets-cell.first-col {
-    background: var(--color-white);
-    font-weight: 500;
-    color: var(--color-text);
-    text-align: left;
-}
-
-.packets-cell {
-    text-align: center;
-    color: var(--color-text);
-    font-size: 0.95rem;
-}
-
 /* Svadba Gallery (masonry via CSS grid + JS) */
 
 .svadba-gallery-grid {
     column-count: 5;
-    column-gap: 6px;
-    padding: 10px;
+    column-gap: 1vw;
+    margin: 1vw;
+    line-height: 0;
 }
 
 .svadba-gallery-item {
     display: inline-block;
-    margin-bottom: 3px;
+    margin-bottom: 1vw;
     width: 100%;
     border-radius: 6px;
     overflow: hidden;
@@ -882,8 +785,6 @@ span.new-price-value {
    ============================================ */
 @media (max-width: 1200px) {
     .svadba-tabs-nav {
-        flex-wrap: wrap;
-        justify-content: center;
         gap: 10px 5px;
     }
 }
@@ -905,20 +806,6 @@ span.new-price-value {
     .svadba-hero {
         height: 70vh;
         min-height: 500px;
-    }
-}
-
-@media (max-width: 699px) {
-    .packets-cell {
-        padding: 12px 14px;
-    }
-
-    .packets-cell.header .packet-name {
-        font-size: 1.1rem;
-    }
-
-    .packets-cell.header .packet-price {
-        font-size: 1rem;
     }
 }
 

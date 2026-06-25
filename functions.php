@@ -19,7 +19,6 @@ require_once get_template_directory() . '/inc/config/services-config.php';
 require_once get_template_directory() . '/inc/shortcodes/shortcodes-services.php';
 require_once get_template_directory() . '/inc/cpt/service-post-type.php';
 // Anketa feature files
-//require_once get_template_directory() . '/anketa/common.php';
 require_once get_template_directory() . '/anketa/anketa-handler.php'; //для инициализации REST API анкеты
 
 
@@ -40,6 +39,10 @@ function beautifulwedding_scripts()
   $style_path = get_stylesheet_directory() . '/style.css';
   $style_ver  = file_exists($style_path) ? filemtime($style_path) : wp_get_theme()->get('Version');
   wp_enqueue_style('minimal-style', get_stylesheet_uri(), array(), $style_ver);
+
+  $footer_css = get_stylesheet_directory() . '/assets/css/footer.css';
+  $footer_css_ver = file_exists($footer_css) ? filemtime($footer_css) : $style_ver;
+  wp_enqueue_style('bw-footer', get_stylesheet_directory_uri() . '/assets/css/footer.css', array('minimal-style'), $footer_css_ver);
 
   // Подключение стилей и скриптов мега-меню
   $menu_css = get_stylesheet_directory() . '/assets/css/mega-menu.css';
@@ -141,6 +144,7 @@ function beautifulwedding_enqueue_svadba_assets() {
       'nonce'   => wp_create_nonce( 'wp_rest' ),
     ) );
     // Localize pricing coefficients for JS parity
+    global $bw_pricing;
     if ( isset( $bw_pricing ) ) {
       wp_localize_script( 'svadba-form-script', 'bwPricing', $bw_pricing );
     }
@@ -296,32 +300,4 @@ function beautifulwedding_submit_contacts_form() {
 add_action('wp_ajax_bw_submit_contacts_form', 'beautifulwedding_submit_contacts_form');
 add_action('wp_ajax_nopriv_bw_submit_contacts_form', 'beautifulwedding_submit_contacts_form');
 
-/* add_action('template_redirect', function () {
-
-    // Админы всегда видят сайт
-    if ( current_user_can('manage_options') ) {
-        return;
-    }
-
-    // Список разрешённых URL (slug, путь или ID)
-    $allowed = [
-        '/anketa-vstupjushhih-v-brak'        // страница анкеты
-    ];
-
-    $current_path = strtok($_SERVER['REQUEST_URI'], '?'); // без GET-параметров
-
-    // Разрешаем доступ, если путь совпадает
-    foreach ($allowed as $path) {
-        if (rtrim($current_path, '/') === rtrim($path, '/')) {
-            return;
-        }
-    }
-
-    // Всё остальное: режим обслуживания
-    wp_die(
-        '<h1>Сайт в стадии разработки</h1><p>Ориентировочная дата запуска: 10.01.2026</p>',
-        'Обслуживание',
-        ['response' => 503]
-    );
-}); */
 

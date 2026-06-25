@@ -5,15 +5,6 @@
     margin-bottom: 2rem;
 }
 
-/* Табы - скрытие неактивных панелей */
-.svadba-tab-pane {
-    display: none;
-}
-
-.svadba-tab-pane.active {
-    display: block;
-}
-
 .price-header h1 {
     margin-bottom: 1rem;
 }
@@ -119,9 +110,6 @@
     bottom: 50%;
 }
 
-@media (max-width: 1024px) {
-}
-
 @media (max-width: 768px) {
     .wedding-places-table th,
     .wedding-places-table td {
@@ -135,5 +123,3 @@
     }
 }
 
-@media (max-width: 480px) {
-}

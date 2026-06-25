@@ -1,9 +1,32 @@
+<?php
+/* ============================================================
+ * AURORA EFFECT — эффект северного сияния в шапке
+ * Чтобы отключить эффект, измените true на false
+ * ============================================================ */
+$aurora_enabled = false;
+?>
 <!doctype html>
 <html <?php language_attributes(); ?>>
 
 <head>
   <meta charset="<?php bloginfo('charset'); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <?php if ( $aurora_enabled ) : ?>
+  <!-- AURORA EFFECT: стили -->
+  <style>
+    .svadba-hero .aurora-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      mix-blend-mode: hard-light;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+  <?php endif; ?>
   <?php wp_head(); ?>
 </head>
 
@@ -16,6 +39,14 @@
   $featured_image_url = $post_id ? get_the_post_thumbnail_url($post_id, 'full') : '';
   ?>
   <header class="entry-header svadba-hero full" <?php if ($featured_image_url) : ?>style="background-image: url('<?php echo esc_url($featured_image_url); ?>');" <?php endif; ?>>
+    <?php if ( $aurora_enabled ) : ?>
+    <!-- AURORA EFFECT: видео с эффектом северного сияния -->
+    <video class="aurora-video" autoplay loop muted playsinline
+           onloadedmetadata="this.playbackRate=1">
+      <source src="<?php echo get_template_directory_uri(); ?>/img/home-intro.mp4" type="video/mp4">
+    </video>
+    <!-- /AURORA EFFECT -->
+    <?php endif; ?>
     <div class="svadba-hero-overlay falling-leaves"></div>
     <div class="svadba-hero-content">
       <div class="head-title-wrap">
@@ -25,19 +56,11 @@
         $fromnew = get_post_meta($post_id, 'fromnew', true);
         ?>
         <div class="head-price-field">
-          от:</span>
+          <span>от:</span>
           <span class="old-price-value"><?php echo esc_html($fromold); ?> </span><span class="new-price-value"><?php echo esc_html($fromnew); ?> €</span>
         </div>
       </div>
       <div class="empty-div"></div>
     </div>
-    <svg width="0" height="0" style="position: absolute;">
-      <defs>
-        <!-- clipPathUnits="objectBoundingBox" — это МАГИЯ. 
-         Она переключает координаты: 0 = 0%, 1 = 100% -->
-        <clipPath id="wave-clip" clipPathUnits="objectBoundingBox">
-          <path d="M 0,0 L 1,0 L 1,0.85 C 0.55,0.75 0.8,1 0,0.9 Z" />
-        </clipPath>
-      </defs>
-    </svg>
+    <?php get_template_part('templates/wave-clip'); ?>
   </header>

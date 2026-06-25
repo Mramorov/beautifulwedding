@@ -1,89 +1,136 @@
 /* Anketa Form (uses global theme variables) */
 .marriage-form-container {
-    max-width: 800px;
+    max-width: 1100px;
     margin: 2rem auto;
     padding: 20px;
 }
 
+.marriage-form-container > h1 {
+    text-align: center;
+    color: var(--color-secondary);
+    font-family: var(--font-heading);
+    margin-bottom: 1.5rem;
+    margin-top: 0;
+}
+
+/* Form is just a layout wrapper — visual styling lives in .anketa-block */
 .marriage-form {
+    /* no background, no box-shadow */
+}
+
+/* =====================
+   Grid layout
+   ===================== */
+.anketa-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "info          info"
+        "contacts      contacts"
+        "groom         bride"
+        "groom-parents bride-parents"
+        "agreements    docs";
+    gap: 1.25rem;
+    align-items: start;
+    margin-bottom: 1.5rem;
+}
+
+/* Grid area assignments */
+.anketa-block--info          { grid-area: info; }
+.anketa-block--contacts      { grid-area: contacts; }
+.anketa-block--groom         { grid-area: groom; }
+.anketa-block--groom-parents { grid-area: groom-parents; }
+.anketa-block--bride         { grid-area: bride; }
+.anketa-block--bride-parents { grid-area: bride-parents; }
+.anketa-block--agreements    { grid-area: agreements; }
+.anketa-block--docs          { grid-area: docs; }
+
+/* =====================
+   Block (card) base
+   ===================== */
+.anketa-block {
     background: var(--color-white);
-    padding: 2rem;
+    border: 1px solid var(--color-bg-alt);
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    border: 1px solid var(--color-bg-alt);
+    padding: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
-.info-message {
-    padding: 2em;
-    border: 1px solid var(--color-secondary);
-    margin-bottom: 3em;
-    border: 1px solid var(--color-bg-alt);
-    border-radius: 4px;
+/* Info block — slightly different: no white box, just a tinted note */
+.anketa-block--info {
     background: var(--color-bg-alt);
+    border-color: transparent;
+    box-shadow: none;
+    font-size: 0.93rem;
+    line-height: 1.65;
+    color: var(--color-text);
 }
 
-.marriage-form h2,
-.marriage-form h3,
-.marriage-form h4 {
+.anketa-block--info p {
+    margin: 0 0 0.75rem;
+}
+
+.anketa-block--info p:last-child {
+    margin-bottom: 0;
+}
+
+/* =====================
+   Headings inside blocks
+   ===================== */
+.anketa-block h2 {
     color: var(--color-secondary);
     font-family: var(--font-heading);
     font-weight: 600;
-}
-
-.marriage-form h2 {
-    margin-top: 2rem;
-    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    margin: 0 0 1.1rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid var(--color-primary);
 }
 
-.marriage-form h3 {
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
+/* Second h2 within a block (agreements block has two) */
+.anketa-block h2 + h2,
+.anketa-block .form-group + h2 {
+    margin-top: 1.75rem;
 }
 
-.marriage-form h4 {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
+.anketa-block h3 {
+    color: var(--color-secondary);
+    font-family: var(--font-accent);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin: 1.25rem 0 0.75rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--color-primary);
 }
 
-.form-section {
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background: var(--color-bg-alt);
-    border-radius: 4px;
-    border: 1px solid var(--color-bg-alt);
+.anketa-block h3:first-of-type {
+    margin-top: 0.5rem;
 }
 
+/* =====================
+   Form fields
+   ===================== */
 .form-group {
     margin-bottom: 1rem;
 }
 
-/* Contact fields row layout */
-.contact-fields-row {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
+.form-group:last-child {
+    margin-bottom: 0;
 }
 
-.contact-field {
-    flex: 1;
-}
-
-.contact-note {
-    font-size: 0.85rem;
-    color: var(--color-text);
-    font-style: italic;
-    margin: 0 0 1.5rem 0;
+.contact-field label {
+    margin-bottom: 0.4rem;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     color: var(--color-secondary);
     font-weight: 500;
     font-family: var(--font-accent);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     letter-spacing: 0.02em;
 }
 
@@ -93,18 +140,21 @@
 .form-group input[type="tel"],
 .form-group select {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid var(--color-bg-alt);
+    padding: 0.65rem 0.9rem;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-family: var(--font-body);
     background: var(--color-white);
     color: var(--color-text);
     transition: border-color .2s ease, box-shadow .2s ease;
+    box-sizing: border-box;
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="date"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="tel"]:focus,
 .form-group select:focus {
     outline: none;
     border-color: var(--color-primary);
@@ -116,30 +166,59 @@
 }
 
 .form-group select {
-    background-color: white;
+    background-color: var(--color-white);
+    cursor: pointer;
 }
 
-.sub-form-group {
-    margin-left: 1rem;
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    border-left: 3px solid var(--color-primary);
-    background: var(--color-white);
+/* =====================
+   Contact fields row
+   ===================== */
+.contact-fields-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 }
 
+.contact-field {
+    flex: 1;
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+}
+
+.contact-note {
+    font-size: 0.82rem;
+    color: var(--color-text);
+    font-style: italic;
+    margin: 0.25rem 0 0;
+}
+
+/* =====================
+   Small note paragraphs (inside form-groups)
+   ===================== */
+.small-prim {
+    font-size: 0.78rem;
+    color: var(--color-text);
+    line-height: 1.5;
+    margin: 0.5rem 0 0;
+    opacity: 0.8;
+}
+
+/* =====================
+   Submit button
+   ===================== */
 .form-actions {
-    margin-top: 2rem;
     text-align: center;
+    margin-top: 0.5rem;
 }
 
-/* Primary submit button styled with theme palette */
 .submit-button {
     font-family: var(--font-accent);
     font-size: 0.95rem;
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 0.9rem 2rem;
+    padding: 0.9rem 3rem;
     border: 2px solid var(--color-primary);
     background: var(--color-primary);
     color: var(--color-white);
@@ -178,7 +257,97 @@
     display: inline-block;
 }
 
-/* Success Message Styles */
+/* =====================
+   Document upload fields
+   ===================== */
+.doc-section-note {
+    font-size: 0.83rem;
+    color: var(--color-text);
+    font-style: italic;
+    margin: 0 0 1rem;
+    opacity: 0.8;
+}
+
+.doc-upload-group {
+    margin-bottom: 1rem;
+}
+
+.doc-field-note {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--color-text);
+    font-style: italic;
+    margin-bottom: 0.35rem;
+    opacity: 0.7;
+}
+
+.doc-exists-state {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.8rem;
+    background: var(--color-white);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.doc-filename {
+    flex: 1;
+    font-size: 0.88rem;
+    color: var(--color-secondary);
+}
+
+.doc-delete-btn {
+    font-family: var(--font-accent);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid #c0392b;
+    background: transparent;
+    color: #c0392b;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .2s, color .2s;
+}
+
+.doc-delete-btn:hover {
+    background: #c0392b;
+    color: #fff;
+}
+
+.doc-upload-state input[type="file"] {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.88rem;
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+    background: var(--color-white);
+    cursor: pointer;
+    transition: border-color .2s;
+    box-sizing: border-box;
+}
+
+.doc-upload-state input[type="file"]:hover {
+    border-color: var(--color-primary);
+}
+
+.doc-pending-msg {
+    font-size: 0.82rem;
+    color: #7a5000;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 4px;
+    padding: 0.45rem 0.7rem;
+    margin: 0 0 0.45rem;
+}
+
+/* =====================
+   Success message
+   ===================== */
 .anketa-success-message {
     background: var(--color-bg-alt);
     border: 2px solid var(--color-primary);
@@ -191,20 +360,13 @@
 }
 
 @keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .success-icon {
     font-size: 4rem;
     margin-bottom: 1rem;
-    color: var(--color-primary);
 }
 
 .anketa-success-message h2 {
@@ -248,11 +410,6 @@
     border-color: var(--color-secondary);
 }
 
-.edit-link-anchor:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 3px;
-}
-
 .copy-link-btn {
     padding: 0.75rem 1.25rem;
     background: var(--color-primary);
@@ -264,7 +421,7 @@
     font-weight: 500;
     letter-spacing: 0.06em;
     cursor: pointer;
-    transition: background .25s ease, transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    transition: background .25s ease, transform .25s ease, border-color .25s ease;
     white-space: nowrap;
     text-transform: uppercase;
     box-shadow: 0 2px 8px rgba(212,165,160,.25);
@@ -273,18 +430,11 @@
 .copy-link-btn:hover {
     background: var(--color-secondary);
     border-color: var(--color-secondary);
-    box-shadow: 0 4px 14px rgba(139,111,111,.35);
     transform: translateY(-1px);
 }
 
 .copy-link-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(212,165,160,.3);
-}
-
-.copy-link-btn:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 3px;
 }
 
 .success-note {
@@ -294,25 +444,36 @@
     margin-top: 1rem;
 }
 
-/* Responsive styles */
+/* =====================
+   Responsive
+   ===================== */
 @media (max-width: 768px) {
     .marriage-form-container {
         padding: 10px;
     }
-    
-    .marriage-form {
-        padding: 1rem;
+
+    .anketa-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "info"
+            "contacts"
+            "groom"
+            "groom-parents"
+            "bride"
+            "bride-parents"
+            "agreements"
+            "docs";
     }
-    
+
     .contact-fields-row {
         flex-direction: column;
         gap: 0.5rem;
     }
-    
+
     .edit-link-box {
         flex-direction: column;
     }
-    
+
     .copy-link-btn {
         width: 100%;
     }

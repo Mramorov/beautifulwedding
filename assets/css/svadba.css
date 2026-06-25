@@ -274,7 +274,50 @@ section.svadba-repeater p {
 .packets-grid {
     display: grid;
     grid-template-columns: auto 160px 160px;
+    border: 1px solid var(--color-bg-alt);
+    border-radius: 6px;
     overflow: hidden;
+    margin: 2rem 0;
+}
+
+.packets-cell {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--color-bg-alt);
+    border-right: 1px solid var(--color-bg-alt);
+    text-align: center;
+    color: var(--color-text);
+    font-size: 0.95rem;
+}
+
+.packets-cell:last-child {
+    border-right: none;
+}
+
+.packets-cell.header,
+.packets-cell.footer {
+    background: var(--color-bg-alt);
+    color: var(--color-secondary);
+    font-weight: 600;
+    text-align: center;
+    padding: 16px 18px;
+    align-content: center;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    text-transform: uppercase;
+}
+
+.packets-cell.header .packet-price {
+    font-family: var(--font-accent);
+    font-size: 1.1rem;
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.packets-cell.first-col {
+    background: var(--color-white);
+    font-weight: 500;
+    color: var(--color-text);
+    text-align: left;
 }
 
 
@@ -282,6 +325,8 @@ section.svadba-repeater p {
 .modal-overlay {
     position: fixed;
     inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
     opacity: 0;
     visibility: hidden;
     transition: .3s;
@@ -300,6 +345,10 @@ section.svadba-repeater p {
     left: 50%;
     transform: translate(-50%, -50%) scale(0.95);
     width: min(560px, 92vw);
+    background: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 32px 40px 40px;
     opacity: 0;
     visibility: hidden;
     transition: .3s;
@@ -402,14 +451,46 @@ body.no-scroll {
 .modal-header {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 8px;
 }
 
 .close-button {
     cursor: pointer;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
     line-height: 1;
     padding: 0;
     width: 32px;
     height: 32px;
+    color: var(--color-text);
+    opacity: 0.5;
+    transition: opacity .2s ease;
+}
+
+.close-button:hover {
+    opacity: 1;
+    color: var(--color-secondary);
+}
+
+.modal-info-header {
+    margin: 0 0 1.5rem;
+    text-align: center;
+}
+
+.modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal label {
+    font-family: var(--font-accent);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-secondary);
+    margin-bottom: 4px;
 }
 
 .modal-footer {
@@ -417,6 +498,7 @@ body.no-scroll {
     gap: 15px;
     align-items: center;
     justify-content: center;
+    margin-top: 8px;
 }
 
 /* JS-dependent - Process Send */
@@ -432,44 +514,10 @@ body.no-scroll {
     display: inline-block;
 }
 
-/* JS-dependent - Tabs */
-.svadba-tabs-nav {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.svadba-tab-button {
-    position: relative;
-    bottom: -2px;
-}
-
+/* Tabs — svadba-specific overrides */
 .svadba-tabs-content {
     position: relative;
     min-height: 200px;
-}
-
-
-.svadba-tab-pane {
-    display: none;
-    animation: fadeIn 0.4s ease;
-}
-
-.svadba-tab-pane.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .svadba-hero-meta {
@@ -550,8 +598,20 @@ body.no-scroll {
         grid-template-columns: 1fr 1fr;
     }
 
+    .packets-cell {
+        padding: 12px 14px;
+    }
+
     .packets-cell.first-col {
         grid-column: 1 / -1;
+    }
+
+    .packets-cell.header .packet-name {
+        font-size: 1.1rem;
+    }
+
+    .packets-cell.header .packet-price {
+        font-size: 1rem;
     }
 
     .map-modal {

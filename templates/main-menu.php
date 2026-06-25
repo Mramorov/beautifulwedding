@@ -239,6 +239,7 @@ function render_svadba_places_dropdown(array $args): string
     // Запрос мест свадеб по таксономии
     $query = new WP_Query([
         'post_type'      => 'svadba',
+        'post_status'    => 'publish',
         'posts_per_page' => -1,
         'orderby'        => 'date',
         'order'          => 'DESC',
@@ -329,6 +330,7 @@ function render_service_dropdown(array $args): string
     // Услуги выводятся без фильтрации по таксономии.
     $query = new WP_Query([
         'post_type'      => 'service',
+        'post_status'    => 'publish',
         'posts_per_page' => -1,
         'orderby'        => 'date',
         'order'          => 'DESC',

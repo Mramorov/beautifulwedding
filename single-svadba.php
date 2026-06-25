@@ -8,6 +8,13 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
+function enqueue_svadba_tabs_script() {
+  $js_file = get_template_directory() . '/assets/js/tabs.js';
+  $js_version = file_exists($js_file) ? filemtime($js_file) : wp_get_theme()->get('Version');
+  wp_enqueue_script('bw-tabs', get_template_directory_uri() . '/assets/js/tabs.js', array(), $js_version, true);
+}
+add_action('wp_enqueue_scripts', 'enqueue_svadba_tabs_script');
+
 require_once get_template_directory() . '/inc/utils/svadba-packets.php';
 require_once get_template_directory() . '/inc/utils/svadba-main.php';
 
@@ -253,4 +260,4 @@ get_header('svadba');
   </main>
 <?php endwhile; ?>
 
-<?php get_footer();
+<?php get_footer('v2');

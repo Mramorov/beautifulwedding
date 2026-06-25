@@ -95,4 +95,4 @@ get_header('service');
     </section>
   <?php endif; ?>
 </main>
-<?php get_footer(); ?>
+<?php get_footer('v3'); ?>

@@ -279,10 +279,6 @@
       }
     }
 
-    $(document).on('click', '.svadba-tab-button', function () {
-      activateTab($(this).data('tab'));
-    });
-
     $(document).on('click', '.svadba-tab-link', function (e) {
       e.preventDefault();
       var $link = $(this);

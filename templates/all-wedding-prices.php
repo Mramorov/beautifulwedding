@@ -18,9 +18,9 @@ function enqueue_price_page_assets()
     $css_version = file_exists($css_file) ? filemtime($css_file) : wp_get_theme()->get('Version');
     wp_enqueue_style('price-page-styles', get_template_directory_uri() . '/assets/css/price-page.css', array('bw-price-tables'), $css_version);
 
-    $js_file = get_template_directory() . '/assets/js/price-page.js';
+    $js_file = get_template_directory() . '/assets/js/tabs.js';
     $js_version = file_exists($js_file) ? filemtime($js_file) : wp_get_theme()->get('Version');
-    wp_enqueue_script('price-page-script', get_template_directory_uri() . '/assets/js/price-page.js', array(), $js_version, true);
+    wp_enqueue_script('bw-tabs', get_template_directory_uri() . '/assets/js/tabs.js', array(), $js_version, true);
 }
 add_action('wp_enqueue_scripts', 'enqueue_price_page_assets');
 

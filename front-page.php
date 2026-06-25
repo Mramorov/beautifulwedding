@@ -193,17 +193,12 @@ get_header('front-page');
         <a href="/anketa/" class="bw-fp-btn bw-fp-btn--ghost">Обсудить ваш день</a>
       </div>
     </div>
-    <svg width="0" height="0" style="position:absolute;">
-      <defs>
-        <clipPath id="wave-clip" clipPathUnits="objectBoundingBox">
-          <path d="M 0,0 L 1,0 L 1,0.85 C 0.55,0.75 0.8,1 0,0.9 Z" />
-        </clipPath>
-      </defs>
-    </svg>
+    <?php get_template_part('templates/wave-clip'); ?>
   </section>
 
   <!-- ===================== TRUST BAR ===================== -->
   <section class="bw-fp-trust full" aria-label="Наши достижения">
+    <span class="bw-fp-watermark" aria-hidden="true">Legacy</span>
     <div class="bw-fp-trust__inner boxed">
       <div class="bw-fp-metric">
         <strong>10+ лет</strong>
@@ -446,90 +441,4 @@ get_header('front-page');
 
 </main>
 
-<script>
-  /*
-   * Параллакс фоновых слоёв секций-сценариев.
-   *
-   * Механизм:
-   *   Каждый .bw-fp-scenario__bg — это абсолютно позиционированный div
-   *   с фоновым изображением. Он чуть больше родителя (inset:-4% в CSS)
-   *   и масштабирован (scale 1.08), чтобы при сдвиге края не были видны.
-   *   На каждый кадр скролла мы вычисляем, насколько центр секции смещён
-   *   от центра вьюпорта, и двигаем фон на долю этого расстояния —
-   *   медленнее контента, что даёт иллюзию глубины.
-   */
-  (function () {
-    /* Уважаем системную настройку «уменьшить движение» */
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    var layers = document.querySelectorAll('.bw-fp-scenario__bg');
-    if (!layers.length) return;
-
-    /* Флаг rAF-тротлинга: не ставим больше одного кадра в очередь */
-    var ticking = false;
-
-    function update() {
-      /*
-       * Ниже 861px — мобильные. Параллакс отключаем: на тач-скролле
-       * он тормозит, а секции занимают почти весь экран в высоту,
-       * поэтому эффект всё равно почти не виден.
-       */
-      if (window.innerWidth < 861) {
-        layers.forEach(function (l) { l.style.transform = 'none'; });
-        return;
-      }
-
-      /* Вертикальная середина вьюпорта — точка отсчёта */
-      var vc = window.innerHeight / 2;
-
-      layers.forEach(function (l) {
-        var host = l.parentElement; /* .bw-fp-scenario — родительская секция */
-        if (!host) return;
-
-        var rect = host.getBoundingClientRect();
-
-        /*
-         * dist — расстояние от центра секции до центра вьюпорта (px).
-         *   > 0: секция ниже центра экрана (ещё не доскроллили до неё)
-         *   = 0: секция точно посередине экрана
-         *   < 0: секция выше центра (уже проскроллили мимо)
-         */
-        var dist = (rect.top + rect.height / 2) - vc;
-
-        /*
-         * Скорость параллакса: 0.10 = фон движется в 10 раз медленнее
-         * контента относительно центра вьюпорта.
-         *
-         *   Увеличить → более выраженный параллакс (рискуем обнажить края)
-         *   Уменьшить → едва заметный эффект глубины
-         *   Безопасный диапазон ≈ 0.05 – 0.18 при текущем inset/scale.
-         *
-         * Знак минус: фон смещается в ту же сторону, что и секция,
-         * но медленнее — именно это создаёт ощущение, что фон «сзади».
-         */
-        var offset = -dist * 0.15;
-
-        /*
-         * scale(1.08) — обязательно повторяем CSS-значение из .bw-fp-scenario__bg.
-         * JS-transform полностью перезаписывает CSS-transform, поэтому
-         * если убрать scale отсюда, фон «схлопнется» до исходного размера
-         * и края станут видны во время скролла.
-         */
-        l.style.transform = 'translate3d(0,' + offset.toFixed(2) + 'px,0) scale(1.08)';
-      });
-    }
-
-    function tick() {
-      if (ticking) return; /* Пропускаем, если кадр уже запрошен */
-      ticking = true;
-      requestAnimationFrame(function () { update(); ticking = false; });
-    }
-
-    /* passive:true — браузер не ждёт JS перед прокруткой (плавнее) */
-    window.addEventListener('scroll', tick, { passive: true });
-    window.addEventListener('resize', tick);
-    tick(); /* Применить сразу при загрузке без скролла */
-  })();
-</script>
-
-<?php get_footer(); ?>
+<?php get_footer('v1'); ?>
