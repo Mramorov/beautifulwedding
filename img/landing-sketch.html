@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Agency - Эскиз главной страницы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background: #fff;
+        }
+
+        /* ============================================
+           ХЕДЕР / НАВИГАЦИЯ
+           ============================================ */
+
+        header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #c4a069;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #c4a069;
+        }
+
+        .nav-cta {
+            background: #c4a069;
+            color: white !important;
+            padding: 12px 30px;
+            border-radius: 50px;
+        }
+
+        /* ============================================
+           ГЕРОЙ СЕКЦИЯ
+           ============================================ */
+
+        .hero {
+            background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+            padding: 100px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(196, 160, 105, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #c4a069;
+            color: white;
+            padding: 18px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(196, 160, 105, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #c4a069;
+            padding: 18px 50px;
+            border: 2px solid #c4a069;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #c4a069;
+            color: white;
+        }
+
+        /* ============================================
+           СЕРВИСЫ / УСЛУГИ
+           ============================================ */
+
+        .services {
+            padding: 80px 20px;
+            background: #fff;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            font-size: 1.125rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        .service-card {
+            background: #f9f7f3;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #f0ead8;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .service-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+
+        .service-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* ============================================
+           ГАЛЕРЕЯ / ПОРТФОЛИО
+           ============================================ */
+
+        .portfolio {
+            padding: 80px 20px;
+            background: #f5f1e8;
+        }
+
+        .portfolio .section-title {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+        }
+
+        .gallery {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .gallery-item {
+            position: relative;
+            height: 350px;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 26, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-text {
+            color: white;
+            text-align: center;
+        }
+
+        .gallery-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .gallery-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* ============================================
+           О НАС
+           ============================================ */
+
+        .about {
+            padding: 80px 20px;
+            background: #fff;
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-content h2 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 25px;
+            line-height: 1.3;
+        }
+
+        .about-content p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #c4a069;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .about-image {
+            position: relative;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #c4a069 0%, #a68354 100%);
+        }
+
+        /* ============================================
+           ОТЗЫВЫ
+           ============================================ */
+
+        .testimonials {
+            padding: 80px 20px;
+            background: #f5f1e8;
+        }
+
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .stars {
+            color: #ffc107;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+        }
+
+        .testimonial-text {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .testimonial-role {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* ============================================
+           ЦЕНЫ / ПАКЕТЫ
+           ============================================ */
+
+        .pricing {
+            padding: 80px 20px;
+            background: #fff;
+        }
+
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+
+        .pricing-card {
+            border: 2px solid #f0ead8;
+            padding: 50px 30px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            border-color: #c4a069;
+            box-shadow: 0 15px 40px rgba(196, 160, 105, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .pricing-card.featured {
+            background: linear-gradient(135deg, #c4a069 0%, #a68354 100%);
+            color: white;
+            border-color: #c4a069;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured .pricing-title,
+        .pricing-card.featured .pricing-price,
+        .pricing-card.featured .pricing-features {
+            color: white;
+        }
+
+        .badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: #c4a069;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .pricing-title {
+            font-size: 1.5rem;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #c4a069;
+            margin-bottom: 30px;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 12px 0;
+            color: #666;
+            border-bottom: 1px solid #f0ead8;
+        }
+
+        .pricing-features li::before {
+            content: '✓ ';
+            color: #c4a069;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        .pricing-card.featured .pricing-features li {
+            color: white;
+            border-bottom-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ============================================
+           КОНТАКТЫ / CTA
+           ============================================ */
+
+        .contact-cta {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .contact-cta h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .contact-cta p {
+            font-size: 1.25rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        /* ============================================
+           ФУТЕР
+           ============================================ */
+
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 60px 20px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #c4a069;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: #999;
+            text-decoration: none;
+            margin-bottom: 10px;
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #c4a069;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 30px;
+            text-align: center;
+            color: #666;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+            margin-bottom: 0;
+        }
+
+        .social-links a:hover {
+            background: #c4a069;
+        }
+
+        /* ============================================
+           АДАПТИВНОСТЬ
+           ============================================ */
+
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 20px;
+                font-size: 0.9rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .about-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .about-content h2 {
+                font-size: 2rem;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+
+            .contact-cta h2 {
+                font-size: 2rem;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ХЕДЕР -->
+<header>
+    <nav>
+        <div class="logo">✨ Свадебное Агентство</div>
+        <ul>
+            <li><a href="#services">Услуги</a></li>
+            <li><a href="#portfolio">Портфолио</a></li>
+            <li><a href="#pricing">Цены</a></li>
+            <li><a href="#about">О нас</a></li>
+            <li><a href="#contact" class="nav-cta">Контакты</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- ГЕРОЙ СЕКЦИЯ -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Ваша идеальная свадьба</h1>
+        <p>Мы создаем незабываемые моменты, которые останутся в сердце на всю жизнь</p>
+        <div class="cta-buttons">
+            <button class="btn-primary">Бронировать консультацию</button>
+            <button class="btn-secondary">Смотреть галерею</button>
+        </div>
+    </div>
+</section>
+
+<!-- УСЛУГИ -->
+<section class="services" id="services">
+    <div class="section-title">
+        <h2>Наши услуги</h2>
+        <p>Полный спектр услуг для организации вашей идеальной свадьбы</p>
+    </div>
+    <div class="services-grid">
+        <div class="service-card">
+            <div class="service-icon">🎂</div>
+            <h3>Организация праздника</h3>
+            <p>Полное планирование и координация вашего события от А до Я</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">🎨</div>
+            <h3>Дизайн и декор</h3>
+            <p>Создание уникального визуального стиля для вашей свадьбы</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">📸</div>
+            <h3>Фотография и видео</h3>
+            <p>Профессиональная съемка всех ключевых моментов</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">🎵</div>
+            <h3>Музыка и развлечение</h3>
+            <p>Подбор музыки и организация развлечений</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">🍽️</div>
+            <h3>Кейтеринг</h3>
+            <p>Координация с лучшими поварами и сервировкой</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">🏰</div>
+            <h3>Поиск площадки</h3>
+            <p>Подбор идеального места для вашего торжества</p>
+        </div>
+    </div>
+</section>
+
+<!-- ПОРТФОЛИО -->
+<section class="portfolio" id="portfolio">
+    <div class="section-title">
+        <h2>Наше портфолио</h2>
+        <p>Вдохновляющие свадебные проекты, которые мы создали</p>
+    </div>
+    <div class="gallery">
+        <div class="gallery-item">
+            <div style="background: linear-gradient(135deg, #c4a069 0%, #8b6f47 100%);"></div>
+            <div class="gallery-overlay">
+                <div class="gallery-text">
+                    <h3>Элегантная свадьба</h3>
+                    <p>На берегу озера</p>
+                </div>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <div style="background: linear-gradient(135deg, #d4a574 0%, #a68354 100%);"></div>
+            <div class="gallery-overlay">
+                <div class="gallery-text">
+                    <h3>Романтическая церемония</h3>
+                    <p>В винодельне</p>
+                </div>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <div style="background: linear-gradient(135deg, #e8c9a0 0%, #c4a069 100%);"></div>
+            <div class="gallery-overlay">
+                <div class="gallery-text">
+                    <h3>Современный стиль</h3>
+                    <p>В городском лофте</p>
+                </div>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <div style="background: linear-gradient(135deg, #b8956a 0%, #8b6f47 100%);"></div>
+            <div class="gallery-overlay">
+                <div class="gallery-text">
+                    <h3>Классическое торжество</h3>
+                    <p>В дворце</p>
+                </div>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <div style="background: linear-gradient(135deg, #d9b88d 0%, #b8956a 100%);"></div>
+            <div class="gallery-overlay">
+                <div class="gallery-text">
+                    <h3>Естественная красота</h3>
+                    <p>На природе</p>
+                </div>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <div style="background: linear-gradient(135deg, #a68354 0%, #7a5c3d 100%);"></div>
+            <div class="gallery-overlay">
+                <div class="gallery-text">
+                    <h3>Интимная церемония</h3>
+                    <p>В саду</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- О НАС -->
+<section class="about" id="about">
+    <div class="about-container">
+        <div class="about-image"></div>
+        <div class="about-content">
+            <h2>О нашем агентстве</h2>
+            <p>Мы — команда опытных профессионалов с более чем 10 лет опыта в организации свадеб и торжественных событий. Каждая свадьба для нас — это уникальная история, которую мы помогаем воплотить в жизнь.</p>
+            <p>Наша миссия — создавать безупречные мероприятия, которые будут идеально соответствовать вашему видению и оставить неизгладимое впечатление на ваших гостей.</p>
+            <div class="about-stats">
+                <div class="stat">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Организовано свадеб</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Довольных клиентов</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Партнеров</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ОТЗЫВЫ -->
+<section class="testimonials">
+    <div class="testimonials-container">
+        <div class="section-title">
+            <h2>Отзывы наших клиентов</h2>
+            <p>Что говорят люди о нашей работе</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">"Команда агентства сделала нашу свадьбу просто волшебной! Все детали были учтены, все произошло идеально."</p>
+                <div class="testimonial-author">Мария & Александр</div>
+                <div class="testimonial-role">Свадьба в июне</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">"Огромное спасибо за поддержку и организацию! Это был лучший день в нашей жизни благодаря вам."</p>
+                <div class="testimonial-author">Екатерина & Дмитрий</div>
+                <div class="testimonial-role">Свадьба в августе</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">"Профессионализм, ответственность и творческий подход — все это мы нашли в этом агентстве!"</p>
+                <div class="testimonial-author">Анна & Максим</div>
+                <div class="testimonial-role">Свадьба в сентябре</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ЦЕНЫ -->
+<section class="pricing" id="pricing">
+    <div class="pricing-container">
+        <div class="section-title">
+            <h2>Наши пакеты услуг</h2>
+            <p>Выберите оптимальный вариант для вашей свадьбы</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3 class="pricing-title">Базовый</h3>
+                <div class="pricing-price">500€</div>
+                <ul class="pricing-features">
+                    <li>Консультация с координатором</li>
+                    <li>Помощь с поиском площадки</li>
+                    <li>Контакты проверенных поставщиков</li>
+                    <li>День свадьбы: 4 часа</li>
+                </ul>
+                <button class="btn-primary">Выбрать</button>
+            </div>
+            <div class="pricing-card featured">
+                <span class="badge">Популярно</span>
+                <h3 class="pricing-title">Премиум</h3>
+                <div class="pricing-price">1200€</div>
+                <ul class="pricing-features">
+                    <li>Полное планирование события</li>
+                    <li>Координация всех деталей</li>
+                    <li>День свадьбы: полный день</li>
+                    <li>Помощь на генеральной репетиции</li>
+                    <li>Координатор присутствует до конца</li>
+                </ul>
+                <button class="btn-primary">Выбрать</button>
+            </div>
+            <div class="pricing-card">
+                <h3 class="pricing-title">Люкс</h3>
+                <div class="pricing-price">2000€</div>
+                <ul class="pricing-features">
+                    <li>Всё из Премиум пакета</li>
+                    <li>Персональный дизайнер события</li>
+                    <li>Координация фотографа и видеографа</li>
+                    <li>Помощь с приглашениями</li>
+                    <li>День невесты (подготовка)</li>
+                </ul>
+                <button class="btn-primary">Выбрать</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- КОНТАКТЫ / CTA -->
+<section class="contact-cta" id="contact">
+    <h2>Готовы создать вашу идеальную свадьбу?</h2>
+    <p>Свяжитесь с нами для бесплатной консультации</p>
+    <div class="cta-buttons">
+        <button class="btn-primary">Заказать консультацию</button>
+        <button class="btn-secondary" style="border-color: white; color: white;">Написать на email</button>
+    </div>
+</section>
+
+<!-- ФУТЕР -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>О компании</h3>
+            <p>Свадебное агентство с 10+ летним опытом в создании незабываемых моментов.</p>
+            <div class="social-links">
+                <a href="#">f</a>
+                <a href="#">в</a>
+                <a href="#">📷</a>
+                <a href="#">✉</a>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3>Услуги</h3>
+            <ul>
+                <li><a href="#">Организация свадеб</a></li>
+                <li><a href="#">Дизайн и декор</a></li>
+                <li><a href="#">Фотография</a></li>
+                <li><a href="#">Музыка и развлечение</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Компания</h3>
+            <ul>
+                <li><a href="#">О нас</a></li>
+                <li><a href="#">Портфолио</a></li>
+                <li><a href="#">Отзывы</a></li>
+                <li><a href="#">Блог</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Контакты</h3>
+            <ul>
+                <li><a href="#">+7 (999) 000-00-00</a></li>
+                <li><a href="#">hello@wedding.agency</a></li>
+                <li><a href="#">г. Москва, ул. Красная, 1</a></li>
+                <li><a href="#">Пн-Сб: 10:00-19:00</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 Свадебное агентство. Все права защищены.</p>
+    </div>
+</footer>
+
+</body>
+</html>

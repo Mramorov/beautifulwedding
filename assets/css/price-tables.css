@@ -1,0 +1,126 @@
+/* Табличные стили для шорткода [bw_services] и секций прайс-листа */
+
+.price-section {
+    margin-bottom: 3rem;
+}
+
+.price-section h3 {
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+/* Таблица цен */
+.price-table {
+    border: 1px solid var(--color-bg-alt);
+    border-radius: 6px;
+    overflow-x: auto;
+    background: var(--color-white);
+}
+
+.price-table-table {
+    width: 100%;
+    min-width: 420px;
+    border-collapse: collapse;
+}
+
+.price-table-header {
+    background: var(--color-bg-alt);
+    font-weight: 600;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+}
+
+.price-table-table tbody tr + tr {
+    border-top: 1px solid var(--color-bg-alt);
+}
+
+.price-table-row {
+    transition: background-color 0.2s ease;
+}
+
+.price-table-table tbody .price-table-row:hover {
+    background: var(--color-bg);
+}
+
+.price-cell {
+    padding: 14px 2%;
+    vertical-align: top;
+}
+
+.price-cell-name {
+    text-align: left;
+    padding-left: 6%;
+}
+
+.price-cell-price {
+    text-align: right;
+    font-weight: 600;
+    color: var(--color-primary);
+    min-width: 120px;
+    padding-right: 6%;
+    white-space: nowrap;
+}
+
+.price-table-header .price-cell-price {
+    color: var(--color-secondary);
+}
+
+/* Legacy div-grid table rules (unused after semantic <table> migration) */
+/*
+.price-table-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+.price-table-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    border-top: 1px solid var(--color-bg-alt);
+}
+
+.price-cell {
+    display: flex;
+    align-items: center;
+}
+*/
+
+/* Адаптив только для таблиц */
+@media (max-width: 768px) {
+    .price-cell {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+    .price-section h3 {
+        font-size: 1rem;
+    }
+    .price-table-header {
+        font-size: 0.85rem;
+    }
+    .price-cell-price {
+        min-width: 100px;
+    }
+}
+
+/* Legacy mobile stacking for div-grid table (unused after semantic <table> migration) */
+/*
+@media (max-width: 480px) {
+    .price-table-header,
+    .price-table-row {
+        grid-template-columns: 1fr;
+    }
+    .price-cell-price {
+        border-top: 1px solid var(--color-bg-alt);
+        padding-top: 8px;
+        margin-top: 8px;
+    }
+    .price-table-row .price-cell-name {
+        padding-bottom: 0;
+    }
+}
+*/

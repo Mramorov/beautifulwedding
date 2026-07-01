@@ -1,0 +1,333 @@
+/* ============================================
+   Footer variants — временный файл для отладки
+   После утверждения концепции стили переедут в style.css
+   ============================================ */
+
+/* ── Shared base ─────────────────────────────── */
+.bw-footer {
+    width: 100%;
+}
+
+.bw-footer a {
+    text-decoration: none;
+    transition: color .2s ease, opacity .2s ease;
+}
+
+
+/* ════════════════════════════════════════════════
+   V1 — Воздушный
+   Акцент на бренде и одном призыве к действию.
+   Минимум информации — максимум элегантности.
+   ════════════════════════════════════════════════ */
+
+.bw-footer--v1 {
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+    padding: 3.5rem 0 2rem;
+}
+
+.bw-footer--v1 .bw-footer-v1__ornament {
+    margin-bottom: 1.5rem;
+    opacity: 0.55;
+}
+
+.bw-footer--v1 .bw-footer-v1__ornament img {
+    width: 100px;
+    height: auto;
+}
+
+.bw-footer--v1 .bw-footer-v1__name {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--color-secondary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.bw-footer--v1 .bw-footer-v1__tagline {
+    font-family: var(--font-hero);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--color-text);
+    margin: 0 0 2rem;
+    opacity: 0.8;
+}
+
+.bw-footer--v1 .bw-footer-v1__copy {
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.8rem;
+    color: var(--color-text);
+    opacity: 0.5;
+    font-family: var(--font-accent);
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 480px) {
+    .bw-footer--v1 {
+        padding: 2.5rem 0 1.5rem;
+    }
+    .bw-footer--v1 .bw-footer-v1__name {
+        font-size: 1.6rem;
+    }
+}
+
+
+/* ════════════════════════════════════════════════
+   V2 — Контактный
+   Два столбца: описание + прямые контакты.
+   Практично, не дублирует меню.
+   ════════════════════════════════════════════════ */
+
+.bw-footer--v2 {
+    background: var(--color-bg-alt);
+    border-top: 2px solid var(--color-primary);
+}
+
+.bw-footer--v2 .bw-footer-v2__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 4rem;
+    padding: 3rem 0 2.5rem;
+}
+
+.bw-footer--v2 .bw-footer-v2__name {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--color-secondary);
+    letter-spacing: 0.06em;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.bw-footer--v2 .bw-footer-v2__desc {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    line-height: 1.7;
+    margin: 0;
+    opacity: 0.85;
+}
+
+.bw-footer--v2 .bw-footer-v2__contacts-label {
+    font-family: var(--font-accent);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-primary);
+    margin: 0 0 1rem;
+}
+
+.bw-footer--v2 .bw-footer-v2__contact-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.6rem;
+}
+
+.bw-footer--v2 .bw-footer-v2__contact-row a:first-child {
+    font-size: 0.95rem;
+    color: var(--color-secondary);
+    font-weight: 500;
+}
+
+.bw-footer--v2 .bw-footer-v2__contact-row a:first-child:hover {
+    color: var(--color-primary);
+}
+
+.bw-footer--v2 .bw-footer-v2__icons {
+    display: flex;
+    gap: 6px;
+}
+
+.bw-footer--v2 .bw-footer-v2__icons a {
+    display: flex;
+    align-items: center;
+    opacity: 0.6;
+}
+
+.bw-footer--v2 .bw-footer-v2__icons a:hover {
+    opacity: 1;
+}
+
+.bw-footer--v2 .bw-footer-v2__icons img {
+    width: 18px;
+    height: 18px;
+}
+
+.bw-footer--v2 .bw-footer-v2__email {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--color-secondary);
+}
+
+.bw-footer--v2 .bw-footer-v2__email:hover {
+    color: var(--color-primary);
+}
+
+.bw-footer--v2 .bw-footer-v2__bottom {
+    background: var(--color-border);
+    padding: 0.85rem 0;
+}
+
+.bw-footer--v2 .bw-footer-v2__bottom-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--color-secondary);
+    font-family: var(--font-accent);
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+}
+
+@media (max-width: 640px) {
+    .bw-footer--v2 .bw-footer-v2__inner {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 2rem 0 2rem;
+    }
+    .bw-footer--v2 .bw-footer-v2__bottom-inner {
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+    }
+}
+
+
+/* ════════════════════════════════════════════════
+   V3 — Торжественный тёмный
+   Эмоциональный, визуально весомый.
+   Цитата + прямые кнопки связи.
+   ════════════════════════════════════════════════ */
+
+.bw-footer--v3 {
+    background: linear-gradient(135deg, #5a3535 0%, #8B6F6F 100%);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.bw-footer--v3 .bw-footer-v3__deco {
+    position: absolute;
+    top: -30px;
+    right: -40px;
+    width: 340px;
+    opacity: 0.07;
+    pointer-events: none;
+    user-select: none;
+}
+
+.bw-footer--v3 .bw-footer-v3__inner {
+    position: relative;
+    z-index: 1;
+    padding: 4rem 0 3rem;
+    text-align: center;
+}
+
+.bw-footer--v3 .bw-footer-v3__quote {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 300;
+    font-style: italic;
+    color: #fff;
+    line-height: 1.5;
+    margin: 0 auto 2.25rem;
+    max-width: 640px;
+    border: none;
+    padding: 0;
+}
+
+.bw-footer--v3 .bw-footer-v3__quote em {
+    display: block;
+    font-size: 0.85em;
+    opacity: 0.75;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+.bw-footer--v3 .bw-footer-v3__divider {
+    width: 60px;
+    height: 1px;
+    background: rgba(255,255,255,0.3);
+    margin: 0 auto 2.25rem;
+}
+
+.bw-footer--v3 .bw-footer-v3__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.bw-footer--v3 .bw-footer-v3__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 28px;
+    border-radius: 4px;
+    font-family: var(--font-accent);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: all .25s ease;
+}
+
+.bw-footer--v3 .bw-footer-v3__btn--phone {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+}
+
+.bw-footer--v3 .bw-footer-v3__btn--phone:hover {
+    background: rgba(255,255,255,0.22);
+    border-color: rgba(255,255,255,0.6);
+}
+
+.bw-footer--v3 .bw-footer-v3__btn--wa {
+    background: rgba(37,211,102,0.18);
+    border: 1px solid rgba(37,211,102,0.45);
+    color: #d4ffe6;
+}
+
+.bw-footer--v3 .bw-footer-v3__btn--wa:hover {
+    background: rgba(37,211,102,0.3);
+}
+
+.bw-footer--v3 .bw-footer-v3__btn img {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) invert(1);
+}
+
+.bw-footer--v3 .bw-footer-v3__copy {
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding: 1rem 0;
+    text-align: center;
+    font-size: 0.75rem;
+    font-family: var(--font-accent);
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.4);
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 480px) {
+    .bw-footer--v3 .bw-footer-v3__inner {
+        padding: 3rem 0 2.5rem;
+    }
+    .bw-footer--v3 .bw-footer-v3__actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    .bw-footer--v3 .bw-footer-v3__deco {
+        width: 220px;
+        right: -20px;
+    }
+}

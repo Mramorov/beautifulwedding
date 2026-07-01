@@ -1,0 +1,779 @@
+/* Front Page v3 — minimal new styles, maximum reuse of existing components */
+
+/* ============================================
+   Kicker label + Section head (shared typography)
+   ============================================ */
+
+.bw-fp-kicker {
+  margin: 0 0 14px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-family: var(--font-accent);
+}
+
+.bw-fp-section-head {
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto 52px;
+  position: relative;
+}
+
+.bw-fp-section-head h2 {
+  margin: 0 0 14px;
+}
+
+.bw-fp-section-head > p:not(.bw-fp-kicker) {
+  color: var(--color-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.bw-fp-watermark {
+  display: block;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 800;
+  font-size: clamp(6rem, 18vw, 15rem);
+  color: rgba(139, 111, 111, 0.07);
+  line-height: 0.85;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  user-select: none;
+  margin-bottom: -2.4rem;
+  will-change: transform;
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+.bw-fp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 28px;
+  min-height: 48px;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.bw-fp-btn:hover {
+  transform: translateY(-2px);
+}
+
+.bw-fp-btn--main {
+  background: linear-gradient(120deg, #92725d 0%, #7f5f4c 100%);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(92, 66, 50, 0.25);
+}
+
+.bw-fp-btn--main:hover {
+  box-shadow: 0 12px 26px rgba(92, 66, 50, 0.38);
+}
+
+.bw-fp-btn--ghost {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.bw-fp-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+   Hero
+   ============================================ */
+
+/* .bw-fp-hero extends .svadba-hero: height:100vh, background-size:cover, clip-path:url(#wave-clip) */
+
+.bw-fp-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(130deg, rgba(16, 9, 6, 0.55) 0%, rgba(16, 9, 6, 0.18) 48%, rgba(16, 9, 6, 0.68) 100%);
+  clip-path: url(#wave-clip);
+  z-index: 1;
+}
+
+/* Decorative radial warm glow */
+.bw-fp-hero__overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 68% 72%, rgba(220, 170, 120, 0.18) 0%, transparent 55%);
+}
+
+.bw-fp-hero__content {
+  /* Extends .svadba-hero-content */
+  padding: 0 20px;
+  gap: 0;
+}
+
+.bw-fp-hero__content .entry-title {
+  font-size: clamp(2.4rem, 5.5vw, 4.6rem);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+  max-width: 900px;
+}
+
+.bw-fp-subtitle {
+  max-width: 620px;
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  line-height: 1.7;
+  color: #f3e3d7;
+  margin-top: 20px;
+  font-family: var(--font-body);
+}
+
+.bw-fp-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+
+/*
+ * Inner containers inside .full sections:
+ * grid-column:2 from .boxed only works on direct children of .layout.
+ * These divs are nested, so we center them explicitly.
+ */
+.bw-fp-trust__inner,
+.bw-fp-scenario__inner,
+.bw-fp-process__inner,
+.bw-fp-other-places__grid {
+  max-width: var(--content-width, 1200px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* ============================================
+   Trust bar
+   ============================================ */
+
+.bw-fp-trust {
+  border-bottom: 1px solid var(--color-border);
+  overflow: clip;
+}
+
+.bw-fp-trust__inner {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding-top: 28px;
+  padding-bottom: 28px;
+  gap: 12px;
+}
+
+.bw-fp-trust .bw-fp-watermark {
+  text-align: center;
+}
+
+.bw-fp-metric {
+  text-align: center;
+  display: grid;
+  gap: 5px;
+  padding: 10px 14px;
+}
+
+.bw-fp-metric strong {
+  font-family: var(--font-heading);
+  font-size: 1.7rem;
+  color: #5f4637;
+  display: block;
+  line-height: 1.1;
+}
+
+.bw-fp-metric span {
+  font-size: 0.88rem;
+  color: var(--color-secondary);
+}
+
+/* ============================================
+   Scenarios (parallax fullwidth sections)
+   ============================================ */
+
+.bw-fp-scenarios {
+  display: flex;
+  flex-direction: column;
+}
+
+.bw-fp-scenario {
+  /* --- Цветовая схема: тёмная (по умолчанию) --- */
+  --sc-overlay-a: rgb(36 22 14 / 100%);
+  --sc-overlay-b: rgb(36 22 14 / 42%);
+  --sc-overlay-c: rgb(36 22 14 / 80%);
+  --sc-text:    #f8efe8;
+  --sc-heading: #ffffff;
+  --sc-kicker:  rgba(220, 185, 155, 0.9);
+  --sc-muted:   #eddcce;
+  --sc-dash:    rgba(220, 185, 155, 0.8);
+
+  position: relative;
+  isolation: isolate;
+  /* overflow:clip обрезает выступающий bg-слой, не создавая stacking context */
+  overflow: clip;
+}
+
+/* --- Светлая схема: 1-й и 3-й сценарии --- */
+.bw-fp-scenario--light {
+  --sc-overlay-a: rgb(255 249 245 / 92%);
+  --sc-overlay-b: rgb(255 249 245 / 58%);
+  --sc-overlay-c: rgb(255 249 245 / 90%);
+  --sc-text:    var(--color-text);
+  --sc-heading: var(--color-text);
+  --sc-kicker:  var(--color-secondary);
+  --sc-muted:   var(--color-secondary);
+  --sc-dash:    var(--color-primary);
+}
+
+.bw-fp-scenario__bg {
+  position: absolute;
+  /*
+   * inset:-4% — запас ~28px per side; scale(1.08) добавляет ещё ~28px.
+   * Итого ≈56px «хода» — достаточно при скорости параллакса 0.10.
+   * scale(1.08) продублирован в JS, т.к. JS перезаписывает style.transform целиком.
+   */
+  inset: -4%;
+  background:
+    linear-gradient(100deg, var(--sc-overlay-a) 0%, var(--sc-overlay-b) 52%, var(--sc-overlay-c) 100%),
+    var(--scenario-bg, none) center / cover no-repeat;
+  filter: blur(3px);
+  transform: scale(1.08);
+  will-change: transform;
+  z-index: -2;
+}
+
+.bw-fp-scenario__inner {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 52px;
+  align-items: center;
+  min-height: clamp(560px, 72vh, 860px);
+  padding-top: 78px;
+  padding-bottom: 78px;
+}
+
+.bw-fp-scenario--reverse .bw-fp-scenario__text {
+  order: 2;
+}
+
+.bw-fp-scenario--reverse .bw-fp-scenario__cards {
+  order: 1;
+}
+
+.bw-fp-scenario--reverse .bw-fp-scenario__inner {
+  grid-template-columns: 1fr 1.1fr;
+}
+
+/* Text panel */
+.bw-fp-scenario__text {
+  color: var(--sc-text);
+}
+
+.bw-fp-scenario__text .bw-fp-kicker {
+  color: var(--sc-kicker);
+}
+
+.bw-fp-scenario__text h2 {
+  margin: 0;
+  color: var(--sc-heading);
+  text-align: left;
+  font-size: clamp(1.9rem, 3.4vw, 3.1rem);
+  line-height: 1.15;
+}
+
+.bw-fp-scenario__lead {
+  margin: 16px 0 0;
+  font-size: 1.1rem;
+  color: var(--sc-muted);
+  font-style: italic;
+  font-family: var(--font-heading);
+}
+
+.bw-fp-scenario__text > p:not(.bw-fp-kicker):not(.bw-fp-scenario__lead) {
+  color: var(--sc-muted);
+  line-height: 1.7;
+}
+
+.bw-fp-scenario__points {
+  margin: 20px 0 30px;
+  padding: 0;
+  list-style: none;
+}
+
+.bw-fp-scenario__points li {
+  padding-left: 1.8em;
+  position: relative;
+  margin-bottom: 9px;
+  color: var(--sc-text);
+}
+
+.bw-fp-scenario__points li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--sc-dash);
+}
+
+/* Cards panel */
+.bw-fp-scenario__cards {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 14px;
+  height: clamp(380px, 56vh, 680px);
+}
+
+.bw-fp-scenario__main-card {
+  min-height: 0;
+}
+
+.bw-fp-scenario__mini-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  height: clamp(120px, 18vh, 220px);
+}
+
+.bw-fp-scenario__mini-cards .location-card {
+  min-height: 0;
+}
+
+/* ============================================
+   Services
+   ============================================ */
+
+.bw-fp-services {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  overflow-x: clip;
+}
+
+.bw-fp-service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.bw-fp-service-grid .location-card {
+  aspect-ratio: 3 / 2;
+}
+
+/* ============================================
+   Process steps
+   ============================================ */
+
+.bw-fp-process {
+  background: linear-gradient(180deg, #f9f3ef 0%, #f0e9e1 100%);
+  overflow-x: clip;
+}
+
+.bw-fp-process__inner {
+  padding-top: 100px;
+  padding-bottom: 108px;
+}
+
+.bw-fp-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: relative;
+}
+
+/* Connector line between steps */
+.bw-fp-steps::before {
+  content: "";
+  position: absolute;
+  top: 38px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: var(--color-border);
+  z-index: 0;
+}
+
+.bw-fp-steps li {
+  display: grid;
+  gap: 10px;
+  padding: 28px 22px 26px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  position: relative;
+  z-index: 1;
+  transition: box-shadow 0.28s ease, transform 0.28s ease;
+}
+
+.bw-fp-steps li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(90, 55, 35, 0.1);
+}
+
+.bw-fp-step-num {
+  font-family: var(--font-heading);
+  font-size: 2.6rem;
+  color: var(--color-border);
+  line-height: 1;
+  font-weight: 700;
+  display: block;
+}
+
+.bw-fp-steps li strong {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: #5e4433;
+  font-weight: 600;
+}
+
+.bw-fp-steps li span {
+  font-size: 0.91rem;
+  color: var(--color-secondary);
+  line-height: 1.55;
+}
+
+/* ============================================
+   Gallery
+   ============================================ */
+
+.bw-fp-other-places {
+  padding-top: 92px;
+  padding-bottom: 100px;
+  background: radial-gradient(circle at 16% 22%, rgba(210, 186, 165, 0.18) 0%, #f5f0ec 62%);
+  overflow-x: clip;
+}
+
+.bw-fp-other-places__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 200px;
+  gap: 14px;
+}
+
+/* Staggered heights for visual rhythm */
+.bw-fp-other-places__grid .location-card:nth-child(3n+1) {
+  grid-row: span 2;
+}
+
+/* ============================================
+   Photo gallery (svadba_gallery meta)
+   ============================================ */
+
+.bw-fp-gallery {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+.bw-fp-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-auto-rows: clamp(130px, 15vw, 240px);
+  gap: 1vw;
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 0 1.5%;
+}
+
+/*
+ * Паттерн col 2 и col 5 span 2 строки.
+ * Один цикл — 10 элементов: 6 в первой строке + 4 "заполнителя" во второй
+ * (cols 2 и 5 уже заняты spanning-элементами).
+ * Позиции по nth-child: 2, 5, 12, 15, 22, 25 ... → 10n+2 и 10n+5.
+ */
+.bw-fp-gallery__grid .location-card:nth-child(10n+2),
+.bw-fp-gallery__grid .location-card:nth-child(10n+5) {
+  grid-row: span 2;
+}
+
+/* ============================================
+   Contact CTA
+   ============================================ */
+
+.bw-fp-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    linear-gradient(120deg, rgba(24, 14, 9, 0.84), rgba(24, 14, 9, 0.78)),
+    url('/wp-content/themes/beautifulwedding/img/photo-10.png') center / cover no-repeat;
+}
+
+.bw-fp-cta__radial {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 72% 28%, rgba(230, 190, 145, 0.16) 0%, transparent 52%);
+  pointer-events: none;
+}
+
+.bw-fp-cta__inner {
+  position: relative;
+  z-index: 2;
+  padding-top: 106px;
+  padding-bottom: 106px;
+  text-align: center;
+  color: #f4e8df;
+  max-width: 920px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bw-fp-cta__inner .bw-fp-kicker {
+  color: rgba(220, 185, 155, 0.9);
+}
+
+.bw-fp-cta__inner h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+}
+
+.bw-fp-cta__inner p {
+  margin-top: 18px;
+  color: #ecdacc;
+  max-width: 580px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bw-fp-cta__actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ============================================
+   Scenario separator — Testimonial / цитата пары
+   ============================================ */
+
+.bw-fp-sep-testimonial {
+  background: #faf5f0;
+  padding: 80px 0;
+}
+
+.bw-fp-sep-testimonial__inner {
+  max-width: var(--content-width, 1200px);
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 64px;
+  align-items: center;
+}
+
+.bw-fp-sep-testimonial__body {
+  position: relative;
+}
+
+.bw-fp-sep-testimonial__mark {
+  font-family: var(--font-accent, Georgia, serif);
+  font-size: clamp(5rem, 10vw, 8rem);
+  line-height: 0.65;
+  color: rgba(180, 140, 110, 0.22);
+  display: block;
+  margin-bottom: 6px;
+  user-select: none;
+}
+
+.bw-fp-sep-testimonial__quote {
+  font-family: var(--font-accent, Georgia, serif);
+  font-style: italic;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.65;
+  color: #3a2518;
+  margin: 0 0 28px;
+}
+
+.bw-fp-sep-testimonial__attr {
+  font-size: 0.83rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(90, 60, 40, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bw-fp-sep-testimonial__attr::before {
+  content: '';
+  display: inline-block;
+  width: 32px;
+  height: 1px;
+  background: rgba(90, 60, 40, 0.3);
+}
+
+.bw-fp-sep-testimonial__attr strong {
+  color: rgba(90, 60, 40, 0.8);
+  font-weight: 600;
+}
+
+.bw-fp-sep-testimonial__photo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 20px 56px rgba(50, 30, 15, 0.16);
+}
+
+/* ============================================
+   Scenario separator — placeholder
+   ============================================ */
+
+.bw-fp-sep-placeholder {
+  height: 50vh;
+  background: var(--color-bg-alt);
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 1400px) {
+  /* 4 колонки: внешние (1 и 4) spanning, цикл из 6 элементов */
+  .bw-fp-gallery__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .bw-fp-gallery__grid .location-card:nth-child(10n+2),
+  .bw-fp-gallery__grid .location-card:nth-child(10n+5) {
+    grid-row: span 1;
+  }
+
+  .bw-fp-gallery__grid .location-card:nth-child(6n+1),
+  .bw-fp-gallery__grid .location-card:nth-child(6n+4) {
+    grid-row: span 2;
+  }
+}
+
+@media (max-width: 900px) {
+  /* 3 колонки: без spanning — чистая сетка */
+  .bw-fp-gallery__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .bw-fp-gallery__grid .location-card:nth-child(6n+1),
+  .bw-fp-gallery__grid .location-card:nth-child(6n+4) {
+    grid-row: span 1;
+  }
+}
+
+@media (max-width: 560px) {
+  .bw-fp-gallery__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0 1%;
+  }
+}
+
+@media (max-width: 1100px) {
+  .bw-fp-trust__inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bw-fp-service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bw-fp-other-places__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .bw-fp-sep-testimonial__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .bw-fp-sep-testimonial__photo {
+    aspect-ratio: 16 / 9;
+    order: -1;
+  }
+
+  .bw-fp-scenario__inner,
+  .bw-fp-scenario--reverse .bw-fp-scenario__inner {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding-top: 64px;
+    padding-bottom: 64px;
+    gap: 32px;
+  }
+
+  .bw-fp-scenario--reverse .bw-fp-scenario__text,
+  .bw-fp-scenario--reverse .bw-fp-scenario__cards {
+    order: initial;
+  }
+
+  .bw-fp-scenario__text h2 {
+    font-size: clamp(1.7rem, 5.5vw, 2.5rem);
+  }
+
+  .bw-fp-scenario__cards {
+    height: auto;
+    min-height: 0;
+  }
+
+  .bw-fp-scenario__main-card {
+    aspect-ratio: 4/3;
+  }
+
+  .bw-fp-scenario__mini-cards {
+    height: auto;
+  }
+
+  .bw-fp-scenario__mini-cards .location-card {
+    aspect-ratio: 4/3;
+  }
+
+  .bw-fp-steps {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bw-fp-steps::before {
+    display: none;
+  }
+
+  .bw-fp-other-places__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bw-fp-other-places__grid .location-card:nth-child(3n+1) {
+    grid-row: span 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .bw-fp-hero__content .entry-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  .bw-fp-trust__inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bw-fp-service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bw-fp-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .bw-fp-scenario__mini-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .bw-fp-other-places__grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 240px;
+  }
+}

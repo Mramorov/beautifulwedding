@@ -1,0 +1,995 @@
+/* ============================================
+   ОБЩИЕ СТИЛИ ДЛЯ КРЕАТИВНЫХ БАННЕРОВ
+   ============================================ */
+
+.creative-banners-page {
+  padding: 60px 0;
+  background: #0a0a0a;
+  min-height: 100vh;
+}
+
+.creative-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.creative-header h1 {
+  font-size: 3rem;
+  color: #fff;
+  margin-bottom: 15px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.creative-header p {
+  font-size: 1.25rem;
+  color: #999;
+}
+
+.banner-variant {
+  margin-bottom: 120px;
+}
+
+.banner-variant > h2 {
+  font-size: 1.75rem;
+  color: #fff;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+/* ============================================
+   ВАРИАНТ 1: 3D TILT CARD
+   ============================================ */
+
+.creative-banner-1 {
+  perspective: 1500px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.tilt-card {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+  cursor: pointer;
+}
+
+.tilt-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.tilt-card-inner {
+  position: relative;
+  background: #1a1a1a;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  transform-style: preserve-3d;
+}
+
+.tilt-bg {
+  width: 100%;
+  height: 350px;
+  background-size: cover;
+  background-position: center;
+  transform: translateZ(20px);
+  transition: transform 0.3s ease;
+}
+
+.tilt-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.1) 50%, 
+    rgba(255, 255, 255, 0) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tilt-card:hover .tilt-shine {
+  opacity: 1;
+}
+
+.tilt-content {
+  padding: 35px;
+  transform: translateZ(40px);
+  color: #fff;
+}
+
+.tilt-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tilt-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  line-height: 1.2;
+}
+
+.tilt-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  opacity: 0.9;
+  margin-bottom: 25px;
+}
+
+.tilt-meta {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 25px;
+  font-size: 0.9375rem;
+}
+
+.tilt-price,
+.tilt-capacity {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  font-weight: 600;
+}
+
+.tilt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  padding: 14px 30px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.tilt-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+}
+
+/* ============================================
+   ВАРИАНТ 2: MORPHING CARD
+   ============================================ */
+
+.creative-banner-2 {
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.morph-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 550px;
+  text-decoration: none;
+  color: inherit;
+  perspective: 1000px;
+}
+
+.morph-front,
+.morph-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+}
+
+.morph-front {
+  transform: rotateY(0deg);
+}
+
+.morph-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d1b3d 100%);
+}
+
+.morph-card:hover .morph-front {
+  transform: rotateY(-180deg);
+}
+
+.morph-card:hover .morph-back {
+  transform: rotateY(0deg);
+}
+
+.morph-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.morph-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
+  color: #fff;
+}
+
+.morph-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.morph-hint {
+  font-size: 0.875rem;
+  opacity: 0.8;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.morph-back-content {
+  padding: 50px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+}
+
+.morph-back-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.morph-back-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 25px;
+  opacity: 0.9;
+}
+
+.morph-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px 0;
+}
+
+.morph-features li {
+  font-size: 1rem;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.morph-features li:last-child {
+  border-bottom: none;
+}
+
+.morph-cta {
+  display: inline-block;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #667eea;
+  text-decoration: underline;
+}
+
+/* ============================================
+   ВАРИАНТ 3: GLASSMORPHISM
+   ============================================ */
+
+.creative-banner-3 {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.glass-banner {
+  position: relative;
+  display: block;
+  height: 600px;
+  border-radius: 30px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.glass-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.7);
+  transform: scale(1.1);
+}
+
+.glass-bubbles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: rise 15s infinite ease-in;
+  backdrop-filter: blur(5px);
+}
+
+.bubble:nth-child(1) {
+  left: 10%;
+  width: 60px;
+  height: 60px;
+  animation-delay: 0s;
+  animation-duration: 12s;
+}
+
+.bubble:nth-child(2) {
+  left: 30%;
+  width: 40px;
+  height: 40px;
+  animation-delay: 3s;
+  animation-duration: 15s;
+}
+
+.bubble:nth-child(3) {
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  animation-delay: 6s;
+  animation-duration: 18s;
+}
+
+.bubble:nth-child(4) {
+  left: 70%;
+  width: 35px;
+  height: 35px;
+  animation-delay: 9s;
+  animation-duration: 14s;
+}
+
+.bubble:nth-child(5) {
+  left: 85%;
+  width: 45px;
+  height: 45px;
+  animation-delay: 12s;
+  animation-duration: 16s;
+}
+
+@keyframes rise {
+  to {
+    bottom: 110%;
+    transform: translateX(100px);
+  }
+}
+
+.glass-card {
+  position: relative;
+  z-index: 2;
+  margin: 50px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.glass-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.glass-label {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  opacity: 0.8;
+}
+
+.glass-status {
+  font-size: 0.875rem;
+  padding: 6px 14px;
+  background: rgba(76, 175, 80, 0.3);
+  border-radius: 20px;
+  border: 1px solid rgba(76, 175, 80, 0.5);
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.glass-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.2;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.glass-description {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  opacity: 0.95;
+}
+
+.glass-stats {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.glass-stat {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex: 1;
+}
+
+.glass-stat-icon {
+  font-size: 2rem;
+}
+
+.glass-stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.glass-stat-label {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.glass-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 3px;
+}
+
+.glass-btn {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1a1a1a;
+  border: none;
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.glass-btn:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   ВАРИАНТ 4: SPLIT REVEAL
+   ============================================ */
+
+.creative-banner-4 {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.split-banner {
+  display: flex;
+  height: 500px;
+  background: #1a1a1a;
+  border-radius: 20px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.split-left {
+  position: relative;
+  flex: 0 0 45%;
+  overflow: hidden;
+}
+
+.split-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s ease;
+}
+
+.split-banner:hover .split-image {
+  transform: scale(1.1);
+}
+
+.split-number {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  font-size: 6rem;
+  font-weight: 900;
+  color: #fff;
+  opacity: 0.15;
+  line-height: 1;
+  z-index: 1;
+}
+
+.split-right {
+  flex: 1;
+  padding: 50px;
+  display: flex;
+  align-items: center;
+  background: #1a1a1a;
+}
+
+.split-content {
+  width: 100%;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.split-category {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #667eea;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.split-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.split-text {
+  font-size: 1rem;
+  line-height: 1.7;
+  opacity: 0.8;
+  margin-bottom: 25px;
+}
+
+.split-divider {
+  height: 2px;
+  width: 60px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  margin-bottom: 25px;
+}
+
+.split-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.split-info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.split-info-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.6;
+  margin-bottom: 8px;
+}
+
+.split-info-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.split-btn {
+  position: relative;
+  background: transparent;
+  border: 2px solid #667eea;
+  color: #fff;
+  padding: 16px 40px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: color 0.3s ease;
+  align-self: flex-start;
+}
+
+.split-btn-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.4s ease;
+  z-index: -1;
+}
+
+.split-btn:hover .split-btn-bg {
+  width: 100%;
+}
+
+.split-btn:hover {
+  color: #fff;
+}
+
+/* ============================================
+   ВАРИАНТ 5: NEON / CYBERPUNK STYLE
+   ============================================ */
+
+.creative-banner-5 {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.neon-banner {
+  position: relative;
+  display: block;
+  height: 500px;
+  background: #0a0a0a;
+  border-radius: 0;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  border: 2px solid #00ff88;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 136, 0.3),
+    inset 0 0 20px rgba(0, 255, 136, 0.1);
+}
+
+.neon-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.2;
+  filter: grayscale(100%);
+}
+
+.neon-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-move 20s linear infinite;
+}
+
+@keyframes grid-move {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(50px);
+  }
+}
+
+.neon-content {
+  position: relative;
+  z-index: 2;
+  padding: 60px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+}
+
+.neon-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  font-weight: 900;
+  color: #00ff88;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid #00ff88;
+  padding: 8px 16px;
+  margin-bottom: 20px;
+  align-self: flex-start;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+}
+
+.neon-title {
+  font-size: 3rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 
+    0 0 10px rgba(0, 255, 136, 0.5),
+    0 0 20px rgba(0, 255, 136, 0.3),
+    0 0 30px rgba(0, 255, 136, 0.2);
+  position: relative;
+}
+
+.neon-title::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #00ff88;
+  z-index: -1;
+  filter: blur(10px);
+  opacity: 0.7;
+}
+
+.neon-description {
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  opacity: 0.9;
+  max-width: 500px;
+  font-family: 'Courier New', monospace;
+}
+
+.neon-stats-bar {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+  padding: 15px 0;
+  border-top: 1px solid rgba(0, 255, 136, 0.3);
+  border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.neon-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-family: 'Courier New', monospace;
+}
+
+.neon-stat-icon {
+  color: #00ff88;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.3; }
+}
+
+.neon-btn {
+  position: relative;
+  background: transparent;
+  border: 2px solid #00ff88;
+  color: #00ff88;
+  padding: 18px 50px;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  cursor: pointer;
+  overflow: hidden;
+  align-self: flex-start;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 0 10px rgba(0, 255, 136, 0.3),
+    inset 0 0 10px rgba(0, 255, 136, 0.1);
+}
+
+.neon-btn-text {
+  position: relative;
+  z-index: 2;
+}
+
+.neon-btn-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.neon-btn:hover .neon-btn-glow {
+  left: 100%;
+}
+
+.neon-btn:hover {
+  background: rgba(0, 255, 136, 0.1);
+  box-shadow: 
+    0 0 20px rgba(0, 255, 136, 0.6),
+    inset 0 0 20px rgba(0, 255, 136, 0.2);
+}
+
+.neon-corners {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.neon-corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #00ff88;
+}
+
+.neon-corner-tl {
+  top: 10px;
+  left: 10px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.neon-corner-tr {
+  top: 10px;
+  right: 10px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.neon-corner-bl {
+  bottom: 10px;
+  left: 10px;
+  border-right: none;
+  border-top: none;
+}
+
+.neon-corner-br {
+  bottom: 10px;
+  right: 10px;
+  border-left: none;
+  border-top: none;
+}
+
+/* ============================================
+   АДАПТИВНОСТЬ
+   ============================================ */
+
+@media (max-width: 768px) {
+  .creative-header h1 {
+    font-size: 2rem;
+  }
+  
+  .glass-card {
+    margin: 30px;
+    padding: 30px;
+  }
+  
+  .glass-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .split-banner {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .split-left {
+    flex: 0 0 300px;
+  }
+  
+  .split-right {
+    padding: 40px 30px;
+  }
+  
+  .split-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .neon-content {
+    padding: 40px 30px;
+  }
+  
+  .neon-title {
+    font-size: 2rem;
+  }
+  
+  .neon-stats-bar {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .creative-banners-page {
+    padding: 40px 0;
+  }
+  
+  .banner-variant {
+    margin-bottom: 80px;
+  }
+  
+  .tilt-content {
+    padding: 25px;
+  }
+  
+  .tilt-title {
+    font-size: 1.5rem;
+  }
+  
+  .morph-card {
+    height: 450px;
+  }
+  
+  .morph-back-content {
+    padding: 30px;
+  }
+  
+  .glass-title {
+    font-size: 1.75rem;
+  }
+  
+  .split-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
